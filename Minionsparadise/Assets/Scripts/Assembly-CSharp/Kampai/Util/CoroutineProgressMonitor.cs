@@ -166,6 +166,10 @@ namespace Kampai.Util
 						task.CoroutinesStack.Add(enumerator);
 						IntegrateTask(task);
 					}
+					else
+					{
+						tasksWaitingForNextFrame.Add(task);
+					}
 				}
 				else
 				{

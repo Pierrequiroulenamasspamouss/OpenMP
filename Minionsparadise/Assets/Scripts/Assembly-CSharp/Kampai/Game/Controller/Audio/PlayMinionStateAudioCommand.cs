@@ -49,12 +49,31 @@ namespace Kampai.Game.Controller.Audio
 			string emitterKey = args.emitterKey;
 			float cueId = args.cueId;
 			global::Kampai.Game.Controller.Audio.PlayMinionStateAudioCommand.StateParameter state = GetState(source);
+			
+			UnityEngine.Debug.Log(string.Format("[PlayMinionStateAudio] Execute: source={0}, audioEvent={1}, emitterKey={2}, cueId={3}, state={4}", 
+				(source != null) ? source.name + " (ID: " + source.ID + ")" : "null", 
+				audioEvent, 
+				emitterKey, 
+				cueId, 
+				state));
+
 			float value = 0f;
 			if (stateLookup.TryGetValue(state, out value))
 			{
-				parameters["Cue"] = cueId;
-				parameters["State"] = value;
-				playLocalAudioSignal.Dispatch(source.GetAudioEmitter(emitterKey), audioEvent, parameters);
+				global::System.Collections.Generic.Dictionary<string, float> dict = new global::System.Collections.Generic.Dictionary<string, float>(2);
+				dict["Cue"] = cueId;
+				dict["State"] = value;
+				CustomFMOD_StudioEventEmitter emitter = (source != null) ? source.GetAudioEmitter(emitterKey) : null;
+				UnityEngine.Debug.Log(string.Format("[PlayMinionStateAudio] Dispatching playLocalAudioSignal. Emitter={0}, Event={1}, Cue={2}, StateVal={3}", 
+					(emitter != null) ? emitter.name : "null", 
+					audioEvent, 
+					cueId, 
+					value));
+				playLocalAudioSignal.Dispatch(emitter, audioEvent, dict);
+			}
+			else
+			{
+				UnityEngine.Debug.LogWarning(string.Format("[PlayMinionStateAudio] State {0} not found in stateLookup!", state));
 			}
 		}
 

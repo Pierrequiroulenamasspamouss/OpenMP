@@ -84,6 +84,9 @@ namespace Kampai.Game.Mignette.View
 			mignetteMusicSignal.Dispatch(base.gameObject, MusicEventName, global::Kampai.Game.PlayMignetteMusicCommand.MusicEvent.Start);
 		}
 
+		[Inject]
+		public global::Kampai.Game.IUserSessionService userSessionService { get; set; }
+
 		public virtual void Update()
 		{
 			if (!hasInitialized)
@@ -104,10 +107,12 @@ namespace Kampai.Game.Mignette.View
 			}
 			if (!hasExited)
 			{
+				// In offline mode, never pause due to connection loss — the user chose to play offline.
+				bool shouldPause = networkModel.isConnectionLost && !userSessionService.IsOffline;
 				T val = view;
-				if (val.IsPaused != networkModel.isConnectionLost)
+				if (val.IsPaused != shouldPause)
 				{
-					OnPauseStateChanged(networkModel.isConnectionLost);
+					OnPauseStateChanged(shouldPause);
 				}
 				mignetteGameModel.TotalEventTime = view.TotalEventTime;
 				mignetteGameModel.ElapsedTime = view.TimeElapsed;

@@ -62,7 +62,7 @@ namespace Kampai.Tools.AnimationToolKit
 		{
 			routineRunner.StartCoroutine(fmodService.InitializeSystem());
 			global::UnityEngine.Camera main = global::UnityEngine.Camera.main;
-			main.gameObject.AddComponent<FMOD_Listener>();
+			main.gameObject.AddComponent<global::FMODUnity.StudioListener>();
 			global::UnityEngine.GameObject gameObject = global::UnityEngine.GameObject.Find("FMOD_StudioSystem");
 			gameObject.transform.parent = ContextView.transform;
 			global::UnityEngine.GameObject gameObject2 = new global::UnityEngine.GameObject("EnvironmentAudioManager");

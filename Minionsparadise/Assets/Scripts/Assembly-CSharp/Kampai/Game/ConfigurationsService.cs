@@ -128,6 +128,11 @@ namespace Kampai.Game
 			}
 			else if (!response.Request.IsAborted())
 			{
+				if (userSessionService != null && userSessionService.IsOffline)
+				{
+					logger.Warning("Network error (code {0}) on config request while in offline mode. Ignoring.", response.Code);
+					return;
+				}
 				if (!IgnoreError())
 				{
 					showOfflinePopupSignal.Dispatch(true);

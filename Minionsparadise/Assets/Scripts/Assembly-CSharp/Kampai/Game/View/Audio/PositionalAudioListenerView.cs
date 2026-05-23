@@ -6,5 +6,11 @@ namespace Kampai.Game.View.Audio
 		{
 			base.transform.position = newPosition;
 		}
+
+		public void UpdatePosition(global::UnityEngine.Vector3 newPosition, global::UnityEngine.Quaternion newRotation)
+		{
+			base.transform.position = newPosition;
+			base.transform.rotation = newRotation;
+		}
 	}
 }

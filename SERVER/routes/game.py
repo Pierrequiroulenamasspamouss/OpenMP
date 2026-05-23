@@ -26,9 +26,16 @@ DLC_DIR = os.path.join(SERVER_DIR, "DLC")
 
 @game_bp.route('/DLC/<path:filename>')
 def serve_dlc(filename):
-    file_path = os.path.join(DLC_DIR, filename)
-    if os.path.exists(file_path):
-        return send_file(file_path)
+    # Try multiple candidate paths to find the DLC files (robust fallback for both local and production)
+    candidate_paths = [
+        os.path.join(DLC_DIR, filename),
+        os.path.join(SERVER_DIR, "DLCs", filename),
+        os.path.join(os.path.dirname(SERVER_DIR), "APK, bundles, and bundled APK", "DLCs", filename),
+        os.path.join(os.path.dirname(SERVER_DIR), "APK, bundles, and bundled APK", "DLC", filename),
+    ]
+    for file_path in candidate_paths:
+        if os.path.exists(file_path):
+            return send_file(file_path)
     return "", 404
 
 @game_bp.route('/video.mp4')
