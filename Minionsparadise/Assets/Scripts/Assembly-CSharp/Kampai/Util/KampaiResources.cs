@@ -64,113 +64,159 @@ namespace Kampai.Util
 
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_ANDROID
         private static Dictionary<string, string> _editorAssetPathMap;
+        private static readonly object _initLock = new object();
+        private static volatile bool _isInitialized = false;
+        private static global::System.Threading.Thread _initThread;
 
-        private static void InitializeAssetMap()
+        public static void InitializeAssetMap()
         {
-            if (_editorAssetPathMap != null) return;
-            
-            _editorAssetPathMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
-            string dataPath = Application.dataPath.Replace('\\', '/');
-            
-            // List of directories to scan for local assets
-            string[] searchDirs = { "/Shader", "/Resources" };
+            if (_isInitialized) return;
 
-                foreach (string searchDir in searchDirs)
-                {
-                    string fullPath = dataPath + searchDir;
-                    if (!Directory.Exists(fullPath))
-                    {
-                        // Try fallback relative to executable for standalone
-                        string parentPath = Path.GetDirectoryName(dataPath);
-                        if (parentPath != null)
-                        {
-                            // Check if it's in the root directly (some custom builds/5.3 behavior)
-                            string rootPath = parentPath.Replace('\\', '/') + searchDir;
-                            if (Directory.Exists(rootPath)) 
-                            {
-                                fullPath = rootPath;
-                            }
-                            else
-                            {
-                                // Try Assets relative path (old behavior)
-                                string fallbackPath = parentPath.Replace('\\', '/') + "/Assets" + searchDir;
-                                if (Directory.Exists(fallbackPath)) fullPath = fallbackPath;
-                            }
-                        }
-                    }
-
-                    if (Directory.Exists(fullPath))
-                    {
-                        if (_logger != null) _logger.Debug(string.Format("KampaiResources: Scanning local directory '{0}'", fullPath));
-                        string[] files = Directory.GetFiles(fullPath, "*.*", SearchOption.AllDirectories);
-                        foreach (string file in files)
-                        {
-                            string normalizedFile = file.Replace('\\', '/');
-                            if (normalizedFile.EndsWith(".meta")) continue;
-
-                            string fileName = Path.GetFileNameWithoutExtension(normalizedFile);
-                            if (!_editorAssetPathMap.ContainsKey(fileName))
-                            {
-                                int assetsIdx = normalizedFile.IndexOf("/Assets/", StringComparison.OrdinalIgnoreCase);
-                                if (assetsIdx >= 0)
-                                {
-                                    string relativePath = normalizedFile.Substring(assetsIdx + 1);
-                                    _editorAssetPathMap.Add(fileName, relativePath);
-                                }
-                                else if (normalizedFile.Contains("/Resources/"))
-                                {
-                                    // If it's in a physical Resources folder in a build, treat as Resource path
-                                    _editorAssetPathMap.Add(fileName, normalizedFile);
-                                }
-                                else
-                                {
-                                    // If mapping failed to find /Assets/, try a path relative to scanDir
-                                    string relativePath = "Assets" + searchDir + normalizedFile.Substring(fullPath.Length);
-                                    _editorAssetPathMap.Add(fileName, relativePath);
-                                }
-                                if (_logger != null) _logger.Debug(string.Format("KampaiResources: Mapped '{0}' -> '{1}'", fileName, _editorAssetPathMap[fileName]));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (_logger != null) _logger.Debug(string.Format("KampaiResources: Optional local directory '{0}' NOT FOUND", fullPath));
-                    }
-                }
-            if (_logger != null) _logger.Info(string.Format("KampaiResources: Initialized local asset map with {0} entries", _editorAssetPathMap.Count));
-#endif
-
-            // Load manifest if it exists (always on Android, or as fallback on Editor/Standalone)
-            TextAsset manifest = Resources.Load<TextAsset>("KampaiAssetManifest");
-            if (manifest != null)
+            lock (_initLock)
             {
-                try
+                if (_isInitialized) return;
+
+                // Load manifest first (fast path for all platforms)
+                TextAsset manifest = Resources.Load<TextAsset>("KampaiAssetManifest");
+                if (manifest == null)
                 {
-                    Dictionary<string, string> savedMap = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(manifest.text);
-                    if (savedMap != null)
-                    {
-                        int addedCount = 0;
-                        foreach (KeyValuePair<string, string> kvp in savedMap)
-                        {
-                            if (!_editorAssetPathMap.ContainsKey(kvp.Key))
-                            {
-                                _editorAssetPathMap.Add(kvp.Key, kvp.Value);
-                                addedCount++;
-                            }
-                        }
-                        if (_logger != null) _logger.Info(string.Format("KampaiResources: Loaded {0} entries from KampaiAssetManifest ({1} new)", savedMap.Count, addedCount));
-                    }
+                    _isInitialized = true;
+                    if (_logger != null) _logger.Warning("KampaiResources: KampaiAssetManifest not found in Resources. Build asset loading may fail.");
+                    return;
                 }
-                catch (Exception ex)
+
+                _editorAssetPathMap = new Dictionary<string, string>(4096, StringComparer.OrdinalIgnoreCase);
+
+                // TextAsset properties must be accessed on the main thread
+                byte[] manifestBytes = manifest.bytes;
+                string manifestText = manifest.text;
+
+                _initThread = new global::System.Threading.Thread(delegate()
                 {
-                    if (_logger != null) _logger.Error(string.Format("KampaiResources: Failed to parse KampaiAssetManifest: {0}", ex.Message));
+                    System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+                    try
+                    {
+                        if (manifestBytes != null && manifestBytes.Length > 0 && manifestBytes[0] != '{')
+                        {
+                            ParseManifestBinary(manifestBytes);
+                        }
+                        else
+                        {
+                            ParseManifestFast(manifestText);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_logger != null) _logger.Error(string.Format("KampaiResources: Failed to parse KampaiAssetManifest: {0}", ex.Message));
+                    }
+                    finally
+                    {
+                        _isInitialized = true;
+                        sw.Stop();
+                        if (_logger != null) _logger.Info(string.Format("KampaiResources: Background initialization of asset map completed with {0} entries in {1}ms", _editorAssetPathMap.Count, sw.ElapsedMilliseconds));
+                    }
+                });
+                _initThread.Start();
+            }
+        }
+
+        private static void EnsureAssetMapInitialized()
+        {
+            if (_isInitialized) return;
+
+            lock (_initLock)
+            {
+                if (_isInitialized) return;
+
+                if (_initThread != null && _initThread.IsAlive)
+                {
+                    _initThread.Join();
+                }
+                else
+                {
+                    InitializeAssetMap();
+                    if (_initThread != null && _initThread.IsAlive)
+                    {
+                        _initThread.Join();
+                    }
                 }
             }
-            else
+        }
+
+        private static void ParseManifestBinary(byte[] bytes)
+        {
+            if (bytes == null || bytes.Length == 0) return;
+            using (MemoryStream ms = new MemoryStream(bytes))
             {
-                if (_logger != null) _logger.Warning("KampaiResources: KampaiAssetManifest.json not found in Resources. Build asset loading may fail.");
+                using (BinaryReader reader = new BinaryReader(ms, System.Text.Encoding.UTF8))
+                {
+                    int count = reader.ReadInt32();
+                    for (int i = 0; i < count; i++)
+                    {
+                        string key = reader.ReadString();
+                        string val = reader.ReadString();
+                        if (!_editorAssetPathMap.ContainsKey(key))
+                        {
+                            _editorAssetPathMap.Add(key, val);
+                        }
+                    }
+                }
             }
+        }
+
+        /// <summary>
+        /// Fast manual JSON parser for the asset manifest, avoids Newtonsoft.Json overhead.
+        /// The manifest is a simple flat {"key":"value",...} dictionary.
+        /// </summary>
+        private static void ParseManifestFast(string json)
+        {
+            if (string.IsNullOrEmpty(json)) return;
+
+            int addedCount = 0;
+            int i = 0;
+            int len = json.Length;
+
+            // Skip to first '{'
+            while (i < len && json[i] != '{') i++;
+            i++; // skip '{'
+
+            while (i < len)
+            {
+                // Skip whitespace and commas
+                while (i < len && (json[i] == ' ' || json[i] == '\t' || json[i] == '\n' || json[i] == '\r' || json[i] == ',')) i++;
+                
+                if (i >= len || json[i] == '}') break;
+
+                // Parse key
+                if (json[i] != '"') break;
+                i++; // skip opening quote
+                int keyStart = i;
+                while (i < len && json[i] != '"') i++;
+                string key = json.Substring(keyStart, i - keyStart);
+                i++; // skip closing quote
+
+                // Skip colon and whitespace
+                while (i < len && (json[i] == ' ' || json[i] == ':' || json[i] == '\t')) i++;
+
+                // Parse value  
+                if (i >= len || json[i] != '"') break;
+                i++; // skip opening quote
+                int valStart = i;
+                while (i < len && json[i] != '"')
+                {
+                    if (json[i] == '\\') i++; // skip escaped char
+                    i++;
+                }
+                string val = json.Substring(valStart, i - valStart);
+                i++; // skip closing quote
+
+                if (!_editorAssetPathMap.ContainsKey(key))
+                {
+                    _editorAssetPathMap.Add(key, val);
+                    addedCount++;
+                }
+            }
+            if (_logger != null) _logger.Info(string.Format("KampaiResources: Loaded {0} entries from KampaiAssetManifest", addedCount));
         }
 #endif
 
@@ -199,7 +245,7 @@ namespace Kampai.Util
         public static bool FileExists(string path)
         {
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_ANDROID
-            InitializeAssetMap();
+            EnsureAssetMapInitialized();
             if (_editorAssetPathMap != null && _editorAssetPathMap.ContainsKey(Path.GetFileNameWithoutExtension(path)))
             {
                 return true;
@@ -383,7 +429,7 @@ namespace Kampai.Util
 			{
 				return false;
 			}
-            InitializeAssetMap();
+            EnsureAssetMapInitialized();
             string fileName = Path.GetFileNameWithoutExtension(path);
             
             string editorPath = null;

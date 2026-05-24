@@ -46,6 +46,7 @@ namespace Kampai.Game
 
 		public override void Execute()
 		{
+			global::Kampai.Util.StartupTimer.LogCheckpoint("LoadPlayerCommand.Execute");
 			logger.EventStart("LoadPlayerCommand.Execute");
 			global::Kampai.Util.TimeProfiler.StartSection("load player");
 			string text = localPersistService.GetData("LoadMode");

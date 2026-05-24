@@ -75,6 +75,7 @@ namespace Kampai.Game
 
 		public void GetConfigurationCallback(global::Ea.Sharkbite.HttpPlugin.Http.Api.IResponse response)
 		{
+			global::Kampai.Util.StartupTimer.LogCheckpoint("ConfigurationsService.GetConfigurationCallback");
 			global::Kampai.Util.TimeProfiler.EndSection("retrieve config");
 			if (response.Success)
 			{

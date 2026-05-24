@@ -3684,6 +3684,7 @@
      <Compile Include="Assets\Scripts\Assembly-CSharp\Kampai\Util\SkinnedMeshAggregator.cs" />
      <Compile Include="Assets\Scripts\Assembly-CSharp\Kampai\Util\SpatiallySortable.cs" />
      <Compile Include="Assets\Scripts\Assembly-CSharp\Kampai\Util\SpinnerAudio.cs" />
+     <Compile Include="Assets\Scripts\Assembly-CSharp\Kampai\Util\StartupTimer.cs" />
      <Compile Include="Assets\Scripts\Assembly-CSharp\Kampai\Util\StringUtil.cs" />
      <Compile Include="Assets\Scripts\Assembly-CSharp\Kampai\Util\SwrveConstants.cs" />
      <Compile Include="Assets\Scripts\Assembly-CSharp\Kampai\Util\TargetPerformance.cs" />

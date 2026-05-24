@@ -90,7 +90,9 @@ namespace Kampai.Main
 			}
 
 			logger.EventStart("MainStartCommand.Execute");
+			global::Kampai.Util.StartupTimer.LogCheckpoint("MainStartCommand.Execute");
 			global::Kampai.Util.KampaiResources.SetLogger();
+			global::Kampai.Util.KampaiResources.InitializeAssetMap();
 			global::Kampai.Util.AndroidPermissions.RequestPermissions();
 			loadDevicePrefsSignal.Dispatch();
 			initLocalizationServiceSignal.Dispatch();

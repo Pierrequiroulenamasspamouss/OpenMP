@@ -41,6 +41,7 @@ public class LoadDefinitionsCommand : global::strange.extensions.command.impl.Co
 
 	public override void Execute()
 	{
+		global::Kampai.Util.StartupTimer.LogCheckpoint("LoadDefinitionsCommand.Execute");
 		logger.EventStart("LoadDefinitionsCommand.Execute");
 		string jsonString = defData.Json;
 		if (jsonString != null)
@@ -55,49 +56,129 @@ public class LoadDefinitionsCommand : global::strange.extensions.command.impl.Co
 			{
 				throw new global::System.ArgumentException("LoadDefinitionsCommand: neither json content nor path to file is specified");
 			}
-			bool flag = true;
+			bool needsJsonParse = true;
 			string binaryDefinitionsPath = global::Kampai.Game.DefinitionService.GetBinaryDefinitionsPath();
 #if !UNITY_WEBPLAYER
-			/* if (global::System.IO.File.Exists(binaryDefinitionsPath))
+			if (global::System.IO.File.Exists(binaryDefinitionsPath) && IsBinaryCacheValid(jsonPath))
 			{
-				logger.Debug("LoadDefinitions: Starting binary deserialization");
-				if (DeserializeDefinitionsFromBinaryFile(binaryDefinitionsPath))
+				logger.Debug("LoadDefinitions: Starting binary deserialization (cache valid)");
+				routineRunner.StartAsyncConditionTask(delegate
 				{
-					flag = false;
+					return DeserializeDefinitionsFromBinaryFile(binaryDefinitionsPath);
+				}, delegate
+				{
+					logger.Info("LoadDefinitions: Binary cache loaded successfully");
 					OnDeserializationSuccess();
-				}
-				else
+				});
+				needsJsonParse = false;
+			}
+			else
+			{
+				if (global::System.IO.File.Exists(binaryDefinitionsPath))
 				{
+					logger.Info("LoadDefinitions: Binary cache invalidated (JSON changed), deleting stale cache");
 					global::Kampai.Game.DefinitionService.DeleteBinarySerialization();
 				}
-			} */
-			logger.Warning("FORCED JSON LOADING: Skipping binary definitions cache.");
+			}
 #else
 			if (false)
 			{
 			}
 #endif
-			if (flag)
+			if (needsJsonParse)
 			{
 				logger.Debug("LoadDefinitions: Starting json deserialization");
 				routineRunner.StartAsyncConditionTask(delegate
 				{
-					if (global::System.IO.File.Exists(jsonPath)) {
-						long length = new global::System.IO.FileInfo(jsonPath).Length;
-						logger.Warning("FORCED JSON LOADING: File {0} size: {1} bytes", jsonPath, length);
-					} else {
-						logger.Error("FORCED JSON LOADING: File {0} DOES NOT EXIST!", jsonPath);
+					bool success = DeserializeDefinitionsFromJsonFile(jsonPath);
+					if (success)
+					{
+						SaveJsonHash(jsonPath);
 					}
-					bool flag2 = DeserializeDefinitionsFromJsonFile(jsonPath);
-					if (!flag2)
+					else
 					{
 						RemoveCachedDefinitions(jsonPath);
 					}
-					return flag2;
+					return success;
 				}, OnDeserializationSuccess);
 			}
 		}
 		logger.EventStop("LoadDefinitionsCommand.Execute");
+	}
+
+	private static string GetHashFilePath()
+	{
+		return global::System.IO.Path.Combine(global::Kampai.Util.GameConstants.PERSISTENT_DATA_PATH, "definitions_hash.txt");
+	}
+
+	private bool IsBinaryCacheValid(string jsonPath)
+	{
+#if !UNITY_WEBPLAYER
+		try
+		{
+			string hashFilePath = GetHashFilePath();
+			if (!global::System.IO.File.Exists(hashFilePath))
+			{
+				logger.Debug("LoadDefinitions: No hash file found, cache invalid");
+				return false;
+			}
+			if (!global::System.IO.File.Exists(jsonPath))
+			{
+				logger.Debug("LoadDefinitions: JSON file not found at '{0}', assuming cache is valid", jsonPath);
+				return true;
+			}
+
+			string storedHash = global::System.IO.File.ReadAllText(hashFilePath).Trim();
+			string currentHash = ComputeFileHash(jsonPath);
+			bool valid = string.Equals(storedHash, currentHash, global::System.StringComparison.OrdinalIgnoreCase);
+			if (!valid)
+			{
+				logger.Debug("LoadDefinitions: Hash mismatch. Stored='{0}', Current='{1}'", storedHash, currentHash);
+			}
+			return valid;
+		}
+		catch (global::System.Exception ex)
+		{
+			logger.Warning("LoadDefinitions: Error checking binary cache validity: {0}", ex.Message);
+			return false;
+		}
+#else
+		return false;
+#endif
+	}
+
+	private void SaveJsonHash(string jsonPath)
+	{
+#if !UNITY_WEBPLAYER
+		try
+		{
+			if (!global::System.IO.File.Exists(jsonPath)) return;
+			string hash = ComputeFileHash(jsonPath);
+			global::System.IO.File.WriteAllText(GetHashFilePath(), hash);
+			logger.Debug("LoadDefinitions: Saved JSON hash '{0}'", hash);
+		}
+		catch (global::System.Exception ex)
+		{
+			logger.Warning("LoadDefinitions: Failed to save JSON hash: {0}", ex.Message);
+		}
+#endif
+	}
+
+	private static string ComputeFileHash(string filePath)
+	{
+		using (var md5 = global::System.Security.Cryptography.MD5.Create())
+		{
+			using (var stream = global::System.IO.File.OpenRead(filePath))
+			{
+				byte[] hashBytes = md5.ComputeHash(stream);
+				var sb = new global::System.Text.StringBuilder(32);
+				for (int i = 0; i < hashBytes.Length; i++)
+				{
+					sb.Append(hashBytes[i].ToString("x2"));
+				}
+				return sb.ToString();
+			}
+		}
 	}
 
 	private void RemoveCachedDefinitions(string path)
@@ -115,6 +196,7 @@ public class LoadDefinitionsCommand : global::strange.extensions.command.impl.Co
 
 	private void OnDeserializationSuccess()
 	{
+		global::Kampai.Util.StartupTimer.LogCheckpoint("LoadDefinitionsCommand.OnDeserializationSuccess (Definitions Loaded)");
 		this.telemetryService.Send_Telemetry_EVT_USER_GAME_LOAD_FUNNEL("80 - Loaded Definitions", playerService.SWRVEGroup, dlcService.GetDownloadQualityLevel());
 		logger.Debug("LoadDefinitions: Deserialized successfully");
 		global::Kampai.Common.TelemetryService telemetryService = this.telemetryService as global::Kampai.Common.TelemetryService;

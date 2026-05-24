@@ -146,12 +146,20 @@ namespace Kampai.Main
 
 		private global::System.Collections.IEnumerator integrationCoroutine;
 
-		private int integrationStepLength = 150;
+		private int integrationStepLength = 400;
 
 		private global::Kampai.Util.IKampaiLogger logger = global::Elevation.Logging.LogManager.GetClassLogger("AssetsPreloadService") as global::Kampai.Util.IKampaiLogger;
 
 		[Inject]
 		public global::Kampai.Util.IRoutineRunner routineRunner { get; set; }
+
+		public bool IsPreloading
+		{
+			get
+			{
+				return integrationCoroutine != null;
+			}
+		}
 
 		public void AddAssetToPreloadQueue(global::Kampai.Main.PreloadableAsset asset)
 		{
@@ -165,6 +173,7 @@ namespace Kampai.Main
 
 		public void PreloadAllAssets()
 		{
+			global::Kampai.Util.StartupTimer.LogCheckpoint("AssetsPreloadService.PreloadAllAssets (Preload queue start)");
 			global::UnityEngine.TextAsset textAsset = global::Kampai.Util.KampaiResources.Load<global::UnityEngine.TextAsset>("PreloadedAssetsList");
 			if (textAsset == null)
 			{
@@ -222,19 +231,17 @@ namespace Kampai.Main
 		private global::System.Collections.IEnumerator IntegratePreloadQueue()
 		{
 			yield return null;
-			global::System.Diagnostics.Stopwatch sw = global::System.Diagnostics.Stopwatch.StartNew();
+			int activeLoads = 0;
+			int batchCount = 0;
 			while (assetsQueue.Count > 0)
 			{
-				if (sw.ElapsedMilliseconds > integrationStepLength)
+				while (activeLoads >= 16)
 				{
 					yield return null;
-					if (assetsQueue.Count == 0)
-					{
-						integrationCoroutine = null;
-						yield break;
-					}
-					sw.Reset();
-					sw.Start();
+				}
+				if (assetsQueue.Count == 0)
+				{
+					break;
 				}
 				int idx = assetsQueue.Count - 1;
 				global::Kampai.Main.PreloadableAsset assetInfo = assetsQueue[idx];
@@ -243,14 +250,36 @@ namespace Kampai.Main
 				KNOWN_TYPES.TryGetValue(assetInfo.type, out assetType);
 				if (assetType != null)
 				{
-					global::Kampai.Util.KampaiResources.Load(assetInfo.name, assetType);
-					logger.Info("Preload asset '{0}'", assetInfo.name);
+					activeLoads++;
+					global::Kampai.Util.KampaiResources.LoadAsync(assetInfo.name, assetType, routineRunner, delegate(global::UnityEngine.Object obj)
+					{
+						activeLoads--;
+						if (obj != null)
+						{
+							logger.Info("Preloaded async asset '{0}'", assetInfo.name);
+						}
+						else
+						{
+							logger.Warning("Failed to preload async asset '{0}'", assetInfo.name);
+						}
+					});
 				}
 				else
 				{
 					logger.Info("Failed to preload asset '{0}': type '{1}' is unknown", assetInfo.name, assetInfo.type);
 				}
+				batchCount++;
+				if (batchCount >= 10)
+				{
+					batchCount = 0;
+					yield return null;
+				}
 			}
+			while (activeLoads > 0)
+			{
+				yield return null;
+			}
+			global::Kampai.Util.StartupTimer.LogCheckpoint("AssetsPreloadService.IntegratePreloadQueue (Preload queue completed)");
 			integrationCoroutine = null;
 		}
 	}

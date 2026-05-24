@@ -16,12 +16,27 @@ namespace Kampai.Game
 		[Inject]
 		public global::Kampai.Game.IDefinitionService definitionService { get; set; }
 
+		[Inject]
+		public global::Kampai.Common.Service.Audio.IFMODService fmodService { get; set; }
+
+		[Inject]
+		public global::Kampai.Game.IPlayerService playerService { get; set; }
+
+		[Inject]
+		public global::Kampai.Util.PathFinder pathFinder { get; set; }
+
 		public override void Execute()
 		{
 			global::Kampai.Game.View.ActionableObject component = buildingObject.GetComponent<global::Kampai.Game.View.ActionableObject>();
 			if (component != null)
 			{
-				base.injectionBinder.injector.Inject(component, false);
+				component.fmodService = fmodService;
+				component.playerService = playerService;
+				global::Kampai.Game.View.MignetteBuildingObject mignette = component as global::Kampai.Game.View.MignetteBuildingObject;
+				if (mignette != null)
+				{
+					mignette.pathFinder = pathFinder;
+				}
 			}
 			buildingObject.Init(building, logger, animatorControllers, definitionService);
 		}

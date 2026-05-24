@@ -27,6 +27,7 @@ public class LoadConfigurationsCommand : global::strange.extensions.command.impl
 
 	public override void Execute()
 	{
+		global::Kampai.Util.StartupTimer.LogCheckpoint("LoadConfigurationsCommand.Execute");
 		logger.EventStart("LoadConfigurationsCommand.Execute");
 		logger.Info("Executing LoadConfigurationsCommand:{0}", init);
 		global::Kampai.Util.TimeProfiler.StartSection("retrieve config");

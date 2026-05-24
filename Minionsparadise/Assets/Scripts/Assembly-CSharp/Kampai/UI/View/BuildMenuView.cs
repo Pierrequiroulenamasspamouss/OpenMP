@@ -24,6 +24,22 @@ namespace Kampai.UI.View
 		{
 			animator = GetComponent<global::UnityEngine.Animator>();
 			MenuButton.PlaySoundOnClick = false;
+			global::UnityEngine.RectTransform rectTransform = base.transform as global::UnityEngine.RectTransform;
+			if (rectTransform != null)
+			{
+				global::UnityEngine.Vector2 anchorMin = rectTransform.anchorMin;
+				global::UnityEngine.Vector2 anchorMax = rectTransform.anchorMax;
+				anchorMin.y = 0f;
+				anchorMax.y = 1f;
+				rectTransform.anchorMin = anchorMin;
+				rectTransform.anchorMax = anchorMax;
+				global::UnityEngine.Vector2 offsetMin = rectTransform.offsetMin;
+				global::UnityEngine.Vector2 offsetMax = rectTransform.offsetMax;
+				offsetMin.y = 0f;
+				offsetMax.y = 0f;
+				rectTransform.offsetMin = offsetMin;
+				rectTransform.offsetMax = offsetMax;
+			}
 		}
 
 		public void MoveMenu()

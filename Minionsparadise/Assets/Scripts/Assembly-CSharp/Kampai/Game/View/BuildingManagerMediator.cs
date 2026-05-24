@@ -438,9 +438,17 @@ namespace Kampai.Game.View
 			rotateBuildingSignal.RemoveListener(RotateBuilding);
 		}
 
+		[Inject]
+		public global::Kampai.Main.IAssetsPreloadService assetsPreloadService { get; set; }
+
 		private global::System.Collections.IEnumerator Init()
 		{
+			global::Kampai.Util.StartupTimer.LogCheckpoint("BuildingManagerMediator.Init (Start)");
 			yield return null;
+			while (assetsPreloadService != null && assetsPreloadService.IsPreloading)
+			{
+				yield return null;
+			}
 			global::Kampai.Util.TimeProfiler.StartSection("buildings");
 			global::System.Collections.Generic.ICollection<global::Kampai.Game.Building> buildingList = playerService.GetInstancesByType<global::Kampai.Game.Building>();
 			global::Kampai.Util.TimeProfiler.StartSection("restoring");
@@ -465,6 +473,7 @@ namespace Kampai.Game.View
 			global::Kampai.Util.TimeProfiler.EndSection("expansions");
 			setupAspirationalBuildingsSignal.Dispatch();
 			global::Kampai.Util.TimeProfiler.EndSection("buildings");
+			global::Kampai.Util.StartupTimer.LogCheckpoint("BuildingManagerMediator.Init (Complete)");
 		}
 
 		private void AllowStorable(bool storable)
