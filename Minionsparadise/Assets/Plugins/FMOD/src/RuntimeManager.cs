@@ -546,7 +546,7 @@ retry:
                     eventPositionWarnings.RemoveAt(i);
                 }
 
-                isOverlayEnabled = currentPlatform.IsOverlayEnabled;
+                isOverlayEnabled = false;
                 #endif
 
                 if (isOverlayEnabled)

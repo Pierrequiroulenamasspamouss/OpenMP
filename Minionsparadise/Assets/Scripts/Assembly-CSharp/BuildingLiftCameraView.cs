@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class BuildingLiftCameraView : MonoBehaviour
 {
     public Camera m_camera;
@@ -9,7 +11,7 @@ public class BuildingLiftCameraView : MonoBehaviour
         if (m_camera.fieldOfView != m_gameCamera.fieldOfView)
         {
             m_camera.fieldOfView = m_gameCamera.fieldOfView;
-            Debug.Log("[BuildingLiftCameraView] FOV changed: " + m_camera.fieldOfView);
+            //Debug.Log("[BuildingLiftCameraView] FOV changed: " + m_camera.fieldOfView); removing logs pollution of that, since we know it works
         }
 
         base.gameObject.transform.localPosition = m_gameCameraTransform.localPosition;

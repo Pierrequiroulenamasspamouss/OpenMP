@@ -263,16 +263,52 @@ namespace Kampai.UI.View
 			{
 				buildMenuService.RemoveUncheckedInventoryItem(type, iD);
 			}
+			int storeItemID = buildMenuService.GetStoreItemDefinitionIDFromBuildingID(iD);
+			global::Kampai.UI.View.StoreButtonView storeButtonViewByID = base.view.GetStoreButtonViewByID(storeItemID);
+			if (storeButtonViewByID != null)
+			{
+				storeButtonViewByID.SetNewUnlockState(false);
+			}
 		}
 
 		private void BuildingDraggedFromInventory(global::Kampai.Game.Building building, global::Kampai.Game.Location location)
 		{
 			int iD = building.Definition.ID;
 			global::Kampai.Game.StoreItemType type = base.view.UpdateStoreButtonState(iD, true);
-			if (buildMenuService.RemoveNewUnlockedItem(type, iD))
+			buildMenuService.RemoveNewUnlockedItem(type, iD);
+			int storeItemID = buildMenuService.GetStoreItemDefinitionIDFromBuildingID(iD);
+			global::Kampai.UI.View.StoreButtonView storeButtonViewByID = base.view.GetStoreButtonViewByID(storeItemID);
+			if (storeButtonViewByID != null)
+			{
+				storeButtonViewByID.SetNewUnlockState(false);
+			}
+			
+			int capacity = playerService.GetUnlockedQuantityOfID(iD);
+			int boardCount = 0;
+			playerService.GetBuildingOnBoardCountMap().TryGetValue(iD, out boardCount);
+			if (capacity >= 0 && boardCount >= capacity)
+			{
+				global::System.Collections.Generic.ICollection<global::Kampai.Game.Instance> byDefinitionId = playerService.GetByDefinitionId<global::Kampai.Game.Instance>(iD);
+				global::System.Collections.Generic.List<global::Kampai.Game.Instance> toRemove = new global::System.Collections.Generic.List<global::Kampai.Game.Instance>();
+				foreach (global::Kampai.Game.Instance item in byDefinitionId)
+				{
+					global::Kampai.Game.Building b = item as global::Kampai.Game.Building;
+					if (b != null && b.State == global::Kampai.Game.BuildingState.Inventory)
+					{
+						toRemove.Add(b);
+					}
+				}
+				foreach (global::Kampai.Game.Instance itemToRemove in toRemove)
+				{
+					playerService.Remove(itemToRemove);
+				}
+			}
+
+			if (playerService.GetInventoryCountByDefinitionID(iD) == 0)
 			{
 				buildMenuService.RemoveUncheckedInventoryItem(type, iD);
 			}
+			SetBadgeCountForStoreItemType(type);
 			global::System.Collections.Generic.List<global::Kampai.UI.View.StoreButtonView> storeButtonViews = base.view.GetStoreButtonViews(type);
 			if (storeButtonViews != null)
 			{

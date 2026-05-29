@@ -59,6 +59,24 @@ namespace Kampai.UI.View
 			playerService.UpdateMinionPartyPointValues();
 			global::Kampai.Util.TimeProfiler.EndSection("load");
 			global::System.Collections.Generic.Dictionary<global::Kampai.Game.StoreItemType, global::System.Collections.Generic.List<global::Kampai.Game.Definition>> buildMenuItems = new global::System.Collections.Generic.Dictionary<global::Kampai.Game.StoreItemType, global::System.Collections.Generic.List<global::Kampai.Game.Definition>>();
+			try
+			{
+				using (var writer = new global::System.IO.StreamWriter(global::System.IO.Path.Combine(global::Kampai.Util.GameConstants.PERSISTENT_DATA_PATH, "store_items_debug.txt")))
+				{
+					writer.WriteLine("Total store items: " + all.Count);
+					foreach (var item in all)
+					{
+						if (item != null)
+						{
+							writer.WriteLine(string.Format("ID: {0}, Type: {1}, ReferencedDefID: {2}", item.ID, item.Type, item.ReferencedDefID));
+						}
+					}
+				}
+			}
+			catch (global::System.Exception ex)
+			{
+				logger.Error("Failed to write store_items_debug: " + ex.Message);
+			}
 			foreach (global::Kampai.Game.StoreItemDefinition item in all)
 			{
 				if (item == null || item.Disabled)
@@ -72,10 +90,6 @@ namespace Kampai.UI.View
 				case global::Kampai.Game.StoreItemType.Decoration:
 				case global::Kampai.Game.StoreItemType.Leisure:
 				case global::Kampai.Game.StoreItemType.Special:
-				case global::Kampai.Game.StoreItemType.PremiumCurrency:
-				case global::Kampai.Game.StoreItemType.GrindCurrency:
-				case global::Kampai.Game.StoreItemType.SalePack:
-				case global::Kampai.Game.StoreItemType.Redeemable:
 				case global::Kampai.Game.StoreItemType.SpecialEvent:
 				case global::Kampai.Game.StoreItemType.MasterPlanLeftOvers:
 				case global::Kampai.Game.StoreItemType.Connectable:

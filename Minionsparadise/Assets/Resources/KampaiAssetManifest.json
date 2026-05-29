@@ -48,7 +48,7 @@
   "GagAnimationButton": "Assets/Resources/GagAnimationButton.prefab",
   "IntroAnimationButton": "Assets/Resources/IntroAnimationButton.prefab",
   "JSSDKBindings": "Assets/Resources/JSSDKBindings.txt",
-  "KampaiAssetManifest": "Assets/Resources/KampaiAssetManifest.json",
+  "KampaiAssetManifest": "Assets/Resources/KampaiAssetManifest.bytes",
   "LoopAnimationButton": "Assets/Resources/LoopAnimationButton.prefab",
   "Manifest": "Assets/Resources/Manifest.json",
   "MarketPrices": "Assets/Resources/MarketPrices.json",

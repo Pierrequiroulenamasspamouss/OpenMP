@@ -388,6 +388,15 @@ namespace Kampai.UI.View
 		public void SetShouldBerendered(bool value)
 		{
 			shouldBeRendered = value;
+			if (value)
+			{
+				global::Kampai.UI.View.ItemListView itemListView = GetComponentInParent<global::Kampai.UI.View.ItemListView>();
+				if (itemListView != null && itemListView.currentType != storeItemDefinition.Type)
+				{
+					base.gameObject.SetActive(false);
+					return;
+				}
+			}
 			base.gameObject.SetActive(value);
 		}
 

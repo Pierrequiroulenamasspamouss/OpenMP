@@ -41,19 +41,34 @@ public class FetchDefinitionsCommand : global::strange.extensions.command.impl.C
 
 		if (userSessionService.IsOffline)
 		{
-			if (!global::System.IO.File.Exists(definitionPath))
+			string text = resourceService.LoadText("definitions");
+			if (string.IsNullOrEmpty(text)) text = resourceService.LoadText("definitions.json");
+			if (string.IsNullOrEmpty(text)) text = resourceService.LoadText("definitions_server");
+			if (string.IsNullOrEmpty(text)) text = resourceService.LoadText("definitions_server.json");
+			
+			if (string.IsNullOrEmpty(text))
 			{
-				
-				string text = resourceService.LoadText("definitions_server");
-				if (string.IsNullOrEmpty(text)) text = resourceService.LoadText("definitions_server.json");
-				
-				if (string.IsNullOrEmpty(text))
-				{
-					string rawPath = global::System.IO.Path.Combine(global::UnityEngine.Application.dataPath, "Resources/definitions_server.json");
-					if (global::System.IO.File.Exists(rawPath)) text = global::System.IO.File.ReadAllText(rawPath);
-				}
+				string rawPath = global::System.IO.Path.Combine(global::UnityEngine.Application.dataPath, "Resources/definitions.json");
+				if (global::System.IO.File.Exists(rawPath)) text = global::System.IO.File.ReadAllText(rawPath);
+			}
+			if (string.IsNullOrEmpty(text))
+			{
+				string rawPath = global::System.IO.Path.Combine(global::UnityEngine.Application.dataPath, "Resources/definitions_server.json");
+				if (global::System.IO.File.Exists(rawPath)) text = global::System.IO.File.ReadAllText(rawPath);
+			}
 
-				if (!string.IsNullOrEmpty(text))
+			if (!string.IsNullOrEmpty(text))
+			{
+				bool needsWrite = true;
+				if (global::System.IO.File.Exists(definitionPath))
+				{
+					string existingText = global::System.IO.File.ReadAllText(definitionPath);
+					if (existingText == text)
+					{
+						needsWrite = false;
+					}
+				}
+				if (needsWrite)
 				{
 					string directoryName = global::System.IO.Path.GetDirectoryName(definitionPath);
 					if (!global::System.IO.Directory.Exists(directoryName))
@@ -61,14 +76,12 @@ public class FetchDefinitionsCommand : global::strange.extensions.command.impl.C
 						global::System.IO.Directory.CreateDirectory(directoryName);
 					}
 					global::System.IO.File.WriteAllText(definitionPath, text);
-				}
-				else
-				{
-					logger.Error("[OfflineMode] FAILED to load definitions from resources 'definitions_server'!");
+					logger.Info("[OfflineMode] Updated definitions.json from Resources.");
 				}
 			}
 			else
 			{
+				logger.Error("[OfflineMode] FAILED to load definitions from resources!");
 			}
 			definitionsFetchedSignal.Dispatch();
 			LoadDefinitionsCommand.LoadDefinitionsData loadDefinitionsData = new LoadDefinitionsCommand.LoadDefinitionsData();

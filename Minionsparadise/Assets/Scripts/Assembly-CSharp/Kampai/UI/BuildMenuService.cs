@@ -333,15 +333,29 @@ namespace Kampai.UI
 				if (localState.UncheckedInventoryItemOnTabs[type].ContainsKey(buildingDefinitionID))
 				{
 					localState.UncheckedInventoryItemOnTabs[type].Remove(buildingDefinitionID);
-					if (localState.UncheckedInventoryItemOnTabs[type].Count == 0)
+					int count = localState.UncheckedInventoryItemOnTabs[type].Count;
+					if (count == 0)
 					{
 						localState.UncheckedInventoryItemOnTabs.Remove(type);
 					}
+					setBadgeForTabSignal.Dispatch(type, count);
 				}
 				else
 				{
 					logger.Warning("Unchecked list doesn't contain this item {0}", buildingDefinitionID);
 				}
+				int num = 0;
+				foreach (global::System.Collections.Generic.KeyValuePair<global::Kampai.Game.StoreItemType, global::System.Collections.Generic.IDictionary<int, bool>> uncheckedInventoryItemOnTab in localState.UncheckedInventoryItemOnTabs)
+				{
+					foreach (global::System.Collections.Generic.KeyValuePair<int, bool> item in uncheckedInventoryItemOnTab.Value)
+					{
+						if (!item.Value)
+						{
+							num++;
+						}
+					}
+				}
+				setInventoryCountForBuildMenuSignal.Dispatch(num);
 				PersistLocalState();
 			}
 			else

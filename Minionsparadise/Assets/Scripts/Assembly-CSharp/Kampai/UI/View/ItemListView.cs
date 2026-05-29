@@ -16,7 +16,7 @@ namespace Kampai.UI.View
 
 		private float itemPadding;
 
-		private global::Kampai.Game.StoreItemType currentType;
+		internal global::Kampai.Game.StoreItemType currentType;
 
 		private global::UnityEngine.Animator animator;
 
@@ -134,9 +134,9 @@ namespace Kampai.UI.View
 				return;
 			}
 
-			if (buttonViews.ContainsKey(currentType))
+			foreach (global::System.Collections.Generic.KeyValuePair<global::Kampai.Game.StoreItemType, global::System.Collections.Generic.List<global::Kampai.UI.View.StoreButtonView>> kvp in buttonViews)
 			{
-				foreach (global::Kampai.UI.View.StoreButtonView item2 in buttonViews[currentType])
+				foreach (global::Kampai.UI.View.StoreButtonView item2 in kvp.Value)
 				{
 					item2.gameObject.SetActive(false);
 				}

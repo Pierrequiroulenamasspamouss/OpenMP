@@ -2,7 +2,9 @@ namespace Kampai.UI.View
 {
 	public class OfflineMediator : global::strange.extensions.mediation.impl.Mediator
 	{
-		private global::UnityEngine.UI.Button button;
+		private global::System.Collections.Generic.List<global::UnityEngine.UI.Button> retryButtons = new global::System.Collections.Generic.List<global::UnityEngine.UI.Button>();
+		private global::System.Collections.Generic.List<global::Kampai.UI.View.ButtonView> retryButtonViews = new global::System.Collections.Generic.List<global::Kampai.UI.View.ButtonView>();
+		private global::System.Collections.Generic.List<global::Kampai.UI.View.ButtonView> playOfflineButtonViews = new global::System.Collections.Generic.List<global::Kampai.UI.View.ButtonView>();
 
 		[Inject]
 		public global::Kampai.UI.View.OfflineView view { get; set; }
@@ -30,38 +32,86 @@ namespace Kampai.UI.View
 
 		public override void OnRegister()
 		{
-			view.retryButton.ClickedSignal.AddListener(OnRetry);
-			
-			// Resolve the playOfflineButton instance to ensure we are listening to the correct one
-			// We iterate over children to find the button named "btn_playOffline" that is actually active or preferred
+			retryButtons.Clear();
+			retryButtonViews.Clear();
+			playOfflineButtonViews.Clear();
+
+			// Toggle panels to show 2-button layout (panel_CTA_2up) and hide 1-button layout (panel_CTA_1up)
+			// to prevent the buttons from being overlayed on top of each other.
+			foreach (global::UnityEngine.Transform child in view.GetComponentsInChildren<global::UnityEngine.Transform>(true))
+			{
+				if (child.name == "panel_CTA_1up")
+				{
+					child.gameObject.SetActive(false);
+				}
+				else if (child.name == "panel_CTA_2up")
+				{
+					child.gameObject.SetActive(true);
+				}
+			}
+
 			foreach (global::Kampai.UI.View.ButtonView b in view.GetComponentsInChildren<global::Kampai.UI.View.ButtonView>(true))
 			{
-				if (b.name == "btn_playOffline")
+				bool isRetry = false;
+				bool isPlayOffline = false;
+
+				if (b.transform.parent != null)
 				{
-					view.playOfflineButton = b;
-					break;
+					string parentName = b.transform.parent.name;
+					if (parentName == "panel_CTA_1up")
+					{
+						if (b.name == "btn_01") isRetry = true;
+						else if (b.name == "btn_playOffline") isPlayOffline = true;
+					}
+					else if (parentName == "panel_CTA_2up")
+					{
+						if (b.name == "btn_01") isRetry = true;
+						else if (b.name == "btn_02") isPlayOffline = true;
+					}
+				}
+
+				if (isRetry)
+				{
+					b.ClickedSignal.AddListener(OnRetry);
+					retryButtonViews.Add(b);
+					global::UnityEngine.UI.Button uiBtn = b.GetComponent<global::UnityEngine.UI.Button>();
+					if (uiBtn != null)
+					{
+						retryButtons.Add(uiBtn);
+					}
+					global::UnityEngine.UI.Text txt = b.GetComponentInChildren<global::UnityEngine.UI.Text>(true);
+					if (txt != null)
+					{
+						txt.text = locService.GetString("OfflineRetry");
+					}
+				}
+				else if (isPlayOffline)
+				{
+					b.ClickedSignal.AddListener(OnPlayOffline);
+					playOfflineButtonViews.Add(b);
+					global::UnityEngine.UI.Text txt = b.GetComponentInChildren<global::UnityEngine.UI.Text>(true);
+					if (txt != null)
+					{
+						txt.text = locService.GetString("OfflinePlayOffline");
+					}
 				}
 			}
 
 			view.title.text = locService.GetString("OfflineTitle");
 			view.description.text = locService.GetString("OfflineDescription");
-			view.retryButtonText.text = locService.GetString("OfflineRetry");
 			
-			if (view.playOfflineButton != null)
+			if (view.retryButtonText != null)
 			{
-				// UnityEngine.Debug.Log(string.Format("[OfflineMod[OfflineMode]] OfflineMediator: Linked to playOfflineButton (Hash: {0}, Name: {1})", view.playOfflineButton.GetHashCode(), view.playOfflineButton.name));
-				view.playOfflineButton.ClickedSignal.AddListener(OnPlayOffline);
+				view.retryButtonText.text = locService.GetString("OfflineRetry");
+			}
+			if (view.playOfflineButtonText != null)
+			{
 				view.playOfflineButtonText.text = locService.GetString("OfflinePlayOffline");
 			}
-			else
-			{
-				// UnityEngine.Debug.LogError("[OfflineMode] OfflineMediator: Could not find btn_playOffline in children!");
-			}
-			
+
 			view.OnMenuClose.AddListener(OnMenuClose);
 			view.Init();
 			view.Open();
-			button = view.retryButton.GetComponent<global::UnityEngine.UI.Button>();
 			openSignal.Dispatch();
 		}
 
@@ -69,13 +119,19 @@ namespace Kampai.UI.View
 		{
 			if (view != null)
 			{
-				if (view.retryButton != null && view.retryButton.ClickedSignal != null)
+				foreach (global::Kampai.UI.View.ButtonView b in retryButtonViews)
 				{
-					view.retryButton.ClickedSignal.RemoveListener(OnRetry);
+					if (b != null && b.ClickedSignal != null)
+					{
+						b.ClickedSignal.RemoveListener(OnRetry);
+					}
 				}
-				if (view.playOfflineButton != null && view.playOfflineButton.ClickedSignal != null)
+				foreach (global::Kampai.UI.View.ButtonView b in playOfflineButtonViews)
 				{
-					view.playOfflineButton.ClickedSignal.RemoveListener(OnPlayOffline);
+					if (b != null && b.ClickedSignal != null)
+					{
+						b.ClickedSignal.RemoveListener(OnPlayOffline);
+					}
 				}
 				view.OnMenuClose.RemoveListener(OnMenuClose);
 			}
@@ -87,7 +143,13 @@ namespace Kampai.UI.View
 
 		private void OnRetry()
 		{
-			button.interactable = false;
+			foreach (global::UnityEngine.UI.Button btn in retryButtons)
+			{
+				if (btn != null)
+				{
+					btn.interactable = false;
+				}
+			}
 			StartCoroutine(WaitForRetry());
 			networkModel.isConnectionLost = !global::Kampai.Util.NetworkUtil.IsConnected();
 			if (!networkModel.isConnectionLost)
@@ -105,9 +167,12 @@ namespace Kampai.UI.View
 		private global::System.Collections.IEnumerator WaitForRetry()
 		{
 			yield return new global::UnityEngine.WaitForSeconds(2f);
-			if (view.retryButton != null)
+			foreach (global::UnityEngine.UI.Button btn in retryButtons)
 			{
-				button.interactable = true;
+				if (btn != null)
+				{
+					btn.interactable = true;
+				}
 			}
 		}
 

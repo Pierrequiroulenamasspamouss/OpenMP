@@ -1737,8 +1737,13 @@ namespace Kampai.Game
 
 		public int GetInventoryCountByDefinitionID(int defId)
 		{
-			int num = 0;
+			int capacity = GetUnlockedQuantityOfID(defId);
+			int boardCount = 0;
+			GetBuildingOnBoardCountMap().TryGetValue(defId, out boardCount);
+			int maxAllowedInventory = global::System.Math.Max(0, capacity - boardCount);
+
 			global::System.Collections.Generic.ICollection<global::Kampai.Game.Instance> byDefinitionId = GetByDefinitionId<global::Kampai.Game.Instance>(defId);
+			global::System.Collections.Generic.List<global::Kampai.Game.Instance> inventoryItems = new global::System.Collections.Generic.List<global::Kampai.Game.Instance>();
 			if (byDefinitionId.Count != 0)
 			{
 				foreach (global::Kampai.Game.Instance item in byDefinitionId)
@@ -1746,11 +1751,22 @@ namespace Kampai.Game
 					global::Kampai.Game.Building building = item as global::Kampai.Game.Building;
 					if (building != null && building.State == global::Kampai.Game.BuildingState.Inventory)
 					{
-						num++;
+						inventoryItems.Add(building);
 					}
 				}
 			}
-			return num;
+
+			if (capacity >= 0 && inventoryItems.Count > maxAllowedInventory)
+			{
+				int excessCount = inventoryItems.Count - maxAllowedInventory;
+				for (int i = 0; i < excessCount; i++)
+				{
+					Remove(inventoryItems[i]);
+				}
+				return maxAllowedInventory;
+			}
+
+			return inventoryItems.Count;
 		}
 
 		public bool CheckIfBuildingIsCapped(int defID)
