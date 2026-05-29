@@ -4,29 +4,14 @@ namespace Kampai.Download.View
 	{
 		private bool canShowSettings;
 
-		[Inject]
-		public global::Kampai.Splash.View.NoWiFiView view { get; set; }
-
-		[Inject]
-		public global::Kampai.Splash.DLCModel dlcModel { get; set; }
-
-		[Inject]
-		public global::Kampai.Splash.ShowNoWiFiPanelSignal showNoWiFiPanelSignal { get; set; }
-
-		[Inject]
-		public global::Kampai.Common.NetworkTypeChangedSignal networkTypeChangedSignal { get; set; }
-
-		[Inject]
-		public global::Kampai.Common.NetworkModel networkModel { get; set; }
-
-		[Inject]
-		public global::Kampai.Common.NetworkConnectionLostSignal networkConnectionLostSignal { get; set; }
-
-		[Inject]
-		public global::Kampai.UI.View.ShowOfflinePopupSignal showOfflinePopupSignal { get; set; }
-
-		[Inject]
-		public global::Kampai.Common.ResumeNetworkOperationSignal resumeNetworkOperationSignal { get; set; }
+		[Inject] public global::Kampai.Splash.View.NoWiFiView                  view                         { get; set; }
+		[Inject] public global::Kampai.Splash.DLCModel                         dlcModel                     { get; set; }
+		[Inject] public global::Kampai.Splash.ShowNoWiFiPanelSignal            showNoWiFiPanelSignal        { get; set; }
+		[Inject] public global::Kampai.Common.NetworkTypeChangedSignal         networkTypeChangedSignal     { get; set; }
+		[Inject] public global::Kampai.Common.NetworkModel                     networkModel                 { get; set; }
+		[Inject] public global::Kampai.Common.NetworkConnectionLostSignal      networkConnectionLostSignal  { get; set; }
+		[Inject] public global::Kampai.UI.View.ShowOfflinePopupSignal          showOfflinePopupSignal       { get; set; }
+		[Inject] public global::Kampai.Common.ResumeNetworkOperationSignal     resumeNetworkOperationSignal { get; set; }
 
 		public override void OnRegister()
 		{
@@ -108,7 +93,11 @@ namespace Kampai.Download.View
 
 		private void ContinueButton()
 		{
-			Close();
+			if (networkModel.isConnectionLost || !networkModel.isConnected)
+			{
+				resumeNetworkOperationSignal.Dispatch();
+			}
+			showNoWiFiPanelSignal.Dispatch(false);
 		}
 
 		private void SettingsButton()
@@ -118,7 +107,7 @@ namespace Kampai.Download.View
 
 		private void ExitButton()
 		{
-			global::UnityEngine.Application.Quit();
+			showNoWiFiPanelSignal.Dispatch(false);
 		}
 
 		private void Close()
