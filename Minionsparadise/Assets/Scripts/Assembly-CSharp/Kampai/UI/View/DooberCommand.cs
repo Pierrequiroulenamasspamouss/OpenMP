@@ -15,6 +15,9 @@ namespace Kampai.UI.View
 		[Inject(global::Kampai.UI.View.UIElement.CAMERA)]
 		public global::UnityEngine.Camera UICamera { get; set; }
 
+		[Inject(global::Kampai.Main.MainElement.CAMERA, optional = true)]
+		public global::UnityEngine.Camera MainCamera { get; set; }
+
 		[Inject]
 		public global::Kampai.UI.View.SetXPSignal setXPSignal { get; set; }
 
@@ -234,7 +237,21 @@ namespace Kampai.UI.View
 
 		protected global::UnityEngine.Vector2 GetScreenStartPosition()
 		{
-			global::UnityEngine.Vector2 vector = ((iconPosition == global::UnityEngine.Vector3.zero) ? ((global::UnityEngine.Vector2)UICamera.ViewportToWorldPoint(dooberModel.defaultDooberSpawnLocation)) : ((!fromWorldCanvas) ? ((global::UnityEngine.Vector2)iconPosition) : ((global::UnityEngine.Vector2)global::UnityEngine.Camera.main.WorldToScreenPoint(iconPosition))));
+			global::UnityEngine.Camera cam = MainCamera;
+			if (cam == null)
+			{
+				cam = global::UnityEngine.Camera.main;
+			}
+			global::UnityEngine.Vector3 screenPos;
+			if (cam != null)
+			{
+				screenPos = cam.WorldToScreenPoint(iconPosition);
+			}
+			else
+			{
+				screenPos = new global::UnityEngine.Vector3((float)global::UnityEngine.Screen.width * 0.5f, (float)global::UnityEngine.Screen.height * 0.5f, 0f);
+			}
+			global::UnityEngine.Vector2 vector = ((iconPosition == global::UnityEngine.Vector3.zero) ? ((global::UnityEngine.Vector2)UICamera.ViewportToWorldPoint(dooberModel.defaultDooberSpawnLocation)) : ((!fromWorldCanvas) ? ((global::UnityEngine.Vector2)iconPosition) : ((global::UnityEngine.Vector2)screenPos)));
 			return vector / UIUtils.GetHeightScale();
 		}
 

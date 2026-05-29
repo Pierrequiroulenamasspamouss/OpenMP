@@ -21,7 +21,7 @@ namespace Kampai.Game
 			base.injectionBinder.Bind<global::UnityEngine.GameObject>().ToValue(gameObject).ToName(global::Kampai.Main.MainElement.AUDIO_LISTENER)
 				.CrossContext();
 			gameObject.transform.parent = contextView.transform;
-			gameObject.gameObject.AddComponent<FMOD_Listener>();
+			gameObject.gameObject.AddComponent<global::FMODUnity.StudioListener>();
 			global::UnityEngine.GameObject gameObject2 = global::FMOD_StudioSystem.instance.gameObject;
 			gameObject2.transform.parent = managers.transform;
 			global::UnityEngine.GameObject gameObject3 = new global::UnityEngine.GameObject("EnvironmentAudioManager");

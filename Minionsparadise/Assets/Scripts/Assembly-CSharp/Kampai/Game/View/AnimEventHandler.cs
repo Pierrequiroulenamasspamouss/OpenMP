@@ -95,11 +95,20 @@ namespace Kampai.Game.View
 
 		public virtual void OnPlayAudio(global::UnityEngine.AnimationEvent animationEvent)
 		{
+			string stringParameter = animationEvent.stringParameter;
+			if (stringParameter != null)
+			{
+				string[] tempArray = stringParameter.Split(new char[1] { '|' }, global::System.StringSplitOptions.RemoveEmptyEntries);
+				if (tempArray.Length > 0 && minionStateEvents.Contains(tempArray[0]))
+				{
+					//UnityEngine.Debug.Log(string.Format("[AnimEventHandler] OnPlayAudio (MinionState Event): event={0}, mute={1}, gameObject={2}", tempArray[0], mute, base.gameObject.name));
+				}
+			}
+
 			if (mute)
 			{
 				return;
 			}
-			string stringParameter = animationEvent.stringParameter;
 			if (stringParameter == null)
 			{
 				return;

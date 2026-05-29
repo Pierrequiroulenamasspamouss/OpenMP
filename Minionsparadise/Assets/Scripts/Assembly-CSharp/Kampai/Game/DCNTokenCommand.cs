@@ -13,9 +13,16 @@ namespace Kampai.Game
 		[Inject]
 		public global::Ea.Sharkbite.HttpPlugin.Http.Api.IRequestFactory requestFactory { get; set; }
 
+		[Inject]
+		public global::Kampai.Game.IUserSessionService userSessionService { get; set; }
+
 		public override void Execute()
 		{
-			if (configurationService.isKillSwitchOn(global::Kampai.Game.KillSwitch.DCN))
+			if (userSessionService.IsOffline)
+			{
+				logger.Info("DCN disabled because client is in offline mode");
+			}
+			else if (configurationService.isKillSwitchOn(global::Kampai.Game.KillSwitch.DCN))
 			{
 				logger.Info("DCN disabled by killswitch");
 			}
@@ -45,7 +52,7 @@ namespace Kampai.Game
 			}
 			else if (!response.Success)
 			{
-				logger.Log(global::Kampai.Util.KampaiLogLevel.Error, string.Format("DCNTokenCommand failed with response code: {0}", response.Code));
+				logger.Log(global::Kampai.Util.KampaiLogLevel.Warning, string.Format("DCNTokenCommand failed with response code: {0}", response.Code));
 			}
 			else
 			{

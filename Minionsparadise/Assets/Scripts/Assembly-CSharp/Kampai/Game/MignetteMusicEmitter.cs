@@ -80,7 +80,7 @@ namespace Kampai.Game
 					ERRCHECK(eventInstance.stop(global::FMOD.Studio.STOP_MODE.IMMEDIATE));
 				}
 				ERRCHECK(eventInstance.release());
-				eventInstance = default;
+				eventInstance = default(global::FMOD.Studio.EventInstance);
 			}
 		}
 

@@ -40,7 +40,7 @@ namespace Kampai.Game
 					if (customFMOD_StudioEventEmitter.evt.isValid())
 					{
 						customFMOD_StudioEventEmitter.evt.release();
-						customFMOD_StudioEventEmitter.evt = default;
+						customFMOD_StudioEventEmitter.evt = default(global::FMOD.Studio.EventInstance);
 					}
 					customFMOD_StudioEventEmitter.path = fmodService.GetGuid(audioSource);
 				}

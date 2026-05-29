@@ -218,7 +218,16 @@ namespace Kampai.UI.View
 			global::UnityEngine.GameObject instance = gameContext.injectionBinder.GetInstance<global::UnityEngine.GameObject>(global::Kampai.Game.GameElement.BUILDING_MANAGER);
 			global::Kampai.Game.View.BuildingManagerView component = instance.GetComponent<global::Kampai.Game.View.BuildingManagerView>();
 			global::Kampai.Game.View.BuildingObject buildingObject = component.GetBuildingObject(buildingInstanceId);
-			return global::UnityEngine.Camera.main.WorldToViewportPoint(buildingObject.transform.position);
+			global::UnityEngine.Camera cam = MainCamera;
+			if (cam == null)
+			{
+				cam = global::UnityEngine.Camera.main;
+			}
+			if (cam != null)
+			{
+				return cam.WorldToViewportPoint(buildingObject.transform.position);
+			}
+			return new global::UnityEngine.Vector3(0.5f, 0.5f, 0f);
 		}
 
 		private global::UnityEngine.Vector3 GetMiscGlassPosition()

@@ -25,10 +25,21 @@ public class LoadConfigurationsCommand : global::strange.extensions.command.impl
 	[Inject]
 	public IResourceService resourceService { get; set; }
 
+	[Inject]
+	public global::Kampai.Game.IDevicePrefsService devicePrefsService { get; set; }
+
 	public override void Execute()
 	{
+		global::Kampai.Util.StartupTimer.LogCheckpoint("LoadConfigurationsCommand.Execute");
 		logger.EventStart("LoadConfigurationsCommand.Execute");
 		logger.Info("Executing LoadConfigurationsCommand:{0}", init);
+
+		if (devicePrefsService != null && devicePrefsService.GetDevicePrefs() != null && devicePrefsService.GetDevicePrefs().OfflineMode_Pref)
+		{
+			logger.Info("[OfflineMode] Offline preference detected in device preferences at startup. Enabling offline mode.");
+			userSessionService.IsOffline = true;
+		}
+
 		global::Kampai.Util.TimeProfiler.StartSection("retrieve config");
 		string configURL = ConfigurationsService.GetConfigURL();
 		logger.Info("ClientConfigUrl: {0}", configURL);

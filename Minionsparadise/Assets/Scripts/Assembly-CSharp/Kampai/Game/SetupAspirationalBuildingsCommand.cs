@@ -25,22 +25,27 @@ namespace Kampai.Game
 			coroutineProgressMonitor.StartTask(Setup(), "setup aspirational");
 		}
 
-		private bool IsBuildingInInventory(global::Kampai.Game.AspirationalBuildingDefinition aspirationalDef)
+		private bool IsBuildingInInventory(global::Kampai.Game.AspirationalBuildingDefinition aspirationalDef, global::System.Collections.Generic.HashSet<string> existingBuildings)
 		{
-			global::System.Collections.Generic.ICollection<global::Kampai.Game.Building> byDefinitionId = playerService.GetByDefinitionId<global::Kampai.Game.Building>(aspirationalDef.BuildingDefinitionID);
-			foreach (global::Kampai.Game.Building item in byDefinitionId)
-			{
-				if (aspirationalDef.Location.x == item.Location.x && aspirationalDef.Location.y == item.Location.y)
-				{
-					return true;
-				}
-			}
-			return false;
+			string key = string.Format("{0}_{1}_{2}", aspirationalDef.BuildingDefinitionID, aspirationalDef.Location.x, aspirationalDef.Location.y);
+			return existingBuildings.Contains(key);
 		}
 
 		private global::System.Collections.IEnumerator Setup()
 		{
 			global::Kampai.Game.PurchasedLandExpansion purchasedLandExpansion = playerService.GetByInstanceId<global::Kampai.Game.PurchasedLandExpansion>(354);
+			
+			global::System.Collections.Generic.HashSet<string> existingBuildings = new global::System.Collections.Generic.HashSet<string>();
+			foreach (global::Kampai.Game.Building b in playerService.GetInstancesByType<global::Kampai.Game.Building>())
+			{
+				if (b != null && b.Definition != null && b.Location != null)
+				{
+					existingBuildings.Add(string.Format("{0}_{1}_{2}", b.Definition.ID, b.Location.x, b.Location.y));
+				}
+			}
+
+			global::System.Diagnostics.Stopwatch sw = global::System.Diagnostics.Stopwatch.StartNew();
+
 			foreach (int expansionId in landExpansionConfigService.GetExpansionIds())
 			{
 				if (purchasedLandExpansion.HasPurchased(expansionId))
@@ -52,21 +57,36 @@ namespace Kampai.Game
 				{
 					continue;
 				}
-				foreach (int aspirationalDefId in landExpansionConfigService.GetExpansionConfig(expansionId).containedAspirationalBuildings)
+				foreach (int aspirationalDefId in config.containedAspirationalBuildings)
 				{
 					global::Kampai.Game.AspirationalBuildingDefinition aspirationalDef = definitionService.Get<global::Kampai.Game.AspirationalBuildingDefinition>(aspirationalDefId);
-					if (!IsBuildingInInventory(aspirationalDef))
+					if (aspirationalDef != null && !IsBuildingInInventory(aspirationalDef, existingBuildings))
 					{
 						global::Kampai.Game.BuildingDefinition buildingDef = definitionService.Get<global::Kampai.Game.BuildingDefinition>(aspirationalDef.BuildingDefinitionID);
-						global::Kampai.Game.Building aspirationalBuilding = buildingDef.BuildBuilding();
-						aspirationalBuilding.Location = new global::Kampai.Game.Location(aspirationalDef.Location.x, aspirationalDef.Location.y);
-						aspirationalBuilding.SetState(global::Kampai.Game.BuildingState.Idle);
-						aspirationalBuilding.ID = -aspirationalDefId;
-						landExpansionService.TrackAspirationalBuilding(aspirationalDefId, aspirationalBuilding);
-						createInventoryBuildingSignal.Dispatch(aspirationalBuilding, aspirationalBuilding.Location);
+						if (buildingDef != null)
+						{
+							global::Kampai.Game.Building aspirationalBuilding = buildingDef.BuildBuilding();
+							aspirationalBuilding.Location = new global::Kampai.Game.Location(aspirationalDef.Location.x, aspirationalDef.Location.y);
+							aspirationalBuilding.SetState(global::Kampai.Game.BuildingState.Idle);
+							aspirationalBuilding.ID = -aspirationalDefId;
+							landExpansionService.TrackAspirationalBuilding(aspirationalDefId, aspirationalBuilding);
+							createInventoryBuildingSignal.Dispatch(aspirationalBuilding, aspirationalBuilding.Location);
+
+							if (sw.ElapsedMilliseconds > 15)
+							{
+								sw.Reset();
+								sw.Start();
+								yield return coroutineProgressMonitor.waitForNextFrame;
+							}
+						}
 					}
 				}
-				yield return null;
+				if (sw.ElapsedMilliseconds > 15)
+				{
+					sw.Reset();
+					sw.Start();
+					yield return coroutineProgressMonitor.waitForNextFrame;
+				}
 			}
 		}
 	}

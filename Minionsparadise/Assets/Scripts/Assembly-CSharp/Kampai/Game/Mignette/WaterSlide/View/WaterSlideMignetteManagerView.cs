@@ -332,7 +332,15 @@ namespace Kampai.Game.Mignette.WaterSlide.View
 		{
 			isGameOver = true;
 			spinnerViewObject.gameObject.SetActive(false);
-			Go.killAllTweensWithTarget(global::UnityEngine.Camera.main.transform);
+			global::UnityEngine.Camera cam = base.mignetteCamera;
+			if (cam == null)
+			{
+				cam = global::UnityEngine.Camera.main;
+			}
+			if (cam != null)
+			{
+				Go.killAllTweensWithTarget(cam.transform);
+			}
 			if (minionObject != null)
 			{
 				minionObject.EnableBlobShadow(true);

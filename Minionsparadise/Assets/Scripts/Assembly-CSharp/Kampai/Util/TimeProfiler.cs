@@ -339,7 +339,12 @@ namespace Kampai.Util
 					currentInstance.GetLastSection(false).mergeSubSection(sectionTime);
 				}
 				string message = string.Format("{0}<{1} in {2}. total {3} (frame {4})\n", GetTimeStamp(), lastSection.GetSectionName(), sectionTime.ToString(), currentInstance.totalAssetsLoadTime.ToString(), currentInstance.frameCounter.Frame);
-				currentInstance.Write(message);
+#if !UNITY_WEBPLAYER
+				if (currentInstance.stream != null)
+				{
+					currentInstance.stream.Write(message);
+				}
+#endif
 			}
 		}
 

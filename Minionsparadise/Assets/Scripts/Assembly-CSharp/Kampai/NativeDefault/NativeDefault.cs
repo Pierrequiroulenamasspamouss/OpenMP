@@ -60,7 +60,7 @@ namespace Kampai.Util
 
 		public uint GetMemoryUsage()
 		{
-			return (uint)global::UnityEngine.Profiling.Profiler.GetMonoUsedSizeLong();
+			return (uint)global::UnityEngine.Profiling.Profiler.usedHeapSize;
 		}
 
 		public void Crash() { }

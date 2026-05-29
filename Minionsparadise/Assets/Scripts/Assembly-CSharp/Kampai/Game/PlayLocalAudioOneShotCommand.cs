@@ -13,7 +13,7 @@ namespace Kampai.Game
 				if (emitter.evt.isValid())
 				{
 					emitter.evt.release();
-					emitter.evt = default;
+					emitter.evt = default(global::FMOD.Studio.EventInstance);
 				}
 			}
 			emitter.path = fmodService.GetGuid(audioClip);

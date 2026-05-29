@@ -39,18 +39,13 @@ namespace Kampai.Game
 			}
 		}
 
-		private static void SetField(object obj, string fieldName, object value)
-		{
-			global::System.Reflection.FieldInfo field = typeof(global::UnityEngine.Touch).GetField(fieldName, global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.NonPublic);
-			if (field == null && fieldName.StartsWith("m_"))
-			{
-				field = typeof(global::UnityEngine.Touch).GetField(fieldName.Substring(2).ToLower(), global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.NonPublic);
-			}
-			if (field != null)
-			{
-				field.SetValue(obj, value);
-			}
-		}
+		private static global::System.Reflection.FieldInfo m_FingerIdField = typeof(global::UnityEngine.Touch).GetField("m_FingerId", global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.NonPublic);
+
+		private static global::System.Reflection.FieldInfo m_PositionField = typeof(global::UnityEngine.Touch).GetField("m_Position", global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.NonPublic);
+
+		private static global::System.Reflection.FieldInfo m_PositionDeltaField = typeof(global::UnityEngine.Touch).GetField("m_PositionDelta", global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.NonPublic);
+
+		private static global::System.Reflection.FieldInfo m_PhaseField = typeof(global::UnityEngine.Touch).GetField("m_Phase", global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.NonPublic);
 
 #if UNITY_EDITOR || UNITY_STANDALONE
 		private static float editorZoomDistance = 200f;
@@ -60,11 +55,12 @@ namespace Kampai.Game
 
 		public static global::UnityEngine.Touch CreateTouch(int fingerId, global::UnityEngine.Vector2 position, global::UnityEngine.Vector2 deltaPosition, global::UnityEngine.TouchPhase phase)
 		{
-			object obj = default(global::UnityEngine.Touch);
-			SetField(obj, "m_FingerId", fingerId);
-			SetField(obj, "m_Position", position);
-			SetField(obj, "m_PositionDelta", deltaPosition);
-			SetField(obj, "m_Phase", phase);
+			global::UnityEngine.Touch touch = default(global::UnityEngine.Touch);
+			object obj = touch;
+			m_FingerIdField.SetValue(obj, fingerId);
+			m_PositionField.SetValue(obj, position);
+			m_PositionDeltaField.SetValue(obj, deltaPosition);
+			m_PhaseField.SetValue(obj, phase);
 			return (global::UnityEngine.Touch)obj;
 		}
 

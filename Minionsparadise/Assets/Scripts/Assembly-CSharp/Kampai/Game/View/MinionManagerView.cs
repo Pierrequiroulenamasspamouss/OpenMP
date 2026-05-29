@@ -166,6 +166,10 @@ namespace Kampai.Game.View
 		internal void playMinionAudio(int minionID, string audioEvent)
 		{
 			global::Kampai.Game.View.ActionableObject actionableObject = objects[minionID];
+			UnityEngine.Debug.Log(string.Format("[MinionManagerView] playMinionAudio: minionID={0}, audioEvent={1}, emitter={2}", 
+				minionID, 
+				audioEvent, 
+				(actionableObject != null && actionableObject.localAudioEmitter != null) ? actionableObject.localAudioEmitter.name : "null"));
 			playLocalAudio.Dispatch(actionableObject.localAudioEmitter, audioEvent, new global::System.Collections.Generic.Dictionary<string, float>());
 		}
 

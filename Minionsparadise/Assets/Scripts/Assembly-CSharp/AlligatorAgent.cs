@@ -119,11 +119,22 @@ public class AlligatorAgent : global::UnityEngine.MonoBehaviour
 		{
 			return;
 		}
-		if (introChompAnimationPlaying && (AlligatorAnimator.GetCurrentAnimatorStateInfo(0).IsName("ChompExit") || AlligatorAnimator.GetCurrentAnimatorStateInfo(0).IsName("Swimming")))
+		if (introChompAnimationPlaying)
 		{
-			StartAlligator();
-			introChompAnimationPlaying = false;
-			Invoke("OnStartGame", 0.5f);
+			var stateInfo = AlligatorAnimator.GetCurrentAnimatorStateInfo(0);
+			bool isChompExit = stateInfo.IsName("ChompExit");
+			bool isSwimming = stateInfo.IsName("Swimming");
+			bool isChomp = stateInfo.IsName("Chomp");
+			bool isSlowSwim = stateInfo.IsName("SlowSwim");
+			global::UnityEngine.Debug.Log(string.Format("[AlligatorAgent] Waiting for chomp exit - AnimatorEnabled={0}, StateHash={1}, IsChomp={2}, IsChompExit={3}, IsSwimming={4}, IsSlowSwim={5}, NormalizedTime={6:F2}",
+				AlligatorAnimator.enabled, stateInfo.fullPathHash, isChomp, isChompExit, isSwimming, isSlowSwim, stateInfo.normalizedTime));
+			if (isChompExit || isSwimming)
+			{
+				global::UnityEngine.Debug.Log("[AlligatorAgent] Chomp animation completed -> calling StartAlligator() + scheduling OnStartGame");
+				StartAlligator();
+				introChompAnimationPlaying = false;
+				Invoke("OnStartGame", 0.5f);
+			}
 		}
 		if (!gameOver)
 		{
@@ -153,11 +164,13 @@ public class AlligatorAgent : global::UnityEngine.MonoBehaviour
 
 	public void StartAlligator()
 	{
+		global::UnityEngine.Debug.Log("[AlligatorAgent] StartAlligator() called - enabling alligator position updates");
 		updateAlligatorPosition = true;
 	}
 
 	public void AttachMinionAndGo()
 	{
+		global::UnityEngine.Debug.Log("[AlligatorAgent] AttachMinionAndGo() called - enabling minion position updates");
 		minionAttachedToAlligator = true;
 		updateMinionPosition = true;
 		_ropeRenderer.enabled = true;
@@ -316,12 +329,14 @@ public class AlligatorAgent : global::UnityEngine.MonoBehaviour
 
 	public void OnStartGame()
 	{
+		global::UnityEngine.Debug.Log(string.Format("[AlligatorAgent] OnStartGame() called - AlligatorAnimator.enabled={0}, playing 'Swimming'", AlligatorAnimator.enabled));
 		AlligatorAnimator.Play(global::UnityEngine.Animator.StringToHash("Swimming"), 0);
 		StartGameViewCallback();
 	}
 
 	public void IntroPointArrived(AbstractGoTween tween)
 	{
+		global::UnityEngine.Debug.Log(string.Format("[AlligatorAgent] IntroPointArrived() - AlligatorAnimator.enabled={0}, playing 'Chomp', setting introChompAnimationPlaying=true", AlligatorAnimator.enabled));
 		AlligatorAnimator.Play(global::UnityEngine.Animator.StringToHash("Chomp"), 0);
 		View.PlayMinionPulledIn();
 		introChompAnimationPlaying = true;
@@ -329,6 +344,9 @@ public class AlligatorAgent : global::UnityEngine.MonoBehaviour
 
 	public void SwimToHam()
 	{
+		global::UnityEngine.Debug.Log(string.Format("[AlligatorAgent] SwimToHam() called - AlligatorAnimator={0}, enabled={1}, HamGO={2}, StartingHampoint={3}",
+			AlligatorAnimator != null, AlligatorAnimator != null ? AlligatorAnimator.enabled.ToString() : "N/A",
+			HamGO != null, Waypoints != null && Waypoints.StartingHampoint != null ? Waypoints.StartingHampoint.position.ToString() : "NULL"));
 		if (introTween != null && introTween.state == GoTweenState.Running)
 		{
 			Go.removeTween(introTween);
@@ -347,6 +365,7 @@ public class AlligatorAgent : global::UnityEngine.MonoBehaviour
 		goTweenConfig.onComplete(IntroPointArrived);
 		introTween = new GoTween(base.transform, 1f, goTweenConfig);
 		Go.addTween(introTween);
+		global::UnityEngine.Debug.Log("[AlligatorAgent] SwimToHam() - intro tween started, will call IntroPointArrived on complete");
 	}
 
 	public void OnAlligatorBiteHam()

@@ -52,16 +52,29 @@ public class DiscordController : MonoBehaviour
 
     private void OnEnable()
     {
-        Initialize();
+        if (!IsOfflineMode())
+            Initialize();
     }
 
     private void Start()
     {
-        Initialize();
+        if (!IsOfflineMode())
+            Initialize();
     }
 
     private void Update()
     {
+        if (IsOfflineMode())
+        {
+            if (initialized)
+            {
+                Shutdown();
+            }
+            return;
+        }
+
+        Initialize();
+
         if (!initialized || client == null)
             return;
 
@@ -87,8 +100,56 @@ public class DiscordController : MonoBehaviour
         Shutdown();
     }
 
+    private static Type userSessionServiceType;
+
+    private bool IsOfflineMode()
+    {
+        try
+        {
+            if (contextType == null)
+                contextType = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).FirstOrDefault(t => t.FullName == "strange.extensions.context.impl.Context");
+            if (contextType == null) return false;
+
+            var firstContextField = contextType.GetField("firstContext", BindingFlags.Public | BindingFlags.Static);
+            if (firstContextField == null) return false;
+
+            var firstContext = firstContextField.GetValue(null);
+            if (firstContext == null) return false;
+
+            var injectionBinderProp = firstContext.GetType().GetProperty("injectionBinder", BindingFlags.Public | BindingFlags.Instance);
+            if (injectionBinderProp == null) return false;
+
+            var injectionBinder = injectionBinderProp.GetValue(firstContext);
+            if (injectionBinder == null) return false;
+
+            if (userSessionServiceType == null)
+                userSessionServiceType = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).FirstOrDefault(t => t.FullName == "Kampai.Game.IUserSessionService");
+            if (userSessionServiceType == null) return false;
+
+            var getInstanceMethod = injectionBinder.GetType().GetMethod("GetInstance", new Type[] { typeof(Type) });
+            object userSessionService = null;
+            if (getInstanceMethod != null)
+            {
+                userSessionService = getInstanceMethod.Invoke(injectionBinder, new object[] { userSessionServiceType });
+            }
+            if (userSessionService == null) return false;
+
+            var isOfflineProp = userSessionServiceType.GetProperty("IsOffline");
+            if (isOfflineProp == null) return false;
+
+            return (bool)isOfflineProp.GetValue(userSessionService, null);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private void Initialize()
     {
+        if (IsOfflineMode())
+            return;
+
         if (initialized || client != null)
             return;
 
@@ -290,10 +351,22 @@ public class DiscordController : MonoBehaviour
         client.UpdateRichPresence(activity, OnUpdateRichPresence);
     }
 
+    private bool hasLoggedUpdateError = false;
+
     private void OnUpdateRichPresence(ClientResult result)
     {
         if (!result.Successful())
-            Debug.LogError("[DiscordController] Failed to update rich presence: " + result.Error());
+        {
+            if (!hasLoggedUpdateError)
+            {
+                Debug.LogWarning("[DiscordController] Failed to update rich presence: " + result.Error() + " (Only logged once to prevent spam)");
+                hasLoggedUpdateError = true;
+            }
+        }
+        else
+        {
+            hasLoggedUpdateError = false;
+        }
     }
 
     private void OnDiscordLog(string message, LoggingSeverity severity) { }
@@ -301,7 +374,7 @@ public class DiscordController : MonoBehaviour
     private void OnStatusChanged(Discord.Sdk.Client.Status status, Discord.Sdk.Client.Error error, int errorCode)
     {
         if (error != Discord.Sdk.Client.Error.None)
-            Debug.LogError("[DiscordController] Error: " + error + " (" + errorCode + ")");
+            Debug.LogWarning("[DiscordController] Error: " + error + " (" + errorCode + ")");
     }
 
     private bool IsDiscordRunning()

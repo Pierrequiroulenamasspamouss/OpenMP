@@ -45,9 +45,24 @@ namespace Kampai.Util.AssetEditor
             
             string manifestPath = Path.Combine(resourcesPath, "KampaiAssetManifest.json");
             File.WriteAllText(manifestPath, json);
+
+            string binaryPath = Path.Combine(resourcesPath, "KampaiAssetManifest.bytes");
+            using (FileStream fs = new FileStream(binaryPath, FileMode.Create, FileAccess.Write))
+            {
+                using (BinaryWriter writer = new BinaryWriter(fs, System.Text.Encoding.UTF8))
+                {
+                    writer.Write(map.Count);
+                    foreach (KeyValuePair<string, string> kvp in map)
+                    {
+                        writer.Write(kvp.Key);
+                        writer.Write(kvp.Value ?? string.Empty);
+                    }
+                }
+            }
+
             AssetDatabase.Refresh();
 
-            Debug.Log("KampaiAssetManifest: Generated manifest with " + map.Count + " entries at " + manifestPath);
+            Debug.Log("KampaiAssetManifest: Generated JSON manifest at " + manifestPath + " and binary manifest with " + map.Count + " entries at " + binaryPath);
         }
 
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
