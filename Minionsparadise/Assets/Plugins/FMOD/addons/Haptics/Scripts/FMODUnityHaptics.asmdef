@@ -2,7 +2,8 @@
     "name": "FMODUnityHaptics",
     "references": [
         "FMODUnity",
-        "Unity.XR.OpenXR"
+        "Unity.XR.OpenXR",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

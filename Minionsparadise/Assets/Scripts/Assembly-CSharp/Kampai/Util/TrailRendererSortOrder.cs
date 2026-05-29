@@ -9,7 +9,8 @@ namespace Kampai.Util
 			global::UnityEngine.TrailRenderer component = base.gameObject.GetComponent<global::UnityEngine.TrailRenderer>();
 			if (component != null)
 			{
-				component.sortingOrder = SortingLayer;
+                component.Clear();
+                component.sortingOrder = SortingLayer;
 			}
 		}
 	}

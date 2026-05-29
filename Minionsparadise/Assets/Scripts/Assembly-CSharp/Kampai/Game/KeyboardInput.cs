@@ -1,3 +1,6 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
 namespace Kampai.Game
 {
 	public class KeyboardInput : global::Kampai.Game.IInput
@@ -28,13 +31,13 @@ namespace Kampai.Game
 		{
 			while (true)
 			{
-				bool currentState = global::UnityEngine.Input.GetMouseButton(0);
+				bool currentState = Mouse.current != null && Mouse.current.leftButton.isPressed;
 				int input = 0;
 				if (currentState)
 				{
 					input |= 1;
 				}
-				if (global::UnityEngine.Mathf.Abs(global::UnityEngine.Input.GetAxis("Mouse ScrollWheel")) > 0f)
+				if (Mouse.current != null && global::UnityEngine.Mathf.Abs(Mouse.current.scroll.ReadValue().y) > 0f)
 				{
 					input |= 2;
 				}
@@ -46,8 +49,10 @@ namespace Kampai.Game
 				{
 					pressed = false;
 				}
-				pickService.OnGameInput(global::UnityEngine.Input.mousePosition, input, pressed);
-				mignetteService.OnGameInput(global::UnityEngine.Input.mousePosition, input, pressed);
+				var mousePos = Mouse.current != null ? Mouse.current.position.ReadValue() : Vector2.zero;
+				var mousePosition = new global::UnityEngine.Vector3(mousePos.x, mousePos.y, 0f);
+				pickService.OnGameInput(mousePosition, input, pressed);
+				mignetteService.OnGameInput(mousePosition, input, pressed);
 				previousState = currentState;
 				yield return null;
 			}

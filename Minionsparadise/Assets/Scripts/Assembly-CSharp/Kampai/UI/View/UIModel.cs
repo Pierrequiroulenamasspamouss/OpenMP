@@ -53,7 +53,7 @@ namespace Kampai.UI.View
 
 		private void CheckAllowMultitouch()
 		{
-			global::UnityEngine.Input.multiTouchEnabled = !UIOpen || AllowMultiTouch;
+			Kampai.Input.InputCompat.MultiTouchEnabled = !UIOpen || AllowMultiTouch;
 		}
 
 		public void AddUI(int id, global::System.Action callback)

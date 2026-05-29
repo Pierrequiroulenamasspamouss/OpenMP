@@ -99,7 +99,7 @@ namespace Kampai.Game.View
 			if (minionObj != null)
 			{
 				global::Kampai.Game.MinionState newState = global::Kampai.Game.MinionState.Idle;
-				minionObj.ApplyRootMotion(false);
+				minionObj.ApplyRootMotion(true);
 				minionObj.EnableBlobShadow(true);
 				minionObj.SetAnimatorCullingMode(global::UnityEngine.AnimatorCullingMode.CullUpdateTransforms);
 				if (minionObj.GetCurrentAnimControllerName().Contains("Prop"))

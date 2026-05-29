@@ -45,7 +45,7 @@ namespace Kampai.Util
 			gameObject.transform.localEulerAngles = global::UnityEngine.Vector3.zero;
 			RebuildMinion(gameObject);
 			global::UnityEngine.Animator component = gameObject.GetComponent<global::UnityEngine.Animator>();
-			component.applyRootMotion = false;
+			component.applyRootMotion = true;
 			component.runtimeAnimatorController = global::Kampai.Util.KampaiResources.Load<global::UnityEngine.RuntimeAnimatorController>(animatorStateMachine);
 			component.cullingMode = global::UnityEngine.AnimatorCullingMode.CullUpdateTransforms;
 			global::UnityEngine.Transform pelvis = gameObject.transform.Find("minion:ROOT/minion:pelvis_jnt");

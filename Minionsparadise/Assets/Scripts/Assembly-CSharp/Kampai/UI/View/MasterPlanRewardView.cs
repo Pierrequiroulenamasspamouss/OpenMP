@@ -131,7 +131,7 @@ namespace Kampai.UI.View
 				global::Kampai.UI.View.MasterPlanCooldownRewardItemView component = gameObject.GetComponent<global::Kampai.UI.View.MasterPlanCooldownRewardItemView>();
 				component.SetCount(itemCount);
 				UIUtils.SetItemIcon(component.icon, itemDefinition);
-				gameObject.transform.SetParent(rewardsPanel);
+				gameObject.transform.SetParent(rewardsPanel, false);
 				gameObject.transform.localScale = global::UnityEngine.Vector3.one;
 				viewList.Add(component.gameObject);
 			}

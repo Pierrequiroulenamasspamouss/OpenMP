@@ -1,3 +1,5 @@
+using UnityEngine.InputSystem;
+
 namespace Kampai.Game.View
 {
 	public class KeyboardZoomView : global::Kampai.Game.View.ZoomView
@@ -6,7 +8,12 @@ namespace Kampai.Game.View
 
 		protected override bool IsInputDone()
 		{
-			if (global::UnityEngine.Mathf.Abs(global::UnityEngine.Input.GetAxis("Mouse ScrollWheel")) < 1E-07f)
+			float scroll = 0f;
+			if (Mouse.current != null)
+			{
+				scroll = Mouse.current.scroll.ReadValue().y;
+			}
+			if (global::UnityEngine.Mathf.Abs(scroll) < 1E-07f)
 			{
 				frameCount++;
 			}
@@ -29,7 +36,12 @@ namespace Kampai.Game.View
 			hitPosition = mouseRay.GetPoint(hitDistance);
 			global::UnityEngine.Vector3 v = base.transform.worldToLocalMatrix.MultiplyPoint3x4(hitPosition);
 			base.transform.localToWorldMatrix.MultiplyVector(v);
-			velocity = new global::UnityEngine.Vector3(0f, global::UnityEngine.Input.GetAxis("Mouse ScrollWheel") * 2000f, 0f);
+			float scroll = 0f;
+			if (Mouse.current != null)
+			{
+				scroll = Mouse.current.scroll.ReadValue().y;
+			}
+			velocity = new global::UnityEngine.Vector3(0f, scroll * 2000f, 0f);
 		}
 	}
 }

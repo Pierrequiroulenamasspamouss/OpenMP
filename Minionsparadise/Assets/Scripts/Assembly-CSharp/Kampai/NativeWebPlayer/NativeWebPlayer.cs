@@ -21,7 +21,7 @@ namespace Kampai.Util
 		}
 
 		public string BundleVersion { get { return "1.0.0"; } }
-		public string BundleIdentifier { get { return global::UnityEngine.Application.bundleIdentifier; } }
+		public string BundleIdentifier { get { return global::UnityEngine.Application.identifier; } }
 
 		public bool IsUserMusicPlaying()
 		{
@@ -51,7 +51,7 @@ namespace Kampai.Util
 
 		public uint GetMemoryUsage()
 		{
-			return global::UnityEngine.Profiler.usedHeapSize;
+			return (uint)global::UnityEngine.Profiling.Profiler.usedHeapSizeLong;
 		}
 
 		public void Crash() { }

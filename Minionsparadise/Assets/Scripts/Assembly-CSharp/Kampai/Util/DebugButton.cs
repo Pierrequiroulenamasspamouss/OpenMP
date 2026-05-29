@@ -1,3 +1,5 @@
+using UnityEngine.InputSystem;
+
 namespace Kampai.Util
 {
 	public class DebugButton : global::Kampai.Util.KampaiView
@@ -75,11 +77,12 @@ namespace Kampai.Util
 		private void Update()
 		{
 			bool pressed = false;
-			if (rightClickEnabled)
+			global::UnityEngine.Vector2 mousePos = default(global::UnityEngine.Vector2);
+			if (Mouse.current != null)
 			{
-				pressed = global::UnityEngine.Input.GetTouch(0).phase == global::UnityEngine.TouchPhase.Began;
+				mousePos = Mouse.current.position.ReadValue();
 			}
-			debugPickService.OnGameInput(global::UnityEngine.Input.mousePosition, 0, pressed);
+			debugPickService.OnGameInput(mousePos, 0, pressed);
 		}
 
 		private void OnToggleRightClick()

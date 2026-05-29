@@ -48,7 +48,7 @@ namespace Kampai.UI.View
 
 		public override void OnRegister()
 		{
-			global::UnityEngine.Input.multiTouchEnabled = false;
+			Kampai.Input.InputCompat.MultiTouchEnabled = false;
 			base.view.OnMenuClose.AddListener(OnMenuClose);
 			base.view.rushGOHCooldown_Callback.AddListener(RushGoHCooldown);
 			gohCardClickedSignal.AddListener(CharacterClicked);
@@ -57,7 +57,7 @@ namespace Kampai.UI.View
 
 		public override void OnRemove()
 		{
-			global::UnityEngine.Input.multiTouchEnabled = true;
+			Kampai.Input.InputCompat.MultiTouchEnabled = true;
 			toggleCharacterAudioSignal.Dispatch(true, null);
 			base.view.OnMenuClose.RemoveListener(OnMenuClose);
 			base.view.rushGOHCooldown_Callback.RemoveListener(RushGoHCooldown);
@@ -91,7 +91,7 @@ namespace Kampai.UI.View
 		private void Proceed()
 		{
 			soundFXSignal.Dispatch("Play_main_menu_close_01");
-			global::UnityEngine.Input.multiTouchEnabled = true;
+			Kampai.Input.InputCompat.MultiTouchEnabled = true;
 			base.view.Close();
 			StartMinionParty();
 		}

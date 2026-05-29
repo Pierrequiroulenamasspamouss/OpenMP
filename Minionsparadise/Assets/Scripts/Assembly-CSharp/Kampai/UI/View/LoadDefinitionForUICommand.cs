@@ -178,12 +178,12 @@ namespace Kampai.UI.View
 				if (isWhitelisted && buildMenuItems.ContainsKey(type))
 				{
 					string title = localService.GetString(LocaleForType(type));
-					if (!addedTitles.Contains(title) && !addedTypes.Contains(type))
-					{
+                    if (!addedTitles.Contains(title) && !addedTypes.Contains(type))
+                    {
 						addTabSignal.Dispatch(new global::Kampai.UI.View.StoreTab(title, type));
 						addedTitles.Add(title);
-						addedTypes.Add(type);
-					}
+                        addedTypes.Add(type);
+                    }
 				}
 			}
 

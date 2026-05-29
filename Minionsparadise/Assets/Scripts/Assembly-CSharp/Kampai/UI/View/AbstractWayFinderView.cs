@@ -120,6 +120,24 @@ namespace Kampai.UI.View
 			InitSubView();
 		}
 
+		protected override void OnHide()
+		{
+			base.OnHide();
+			if (m_Animator != null)
+			{
+				m_Animator.enabled = false;
+			}
+		}
+
+		protected override void OnShow()
+		{
+			base.OnShow();
+			if (m_Animator != null)
+			{
+				m_Animator.enabled = true;
+			}
+		}
+
 		protected virtual void InitSubView()
 		{
 		}

@@ -43,7 +43,6 @@ namespace Kampai.UI.View
 
 		public override void OnRegister()
 		{
-			global::UnityEngine.Debug.Log("<color=magenta>[MARKETPLACE TRACE] SellPanelMediator.OnRegister() CALLED</color>");
 			base.view.Init();
 			base.view.OnOpenPanelSignal.AddListener(OnOpen);
 			loginSuccess.AddListener(RefreshSlotsAfterLogin);
@@ -75,7 +74,6 @@ namespace Kampai.UI.View
 
 		private void Open(bool isInstant)
 		{
-			global::UnityEngine.Debug.Log(string.Format("<color=magenta>[MARKETPLACE TRACE] SellPanelMediator.Open() CALLED, isInstant={0}</color>", isInstant));
 			if (facebookService.isLoggedIn || marketplaceService.DebugFacebook)
 			{
 				updateSaleOrderSignal.Dispatch();
@@ -91,13 +89,10 @@ namespace Kampai.UI.View
 		{
 			base.view.ScrollView.ClearItems();
 			global::System.Collections.Generic.List<global::Kampai.Game.MarketplaceSaleSlot> instancesByType = playerService.GetInstancesByType<global::Kampai.Game.MarketplaceSaleSlot>();
-			int slotCount = (instancesByType != null) ? instancesByType.Count : -1;
-			global::UnityEngine.Debug.Log(string.Format("<color=magenta>[MARKETPLACE TRACE] SellPanelMediator.RefreshSlots: saleSlotCount={0}</color>", slotCount));
 			instancesByType.Sort();
 			if (instancesByType != null)
 			{
 				base.view.ScrollView.AddList(instancesByType, CreateSlotView, (global::Kampai.Game.MarketplaceSaleSlot slot) => !base.view.HasSlot(slot) && marketplaceService.IsSlotVisible(slot), false);
-				global::UnityEngine.Debug.Log(string.Format("<color=magenta>[MARKETPLACE TRACE] SellPanelMediator.RefreshSlots: After AddList, scrollView items={0}</color>", base.view.ScrollView.ItemViewList.Count));
 			}
 		}
 

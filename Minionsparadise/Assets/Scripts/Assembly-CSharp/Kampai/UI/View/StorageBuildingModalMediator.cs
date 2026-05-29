@@ -104,7 +104,6 @@ namespace Kampai.UI.View
 
 		public override void OnRegister()
 		{
-			global::UnityEngine.Debug.Log("<color=cyan>[MARKETPLACE TRACE] StorageBuildingModalMediator.OnRegister() CALLED</color>");
 			base.OnRegister();
 			base.view.Init();
 			base.view.UpgradeButtonView.ClickedSignal.AddListener(UpgradeButtonClicked);
@@ -118,24 +117,14 @@ namespace Kampai.UI.View
 			closeAllMenuSignal.AddListener(CloseDialog);
 			rushDialogPurchaseHelper.actionSuccessfulSignal.AddListener(OnTransactionSuccess);
 			marketplaceUnlocked = marketplaceService.IsUnlocked();
-			global::UnityEngine.Debug.Log(string.Format("<color=cyan>[MARKETPLACE TRACE] StorageBuildingModalMediator: marketplaceUnlocked={0}</color>", marketplaceUnlocked));
 			UpdateSellButton();
 			base.view.InfoLabel.gameObject.SetActive(!marketplaceUnlocked);
 			if (!marketplaceUnlocked)
 			{
 				global::Kampai.Game.MarketplaceDefinition marketplaceDefinition = definitionService.Get<global::Kampai.Game.MarketplaceDefinition>();
-				if (marketplaceDefinition != null)
-				{
-					global::UnityEngine.Debug.Log(string.Format("<color=cyan>[MARKETPLACE TRACE] StorageBuildingModalMediator: LevelGate={0}, PlayerLevel={1}</color>", marketplaceDefinition.LevelGate, playerService.GetQuantity(global::Kampai.Game.StaticItem.LEVEL_ID)));
-					base.view.InfoLabel.text = localService.GetString("MarketplaceUnlock", marketplaceDefinition.LevelGate);
-				}
-				else
-				{
-					global::UnityEngine.Debug.LogError("<color=red>[MARKETPLACE TRACE] StorageBuildingModalMediator: MarketplaceDefinition is NULL!</color>");
-				}
+				base.view.InfoLabel.text = localService.GetString("MarketplaceUnlock", marketplaceDefinition.LevelGate);
 			}
 			global::Kampai.Game.StorageBuilding firstInstanceByDefinitionId = playerService.GetFirstInstanceByDefinitionId<global::Kampai.Game.StorageBuilding>(3018);
-			global::UnityEngine.Debug.Log(string.Format("<color=cyan>[MARKETPLACE TRACE] StorageBuildingModalMediator: StorageBuilding(3018)={0}</color>", firstInstanceByDefinitionId != null ? "found" : "NULL"));
 			if (firstInstanceByDefinitionId != null)
 			{
 				firstInstanceByDefinitionId.MenuOpened = true;
@@ -168,12 +157,10 @@ namespace Kampai.UI.View
 
 		public override void Initialize(global::Kampai.UI.View.GUIArguments args)
 		{
-			global::UnityEngine.Debug.Log(string.Format("<color=cyan>[MARKETPLACE TRACE] StorageBuildingModalMediator.Initialize() CALLED, marketplaceUnlocked={0}</color>", marketplaceUnlocked));
 			global::Kampai.Game.StorageBuilding building = args.Get<global::Kampai.Game.StorageBuilding>();
 			soundFXSignal.Dispatch("Play_menu_popUp_01");
 			CheckToGenerateBuyItems();
 			currentMode = args.Get<global::Kampai.UI.View.StorageBuildingModalTypes>();
-			global::UnityEngine.Debug.Log(string.Format("<color=cyan>[MARKETPLACE TRACE] StorageBuildingModalMediator.Initialize() currentMode={0}</color>", currentMode));
 			switch (currentMode)
 			{
 			case global::Kampai.UI.View.StorageBuildingModalTypes.STORAGE:
@@ -193,11 +180,8 @@ namespace Kampai.UI.View
 		private void CheckToGenerateBuyItems()
 		{
 			global::System.Collections.Generic.List<global::Kampai.Game.MarketplaceBuyItem> instancesByType = playerService.GetInstancesByType<global::Kampai.Game.MarketplaceBuyItem>();
-			int count = (instancesByType != null) ? instancesByType.Count : -1;
-			global::UnityEngine.Debug.Log(string.Format("<color=cyan>[MARKETPLACE TRACE] CheckToGenerateBuyItems: marketplaceUnlocked={0}, buyItemCount={1}</color>", marketplaceUnlocked, count));
 			if (marketplaceUnlocked && instancesByType != null && instancesByType.Count == 0)
 			{
-				global::UnityEngine.Debug.Log("<color=cyan>[MARKETPLACE TRACE] CheckToGenerateBuyItems: Dispatching generateBuyItemsSignal</color>");
 				generateBuyItemsSignal.Dispatch();
 			}
 		}
@@ -318,25 +302,15 @@ namespace Kampai.UI.View
 
 		private void OpenSellPanel(bool isInstant = false)
 		{
-			global::UnityEngine.Debug.Log(string.Format("<color=lime>[MARKETPLACE TRACE] OpenSellPanel() CALLED, isInstant={0}, SellPanel={1}, SellGrayImage.activeSelf={2}</color>", isInstant, base.view.SellPanel != null ? "exists" : "NULL", base.view.SellGrayImage != null ? base.view.SellGrayImage.gameObject.activeSelf.ToString() : "N/A"));
 			if (base.view.SellPanel == null)
 			{
 				if (base.view.SellGrayImage.gameObject.activeSelf)
 				{
-					global::UnityEngine.Debug.Log("<color=yellow>[MARKETPLACE TRACE] OpenSellPanel: SellGrayImage is active - panel is LOCKED</color>");
 					OnMarketplaceDisableClicked();
 					return;
 				}
-				global::UnityEngine.Debug.Log("<color=lime>[MARKETPLACE TRACE] OpenSellPanel: Loading Sell marketplace panel prefab...</color>");
 				base.view.LoadSellMarketplacePanel();
 			}
-			StartCoroutine(OpenSellPanelCoroutine(isInstant));
-		}
-
-		private global::System.Collections.IEnumerator OpenSellPanelCoroutine(bool isInstant)
-		{
-			yield return null;
-
 			if (base.view.BuyPanel != null && base.view.BuyPanel.IsOpen)
 			{
 				base.view.BuyPanel.SetOpen(false);
@@ -348,18 +322,12 @@ namespace Kampai.UI.View
 				LoadItems(firstInstanceByDefinitionId);
 			}
 			StartCoroutine(EnableItemDescriptionPopupDelay());
-
 			if (base.view.SellPanel != null)
 			{
-				global::UnityEngine.Debug.Log("<color=lime>[MARKETPLACE TRACE] OpenSellPanel: Dispatching openSalePanelSignal</color>");
 				openSalePanelSignal.Dispatch(isInstant);
 				base.view.SellButtonView.gameObject.SetActive(false);
 				base.view.RearrangeItemView();
 				CheckForMarketplaceSurfacing();
-			}
-			else
-			{
-				global::UnityEngine.Debug.LogError("<color=red>[MARKETPLACE TRACE] OpenSellPanel: SellPanel is NULL after loading attempt!</color>");
 			}
 			selectStorageBuildingItemSignal.Dispatch(0);
 		}
@@ -386,36 +354,21 @@ namespace Kampai.UI.View
 
 		private void OpenBuyPanel(bool isInstant = false)
 		{
-			global::UnityEngine.Debug.Log(string.Format("<color=lime>[MARKETPLACE TRACE] OpenBuyPanel() CALLED, isInstant={0}, BuyPanel={1}, BuyGrayImage.activeSelf={2}</color>", isInstant, base.view.BuyPanel != null ? "exists" : "NULL", base.view.BuyGrayImage != null ? base.view.BuyGrayImage.gameObject.activeSelf.ToString() : "N/A"));
 			if (base.view.BuyPanel == null)
 			{
 				if (base.view.BuyGrayImage.gameObject.activeSelf)
 				{
-					global::UnityEngine.Debug.Log("<color=yellow>[MARKETPLACE TRACE] OpenBuyPanel: BuyGrayImage is active, calling OnMarketplaceDisableClicked() - panel is LOCKED</color>");
 					OnMarketplaceDisableClicked();
 					return;
 				}
-				global::UnityEngine.Debug.Log("<color=lime>[MARKETPLACE TRACE] OpenBuyPanel: Loading Buy marketplace panel prefab...</color>");
 				base.view.LoadBuyMarketplacePanel();
 			}
-			StartCoroutine(OpenBuyPanelCoroutine(isInstant));
-		}
-
-		private global::System.Collections.IEnumerator OpenBuyPanelCoroutine(bool isInstant)
-		{
-			yield return null;
-
 			if (base.view.BuyPanel != null)
 			{
-				global::UnityEngine.Debug.Log("<color=lime>[MARKETPLACE TRACE] OpenBuyPanel: Dispatching openBuyPanelSignal</color>");
 				openBuyPanelSignal.Dispatch(isInstant);
 				base.view.BuyButtonView.gameObject.SetActive(false);
-				base.view.SellButtonView.gameObject.SetActive(false);
+				base.view.SellButtonView.gameObject.SetActive(true);
 				CheckForMarketplaceSurfacing();
-			}
-			else
-			{
-				global::UnityEngine.Debug.LogError("<color=red>[MARKETPLACE TRACE] OpenBuyPanel: BuyPanel is NULL after loading attempt!</color>");
 			}
 			if (!(base.view.SellPanel == null) && base.view.SellPanel.isOpen)
 			{
@@ -428,7 +381,6 @@ namespace Kampai.UI.View
 		private void OnBuyPanelClosed()
 		{
 			base.view.BuyButtonView.gameObject.SetActive(true);
-			base.view.SellButtonView.gameObject.SetActive(true);
 			currentMode = global::Kampai.UI.View.StorageBuildingModalTypes.STORAGE;
 			UpdateItems();
 		}

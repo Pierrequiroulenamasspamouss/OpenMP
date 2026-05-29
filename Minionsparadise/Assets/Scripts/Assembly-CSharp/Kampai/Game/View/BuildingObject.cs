@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Kampai.Game.View
 {
 	public abstract class BuildingObject : global::Kampai.Game.View.BuildingDefinitionObject
@@ -105,7 +107,13 @@ namespace Kampai.Game.View
 			global::UnityEngine.Renderer[] array2 = base.objectRenderers;
 			foreach (global::UnityEngine.Renderer renderer in array2)
 			{
-				if (renderer.bounds.max.y > maxRendererY.bounds.max.y)
+
+                if (renderer.GetComponent<ParticleSystem>() != null)
+                {
+                    continue;
+                }
+
+                if (renderer.bounds.max.y > maxRendererY.bounds.max.y)
 				{
 					maxRendererY = renderer;
 				}

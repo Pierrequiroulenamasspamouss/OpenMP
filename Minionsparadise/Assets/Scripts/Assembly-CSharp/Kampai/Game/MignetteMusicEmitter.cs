@@ -6,6 +6,15 @@ namespace Kampai.Game
 
 		private static bool isShuttingDown;
 
+		private void ReleaseEventInstance()
+		{
+			if (eventInstance.isValid())
+			{
+				ERRCHECK(eventInstance.release());
+			}
+			eventInstance.clearHandle();
+		}
+
 		public virtual void Update()
 		{
 			if (!eventInstance.isValid() || HasFinished())
@@ -81,6 +90,17 @@ namespace Kampai.Game
 				}
 				ERRCHECK(eventInstance.release());
 				eventInstance = default(global::FMOD.Studio.EventInstance);
+			}
+		}
+		private void OnDestroy()
+		{
+			if (!isShuttingDown && eventInstance.isValid())
+			{
+				if (getPlaybackState() != global::FMOD.Studio.PLAYBACK_STATE.STOPPED)
+				{
+					ERRCHECK(eventInstance.stop(global::FMOD.Studio.STOP_MODE.IMMEDIATE));
+				}
+				ReleaseEventInstance();
 			}
 		}
 

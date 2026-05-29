@@ -169,8 +169,6 @@ namespace Kampai.Game
 				}
 				return num;
 			}
-			
-			// DIAGNOSTIC LOGGING
 			if (logger != null)
 			{
 				logger.Warning("[TIMER_BUG] GetTimeRemaining returned -1 for instance: {0}. No event found in list of {1} events.", instanceId, timeEventList.Count);

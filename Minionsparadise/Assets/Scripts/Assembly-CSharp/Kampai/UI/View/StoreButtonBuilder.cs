@@ -14,14 +14,14 @@ namespace Kampai.UI.View
 			global::UnityEngine.GameObject gameObject = global::UnityEngine.Object.Instantiate(original);
 			global::Kampai.UI.View.StoreButtonView component = gameObject.GetComponent<global::Kampai.UI.View.StoreButtonView>();
 			component.init(playerService);
-			component.ItemName.text = (definition.LocalizedKey != null) ? localService.GetStringUpper(definition.LocalizedKey) : "ITEM";
+			component.ItemName.text = localService.GetStringUpper(definition.LocalizedKey);
 			component.definition = definition;
 			component.transactionDef = transaction;
 			component.storeItemDefinition = storeItemDefinition;
 			global::Kampai.Game.DisplayableDefinition displayableDefinition = definition as global::Kampai.Game.DisplayableDefinition;
 			if (displayableDefinition != null)
 			{
-				component.ItemDescription.text = (displayableDefinition.Description != null) ? localService.GetString(displayableDefinition.Description) : string.Empty;
+				component.ItemDescription.text = localService.GetString(displayableDefinition.Description);
 				component.UpdatePartyPointText(localService);
 				if (string.IsNullOrEmpty(displayableDefinition.Mask))
 				{
@@ -32,7 +32,7 @@ namespace Kampai.UI.View
 				component.UnlockedAtLevel.text = localService.GetString(key, definitionService.GetLevelItemUnlocksAt(displayableDefinition.ID));
 			}
 			global::UnityEngine.RectTransform rectTransform = gameObject.transform as global::UnityEngine.RectTransform;
-			rectTransform.SetParent(i_parent);
+			rectTransform.SetParent(i_parent, false);
 			rectTransform.SetAsFirstSibling();
 			rectTransform.localPosition = new global::UnityEngine.Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0f);
 			rectTransform.localScale = global::UnityEngine.Vector3.one;

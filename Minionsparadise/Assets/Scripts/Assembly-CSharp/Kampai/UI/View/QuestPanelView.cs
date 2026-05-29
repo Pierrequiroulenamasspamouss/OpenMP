@@ -189,7 +189,7 @@ namespace Kampai.UI.View
 		{
 			global::UnityEngine.GameObject gameObject = global::UnityEngine.Object.Instantiate(prefab);
 			global::UnityEngine.Transform transform = gameObject.transform;
-			transform.SetParent(questTabScrollViewTransform);
+			transform.SetParent(questTabScrollViewTransform, false);
 			global::UnityEngine.RectTransform rectTransform = transform as global::UnityEngine.RectTransform;
 			rectTransform.localPosition = global::UnityEngine.Vector3.zero;
 			rectTransform.localScale = global::UnityEngine.Vector3.one;

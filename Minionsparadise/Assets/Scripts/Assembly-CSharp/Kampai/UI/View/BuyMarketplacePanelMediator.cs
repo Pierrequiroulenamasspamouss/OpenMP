@@ -72,18 +72,9 @@ namespace Kampai.UI.View
 
 		public override void OnRegister()
 		{
-			global::UnityEngine.Debug.Log("<color=orange>[MARKETPLACE TRACE] BuyMarketplacePanelMediator.OnRegister() CALLED</color>");
 			base.view.Init(localService);
 			global::Kampai.Game.MarketplaceRefreshTimerDefinition marketplaceRefreshTimerDefinition = definitionService.Get<global::Kampai.Game.MarketplaceRefreshTimerDefinition>(1000008093);
-			if (marketplaceRefreshTimerDefinition != null)
-			{
-				refreshTimeSeconds = marketplaceRefreshTimerDefinition.RefreshTimeSeconds;
-			}
-			else
-			{
-				refreshTimeSeconds = 3600; // Default 1 hour fallback
-				global::UnityEngine.Debug.LogWarning("[BuyMarketplacePanelMediator] MarketplaceRefreshTimerDefinition (1000008093) not found! Using default refreshTimeSeconds=3600.");
-			}
+			refreshTimeSeconds = marketplaceRefreshTimerDefinition.RefreshTimeSeconds;
 			openBuyPanel.AddListener(OpenPanel);
 			base.view.OnOpenSignal.AddListener(OpenPanel);
 			base.view.OnCloseSignal.AddListener(Close);
@@ -100,7 +91,7 @@ namespace Kampai.UI.View
 			loginSuccess.AddListener(OnLoginSuccess);
 			rewardedAdRewardSignal.AddListener(OnRewardedAdReward);
 			adPlacementActivityStateChangedSignal.AddListener(OnAdPlacementActivityStateChanged);
-			base.view.SetRefreshCost(marketplaceRefreshTimerDefinition != null ? marketplaceRefreshTimerDefinition.RushCost : 5);
+			base.view.SetRefreshCost(marketplaceRefreshTimerDefinition.RushCost);
 			UpdateAdButton();
 		}
 
@@ -127,24 +118,11 @@ namespace Kampai.UI.View
 
 		private void OpenPanel(bool isInstant)
 		{
-			global::UnityEngine.Debug.Log(string.Format("<color=orange>[MARKETPLACE TRACE] BuyMarketplacePanelMediator.OpenPanel() CALLED, isInstant={0}</color>", isInstant));
 			base.view.SetOpen(true, false, isInstant);
 			gameContext.injectionBinder.GetInstance<global::Kampai.Game.StartMarketplaceRefreshTimerSignal>().Dispatch(false);
 			UpdateRefreshTime();
 			telemetryService.Send_Telemtry_EVT_MARKETPLACE_VIEWED("VIEW");
 			InvokeRepeating("UpdateRefreshTime", 0.001f, 1f);
-			// Auto-generate buy items if none exist (e.g. first launch or offline mode)
-			global::System.Collections.Generic.List<global::Kampai.Game.MarketplaceBuyItem> existingItems = playerService.GetInstancesByType<global::Kampai.Game.MarketplaceBuyItem>();
-			int existCount = (existingItems != null) ? existingItems.Count : -1;
-			global::UnityEngine.Debug.Log(string.Format("<color=orange>[MARKETPLACE TRACE] BuyMarketplacePanelMediator.OpenPanel: existingBuyItems={0}</color>", existCount));
-			if (existingItems == null || existingItems.Count == 0)
-			{
-				global::UnityEngine.Debug.Log("<color=orange>[MARKETPLACE TRACE] BuyMarketplacePanelMediator.OpenPanel: Dispatching GenerateBuyItemsSignal (auto-generate)</color>");
-				gameContext.injectionBinder.GetInstance<global::Kampai.Game.GenerateBuyItemsSignal>().Dispatch();
-				// Re-read after generation
-				existingItems = playerService.GetInstancesByType<global::Kampai.Game.MarketplaceBuyItem>();
-				global::UnityEngine.Debug.Log(string.Format("<color=orange>[MARKETPLACE TRACE] BuyMarketplacePanelMediator.OpenPanel: After generation, buyItems={0}</color>", existingItems != null ? existingItems.Count : -1));
-			}
 			LoadScrollViewItems();
 			base.uiAddedSignal.Dispatch(base.view.gameObject, Close);
 			removeItemDescriptionSignal.Dispatch();
@@ -329,12 +307,8 @@ namespace Kampai.UI.View
 		{
 			bool isCOPPAGated = coppaService.Restricted();
 			global::System.Collections.Generic.List<global::Kampai.Game.MarketplaceBuyItem> instancesByType = playerService.GetInstancesByType<global::Kampai.Game.MarketplaceBuyItem>();
-			int buyItemCount = (instancesByType != null) ? instancesByType.Count : -1;
-			int scrollCount = base.view.ScrollView.ItemViewList.Count;
-			global::UnityEngine.Debug.Log(string.Format("<color=orange>[MARKETPLACE TRACE] BuyMarketplacePanelMediator.LoadScrollViewItems: buyItemCount={0}, scrollViewCount={1}, coppaRestricted={2}</color>", buyItemCount, scrollCount, isCOPPAGated));
 			if (base.view.ScrollView.ItemViewList.Count == instancesByType.Count)
 			{
-				global::UnityEngine.Debug.Log("<color=orange>[MARKETPLACE TRACE] LoadScrollViewItems: Same count, updating existing slot views</color>");
 				bool flag = false;
 				foreach (global::Kampai.UI.View.BuyMarketplaceSlotView itemView in base.view.ScrollView.ItemViewList)
 				{
@@ -353,7 +327,6 @@ namespace Kampai.UI.View
 			}
 			else
 			{
-				global::UnityEngine.Debug.Log(string.Format("<color=orange>[MARKETPLACE TRACE] LoadScrollViewItems: Different count, rebuilding. Clearing and adding {0} items</color>", buyItemCount));
 				base.view.ScrollView.ClearItems();
 				if (instancesByType != null)
 				{

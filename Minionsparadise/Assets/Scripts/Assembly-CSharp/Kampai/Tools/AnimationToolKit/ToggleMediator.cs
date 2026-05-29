@@ -17,7 +17,7 @@ namespace Kampai.Tools.AnimationToolKit
 
 		public override void OnRegister()
 		{
-			base.transform.parent = ToggleGroupGameObject.transform;
+			(base.transform as global::UnityEngine.RectTransform).SetParent(ToggleGroupGameObject.transform, false);
 			global::UnityEngine.UI.Toggle component = GetComponent<global::UnityEngine.UI.Toggle>();
 			global::UnityEngine.UI.ToggleGroup toggleGroup = (component.group = ToggleGroupGameObject.GetComponent<global::UnityEngine.UI.ToggleGroup>());
 			toggleGroup.RegisterToggle(component);

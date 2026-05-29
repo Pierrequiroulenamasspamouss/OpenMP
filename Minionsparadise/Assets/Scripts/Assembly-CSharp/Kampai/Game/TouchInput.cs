@@ -1,3 +1,5 @@
+using UnityEngine.InputSystem;
+
 namespace Kampai.Game
 {
 	public class TouchInput : global::Kampai.Game.IInput
@@ -55,10 +57,11 @@ namespace Kampai.Game
 				}
 				else if (isDeviceSamsung || global::UnityEngine.Application.isEditor)
 				{
-					bool isStylusActive = global::UnityEngine.Input.GetMouseButton(0);
+					bool isStylusActive = Mouse.current != null && Mouse.current.leftButton.isPressed;
 					if (isStylusActive || wasStylusActive)
 					{
-						position = global::UnityEngine.Input.mousePosition;
+						var mp = Mouse.current != null ? Mouse.current.position.ReadValue() : global::UnityEngine.Vector2.zero;
+						position = new global::UnityEngine.Vector3(mp.x, mp.y, 0f);
 						touchCount = 1;
 						pressed = (wasStylusActive = isStylusActive);
 					}

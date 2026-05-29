@@ -111,7 +111,7 @@ namespace Kampai.UI.View
 
 		private void RushButton()
 		{
-			if (global::UnityEngine.Input.touchCount <= 1)
+			if (global::Kampai.Game.InputUtils.touchCount <= 1)
 			{
 				resetDoubleTapSignal.Dispatch(view.index);
 				if (view.isLocked)

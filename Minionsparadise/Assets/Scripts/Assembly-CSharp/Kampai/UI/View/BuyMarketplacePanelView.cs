@@ -52,10 +52,7 @@ namespace Kampai.UI.View
 
 		protected override void Awake()
 		{
-			if (global::UnityEngine.Application.isPlaying)
-			{
-				base.Awake();
-			}
+			global::Kampai.Util.KampaiView.BubbleToContextOnAwake(this, ref currentContext, true);
 		}
 
 		public void Init(global::Kampai.Main.ILocalizationService localizationService)

@@ -227,7 +227,7 @@ namespace Kampai.Game.View
 
 		internal void EndCharacterIntro(global::Kampai.Game.View.CharacterObject characterObject, int slotIndex)
 		{
-			characterObject.ApplyRootMotion(false);
+			characterObject.ApplyRootMotion(true);
 			characterObject.EnableBlobShadow(true);
 			characterObject.SetAnimatorCullingMode(global::UnityEngine.AnimatorCullingMode.CullUpdateTransforms);
 			characterObject.UnshelveActionQueue();
@@ -268,7 +268,7 @@ namespace Kampai.Game.View
 				global::Kampai.Game.View.TaskingCharacterObject taskingCharacterObject = childAnimators[minionId];
 				int routingIndex = taskingCharacterObject.RoutingIndex;
 				global::Kampai.Game.View.CharacterObject character = taskingCharacterObject.Character;
-				character.ApplyRootMotion(false);
+				character.ApplyRootMotion(true);
 				character.UnshelveActionQueue();
 				character.EnableBlobShadow(true);
 				character.SetAnimatorCullingMode(global::UnityEngine.AnimatorCullingMode.CullUpdateTransforms);
@@ -389,7 +389,7 @@ namespace Kampai.Game.View
 			{
 				character.SetAnimController(controller);
 			}
-			character.ApplyRootMotion(false);
+			character.ApplyRootMotion(true);
 			character.EnableRenderers(true);
 			MoveToRoutingPosition(character, routingIndex);
 			SetEnabledStation(routingIndex, true);

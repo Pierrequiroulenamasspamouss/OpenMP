@@ -122,11 +122,27 @@ namespace Kampai.Tools.AnimationToolKit
 		private void LoadPrefab(string resourcePath)
 		{
 			global::UnityEngine.GameObject gameObject = global::UnityEngine.Resources.Load<global::UnityEngine.GameObject>(resourcePath);
-			global::UnityEngine.Vector3 position = gameObject.transform.position;
 			global::UnityEngine.GameObject gameObject2 = global::UnityEngine.Object.Instantiate(gameObject);
-			gameObject2.transform.parent = Canvas.transform;
-			global::UnityEngine.RectTransform rectTransform = gameObject2.transform as global::UnityEngine.RectTransform;
-			rectTransform.anchoredPosition = position;
+			global::UnityEngine.RectTransform rectTransform = gameObject.transform as global::UnityEngine.RectTransform;
+			global::UnityEngine.RectTransform rectTransform2 = gameObject2.transform as global::UnityEngine.RectTransform;
+			if (rectTransform2 != null)
+			{
+				rectTransform2.SetParent(Canvas.transform, false);
+				if (rectTransform != null)
+				{
+					rectTransform2.anchorMin = rectTransform.anchorMin;
+					rectTransform2.anchorMax = rectTransform.anchorMax;
+					rectTransform2.pivot = rectTransform.pivot;
+					rectTransform2.anchoredPosition = rectTransform.anchoredPosition;
+					rectTransform2.sizeDelta = rectTransform.sizeDelta;
+					rectTransform2.localScale = rectTransform.localScale;
+					rectTransform2.localRotation = rectTransform.localRotation;
+				}
+			}
+			else
+			{
+				gameObject2.transform.SetParent(Canvas.transform, false);
+			}
 		}
 
 		private void Unload()

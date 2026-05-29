@@ -194,7 +194,7 @@ namespace Kampai.UI.View.UpSell
 				logger.Error("Could not get UpSellItemView from prefab");
 				return null;
 			}
-			component.transform.SetParent(parent);
+			component.transform.SetParent(parent, false);
 			SetUpItemTransform(component.transform as global::UnityEngine.RectTransform);
 			return component;
 		}

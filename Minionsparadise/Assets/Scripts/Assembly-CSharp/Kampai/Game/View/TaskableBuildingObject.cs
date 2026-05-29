@@ -245,7 +245,7 @@ namespace Kampai.Game.View
 			{
 				global::Kampai.Game.View.TaskingMinionObject taskingMinionObject = childAnimators[minionId];
 				global::Kampai.Game.View.MinionObject minion = taskingMinionObject.Minion;
-				minion.ApplyRootMotion(false);
+				minion.ApplyRootMotion(true);
 				minion.UnshelveActionQueue();
 				minion.EnableBlobShadow(true);
 				minion.SetAnimatorCullingMode(global::UnityEngine.AnimatorCullingMode.CullUpdateTransforms);
@@ -380,7 +380,7 @@ namespace Kampai.Game.View
 			int numberOfStations = GetNumberOfStations();
 			if (routingIndex < numberOfStations)
 			{
-				minion.ApplyRootMotion(false);
+				minion.ApplyRootMotion(true);
 				minion.ExecuteAction(new global::Kampai.Game.View.SetAnimatorAction(minion, null, logger, new global::System.Collections.Generic.Dictionary<string, object> { { "minionPosition", routingIndex } }));
 				global::System.Collections.Generic.Dictionary<string, object> dictionary = OnlyStateEnabled("OnLoop");
 				int hashAnimationState;

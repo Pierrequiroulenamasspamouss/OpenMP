@@ -1,3 +1,5 @@
+using UnityEngine.InputSystem;
+
 namespace Kampai.Game.View
 {
 	public class PanMediator : global::strange.extensions.mediation.impl.Mediator, global::Kampai.Game.View.CameraMediator
@@ -175,8 +177,8 @@ namespace Kampai.Game.View
 
 		protected int GetFingerID()
 		{
-			int num = ((global::UnityEngine.Input.touchCount <= 0) ? (-1) : global::UnityEngine.Input.GetTouch(0).fingerId);
-			if (num == -1 && (deviceInformation.IsSamsung() || global::UnityEngine.Application.isEditor) && global::UnityEngine.Input.GetMouseButton(0))
+			int num = ((global::Kampai.Game.InputUtils.touchCount <= 0) ? (-1) : global::Kampai.Game.InputUtils.GetTouch(0).fingerId);
+			if (num == -1 && (deviceInformation.IsSamsung() || global::UnityEngine.Application.isEditor) && (Mouse.current != null && Mouse.current.leftButton.isPressed))
 			{
 				num = int.MaxValue;
 			}

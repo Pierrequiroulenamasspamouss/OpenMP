@@ -181,7 +181,7 @@ namespace Kampai.UI.View
 
 		private bool IsPointerDownValid()
 		{
-			if (global::UnityEngine.Input.touchCount > 1)
+			if (global::Kampai.Game.InputUtils.touchCount > 1)
 			{
 				return false;
 			}

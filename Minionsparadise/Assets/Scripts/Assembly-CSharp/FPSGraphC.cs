@@ -962,22 +962,27 @@ public class FPSGraphC : global::UnityEngine.MonoBehaviour
 
 	public bool didPressOnGraph()
 	{
-		if (global::UnityEngine.Input.touchCount > 0 || global::UnityEngine.Input.GetMouseButtonDown(0))
+		if (global::Kampai.Game.InputUtils.touchCount > 0 || (UnityEngine.InputSystem.Mouse.current != null && UnityEngine.InputSystem.Mouse.current.leftButton.wasPressedThisFrame))
 		{
 			global::UnityEngine.Rect rect = new global::UnityEngine.Rect(graphPosition.x * (w - (float)(graphMultiply * frameHistoryLength)), graphPosition.y * (h - (float)(graphMultiply * 107)), graphSizeGUI.width, 107 * graphMultiply);
-			if (global::UnityEngine.Input.touchCount > 0)
+			if (global::Kampai.Game.InputUtils.touchCount > 0)
 			{
-				for (int i = 0; i < global::UnityEngine.Input.touchCount; i++)
+				for (int i = 0; i < global::Kampai.Game.InputUtils.touchCount; i++)
 				{
-					if (global::UnityEngine.Input.touches[i].phase == global::UnityEngine.TouchPhase.Ended && checkWithinRect(global::UnityEngine.Input.touches[i].position, rect))
+					var t = global::Kampai.Game.InputUtils.GetTouch(i);
+					if (t.phase == global::UnityEngine.TouchPhase.Ended && checkWithinRect(t.position, rect))
 					{
 						return true;
 					}
 				}
 			}
-			else if (global::UnityEngine.Input.GetMouseButtonDown(0) && checkWithinRect(global::UnityEngine.Input.mousePosition, rect))
+			else if (UnityEngine.InputSystem.Mouse.current != null && UnityEngine.InputSystem.Mouse.current.leftButton.wasPressedThisFrame)
 			{
-				return true;
+				var mp = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
+				if (checkWithinRect(mp, rect))
+				{
+					return true;
+				}
 			}
 		}
 		return false;

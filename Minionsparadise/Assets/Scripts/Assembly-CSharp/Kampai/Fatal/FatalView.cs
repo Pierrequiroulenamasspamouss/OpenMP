@@ -1,3 +1,5 @@
+using UnityEngine.InputSystem;
+
 namespace Kampai.Fatal
 {
 	public class FatalView : global::Kampai.Util.KampaiView
@@ -15,7 +17,7 @@ namespace Kampai.Fatal
 
 		private void Update()
 		{
-			if (global::UnityEngine.Input.GetKeyDown(global::UnityEngine.KeyCode.Escape))
+			if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
 			{
 				reInitializeGameSignal.Dispatch(string.Empty);
 			}

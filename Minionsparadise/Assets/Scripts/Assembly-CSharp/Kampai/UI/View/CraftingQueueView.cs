@@ -52,9 +52,9 @@ namespace Kampai.UI.View
 
 		private global::Kampai.Game.IPlayerService playerService;
 
-		private global::Kampai.Game.BuildingChangeStateSignal changeStateSignal;
-
 		protected global::Kampai.Util.IKampaiLogger logger;
+
+		private global::Kampai.Game.BuildingChangeStateSignal changeStateSignal;
 
 		internal global::strange.extensions.signal.impl.Signal<global::UnityEngine.EventSystems.PointerEventData> onPointerEnterSignal = new global::strange.extensions.signal.impl.Signal<global::UnityEngine.EventSystems.PointerEventData>();
 
@@ -119,7 +119,6 @@ namespace Kampai.UI.View
 				{
 					SetPartyState(flag);
 				}
-
 				if (timeRemaining <= 0)
 				{
 					// DIAGNOSTIC LOGGING

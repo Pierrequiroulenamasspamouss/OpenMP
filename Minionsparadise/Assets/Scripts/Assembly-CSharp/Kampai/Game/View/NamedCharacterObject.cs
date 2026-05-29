@@ -138,7 +138,7 @@ namespace Kampai.Game.View
 			global::UnityEngine.RuntimeAnimatorController runtimeAnimatorController = global::Kampai.Util.KampaiResources.Load<global::UnityEngine.RuntimeAnimatorController>(stateMachine);
 			if (component != null)
 			{
-				component.applyRootMotion = false;
+				component.applyRootMotion = true;
 				component.cullingMode = global::UnityEngine.AnimatorCullingMode.CullUpdateTransforms;
 				SetAnimController(runtimeAnimatorController);
 			}

@@ -1,3 +1,5 @@
+using UnityEngine.InputSystem;
+
 public class SimpleCamera : global::UnityEngine.MonoBehaviour
 {
 	private global::UnityEngine.Plane groundPlane;
@@ -24,29 +26,32 @@ public class SimpleCamera : global::UnityEngine.MonoBehaviour
 
 	private void Update()
 	{
-		if (global::UnityEngine.Application.isMobilePlatform && global::UnityEngine.Input.touchCount > 0)
+		if (global::UnityEngine.Application.isMobilePlatform && global::Kampai.Game.InputUtils.touchCount > 0)
 		{
-			if (global::UnityEngine.Input.GetTouch(0).phase == global::UnityEngine.TouchPhase.Began)
+			var t = global::Kampai.Game.InputUtils.GetTouch(0);
+			if (t.phase == global::UnityEngine.TouchPhase.Began)
 			{
-				hitPosition = GroundPlaneRaycast(global::UnityEngine.Input.GetTouch(0).position);
+				hitPosition = GroundPlaneRaycast(new global::UnityEngine.Vector3(t.position.x, t.position.y, 0f));
 				velocity = global::UnityEngine.Vector3.zero;
 			}
-			else if (global::UnityEngine.Input.GetTouch(0).phase == global::UnityEngine.TouchPhase.Moved)
+			else if (t.phase == global::UnityEngine.TouchPhase.Moved)
 			{
-				currentPosition = GroundPlaneRaycast(global::UnityEngine.Input.GetTouch(0).position);
+				currentPosition = GroundPlaneRaycast(new global::UnityEngine.Vector3(t.position.x, t.position.y, 0f));
 				velocity = hitPosition - currentPosition;
 			}
 		}
 		else if (global::UnityEngine.Application.isEditor)
 		{
-			if (global::UnityEngine.Input.GetMouseButtonDown(0))
+			if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
 			{
-				hitPosition = GroundPlaneRaycast(global::UnityEngine.Input.mousePosition);
+				var mp = Mouse.current.position.ReadValue();
+				hitPosition = GroundPlaneRaycast(new global::UnityEngine.Vector3(mp.x, mp.y, 0f));
 				velocity = global::UnityEngine.Vector3.zero;
 			}
-			else if (global::UnityEngine.Input.GetMouseButton(0))
+			else if (Mouse.current != null && Mouse.current.leftButton.isPressed)
 			{
-				currentPosition = GroundPlaneRaycast(global::UnityEngine.Input.mousePosition);
+				var mp = Mouse.current.position.ReadValue();
+				currentPosition = GroundPlaneRaycast(new global::UnityEngine.Vector3(mp.x, mp.y, 0f));
 				velocity = hitPosition - currentPosition;
 			}
 		}

@@ -54,7 +54,7 @@ namespace Kampai.UI.View
 			int num2 = index / rowCount;
 			global::UnityEngine.RectTransform rectTransform = view.transform as global::UnityEngine.RectTransform;
 			itemWidth = rectTransform.sizeDelta.x / 2f;
-			rectTransform.parent = ScrollItemParent;
+			rectTransform.SetParent(ScrollItemParent, false);
 			rectTransform.offsetMin = new global::UnityEngine.Vector2((float)num2 * itemWidth, 0f);
 			rectTransform.offsetMax = new global::UnityEngine.Vector2((float)(num2 + 1) * itemWidth, 0f);
 			rectTransform.anchorMin = new global::UnityEngine.Vector2(0f, 1f / (float)rowCount * (float)num);

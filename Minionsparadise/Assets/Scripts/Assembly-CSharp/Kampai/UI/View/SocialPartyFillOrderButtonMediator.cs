@@ -111,7 +111,7 @@ namespace Kampai.UI.View
 			int num2 = num;
 			int num3 = index % 3;
 			global::UnityEngine.RectTransform rectTransform = view.transform as global::UnityEngine.RectTransform;
-			rectTransform.SetParent(data.parent.transform);
+			rectTransform.SetParent(data.parent.transform, false);
 			rectTransform.localPosition = global::UnityEngine.Vector3.zero;
 			rectTransform.localScale = global::UnityEngine.Vector3.one;
 			rectTransform.offsetMin = new global::UnityEngine.Vector2(0f, 0f);

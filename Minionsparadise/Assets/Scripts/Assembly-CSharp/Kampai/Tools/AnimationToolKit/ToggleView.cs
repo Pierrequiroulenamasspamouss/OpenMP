@@ -11,8 +11,11 @@ namespace Kampai.Tools.AnimationToolKit
 		internal void SetPosition(global::UnityEngine.Vector3 position)
 		{
 			global::UnityEngine.RectTransform rectTransform = base.transform as global::UnityEngine.RectTransform;
-			rectTransform.anchoredPosition = global::UnityEngine.Vector2.zero;
-			rectTransform.localPosition = position;
+			rectTransform.anchorMin = global::UnityEngine.Vector2.zero;
+			rectTransform.anchorMax = global::UnityEngine.Vector2.zero;
+			rectTransform.anchoredPosition = new global::UnityEngine.Vector2(position.x, position.y);
+			rectTransform.localScale = global::UnityEngine.Vector3.one;
+			rectTransform.localRotation = global::UnityEngine.Quaternion.identity;
 		}
 	}
 }

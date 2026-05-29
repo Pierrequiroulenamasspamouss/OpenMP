@@ -1,3 +1,5 @@
+using UnityEngine.InputSystem;
+
 namespace Kampai.Common
 {
 	public class StartAndroidBackButtonCommand : global::strange.extensions.command.impl.Command
@@ -17,7 +19,7 @@ namespace Kampai.Common
 		{
 			while (true)
 			{
-				if (global::UnityEngine.Input.GetKeyDown(global::UnityEngine.KeyCode.Escape))
+				if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
 				{
 					androidBackButtonSignal.Dispatch();
 				}

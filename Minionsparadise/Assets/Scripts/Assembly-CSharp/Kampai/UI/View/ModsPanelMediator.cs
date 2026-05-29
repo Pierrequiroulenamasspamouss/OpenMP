@@ -367,12 +367,12 @@ namespace Kampai.UI.View
 			float prefabHeight = (prefabRect != null) ? prefabRect.rect.height : 50f;
 
 			// Instantiate
-			GameObject go = Object.Instantiate(view.chatItemPrefab) as GameObject;
-			go.transform.SetParent(view.chatItemsContainer, false);
+			GameObject go = Object.Instantiate(view.chatItemPrefab, view.chatItemsContainer) as GameObject;
 			
 			RectTransform rt = go.GetComponent<RectTransform>();
 			if (rt != null)
 			{
+				rt.SetParent(view.chatItemsContainer, false);
 				
 				// 1. Force Pivots and Anchors
 				rt.anchorMin = new Vector2(0f, 1f);

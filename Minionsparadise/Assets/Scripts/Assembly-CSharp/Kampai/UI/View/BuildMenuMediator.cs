@@ -171,7 +171,7 @@ namespace Kampai.UI.View
 
 		internal void OnMenuButtonClicked()
 		{
-			if (global::UnityEngine.Input.touchCount <= 1)
+			if (global::Kampai.Game.InputUtils.touchCount <= 1)
 			{
 				telemetryService.Send_Telemetry_EVT_IGE_STORE_VISIT("Menu Button", "Building Menu");
 				moveSignal.Dispatch(!view.isOpen);
@@ -179,7 +179,7 @@ namespace Kampai.UI.View
 				{
 					buildMenuService.SetStoreUnlockChecked();
 					closeAllMenuSignal.Dispatch(base.gameObject);
-					global::UnityEngine.Input.multiTouchEnabled = true;
+					Kampai.Input.InputCompat.MultiTouchEnabled = true;
 				}
 				openButtonClickedSignal.Dispatch();
 				uiModel.GoToInEffect = false;

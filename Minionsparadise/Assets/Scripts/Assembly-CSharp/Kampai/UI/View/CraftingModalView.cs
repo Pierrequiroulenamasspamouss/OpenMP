@@ -265,7 +265,7 @@ namespace Kampai.UI.View
 		{
 			global::Kampai.Game.IngredientsItemDefinition ingredientsItemDefinition = definitionService.Get<global::Kampai.Game.IngredientsItemDefinition>(itemId);
 			global::UnityEngine.GameObject gameObject = new global::UnityEngine.GameObject("hint");
-			gameObject.transform.parent = crv.unlockedImage.transform.parent;
+			gameObject.transform.SetParent(crv.unlockedImage.transform.parent, false);
 			gameObject.layer = 5;
 			global::Kampai.UI.View.KampaiImage kampaiImage = gameObject.AddComponent<global::Kampai.UI.View.KampaiImage>();
 			kampaiImage.sprite = UIUtils.LoadSpriteFromPath(ingredientsItemDefinition.Image);
@@ -342,7 +342,7 @@ namespace Kampai.UI.View
 		private global::UnityEngine.GameObject SetupQueueView(int index, global::UnityEngine.GameObject prefab)
 		{
 			global::UnityEngine.GameObject gameObject = global::UnityEngine.Object.Instantiate(prefab);
-			gameObject.transform.SetParent(queueScrollView);
+			gameObject.transform.SetParent(queueScrollView, false);
 			global::UnityEngine.RectTransform rectTransform = gameObject.transform as global::UnityEngine.RectTransform;
 			rectTransform.localPosition = new global::UnityEngine.Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0f);
 			rectTransform.localScale = global::UnityEngine.Vector3.one;

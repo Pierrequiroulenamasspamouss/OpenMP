@@ -63,6 +63,7 @@ namespace Kampai.Game
 				num = num2;
 			}
 			global::UnityEngine.QualitySettings.SetQualityLevel(num);
+			global::Kampai.Util.QualityHelper.applyAntiAliasing(lOD);
 			dlcLevelChangedSignal.Dispatch();
 			if (!hotSwap)
 			{

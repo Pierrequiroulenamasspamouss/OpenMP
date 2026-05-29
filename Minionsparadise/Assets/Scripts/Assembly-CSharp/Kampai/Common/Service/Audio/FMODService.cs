@@ -291,6 +291,7 @@ namespace Kampai.Common.Service.Audio
 			{
 				logger.Error("FMODService: Cannot load bank {0} because FMOD System is null", bankFile);
 				return default(global::FMOD.Studio.Bank);
+				return bank;
 			}
 			global::FMOD.RESULT result = system.loadBankFile(bankFile, global::FMOD.Studio.LOAD_BANK_FLAGS.NONBLOCKING, out bank);
 			if (result == global::FMOD.RESULT.OK)

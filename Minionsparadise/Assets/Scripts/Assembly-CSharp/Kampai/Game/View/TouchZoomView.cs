@@ -1,3 +1,5 @@
+using UnityEngine.InputSystem;
+
 namespace Kampai.Game.View
 {
 	public class TouchZoomView : global::Kampai.Game.View.ZoomView
@@ -44,7 +46,11 @@ namespace Kampai.Game.View
 		{
 			if (global::UnityEngine.Application.isEditor)
 			{
-				float axis = global::UnityEngine.Input.GetAxis("Mouse ScrollWheel");
+				float axis = 0f;
+				if (Mouse.current != null)
+				{
+					axis = Mouse.current.scroll.ReadValue().y;
+				}
 				if (axis != 0f)
 				{
 					velocity = new global::UnityEngine.Vector3(0f, axis * 100f, 0f);

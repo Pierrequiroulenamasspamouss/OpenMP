@@ -1,3 +1,7 @@
+using System;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
+
 namespace Kampai.Game
 {
 	public static class InputUtils
@@ -67,98 +71,142 @@ namespace Kampai.Game
 		private static void UpdateTouchStates()
 		{
 			frameUpdated = global::UnityEngine.Time.frameCount;
-			for (int i = 0; i < global::UnityEngine.Input.touchCount; i++)
+
+			// Try to use the Input System Enhanced Touch API when available
+			try
 			{
-				global::UnityEngine.Touch touch = global::UnityEngine.Input.GetTouch(i);
-				global::UnityEngine.TouchPhase phase = touch.phase;
-				int fingerId = touch.fingerId;
-				if (phase != global::UnityEngine.TouchPhase.Moved && phase != global::UnityEngine.TouchPhase.Stationary)
+				EnhancedTouchSupport.Enable();
+				var active = UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches;
+				int activeCount = active.Count;
+
+				for (int i = 0; i < activeCount; i++)
 				{
-					CorruptTouch(fingerId, false);
-				}
-			}
-			int num = 0;
-			if (global::UnityEngine.Input.touchCount > 0)
-			{
-				for (int j = 0; j < global::UnityEngine.Input.touchCount; j++)
-				{
-					global::UnityEngine.Touch touch2 = global::UnityEngine.Input.GetTouch(j);
-					if (!IsTouchCorrupted(touch2.fingerId))
+					var et = active[i];
+					var phase = MapPhase(et.phase);
+					int fingerId = et.touchId;
+					if (phase != global::UnityEngine.TouchPhase.Moved && phase != global::UnityEngine.TouchPhase.Stationary)
 					{
-						touches[num] = touch2;
-						num++;
+						CorruptTouch(fingerId, false);
 					}
 				}
-			}
-#if UNITY_EDITOR || UNITY_STANDALONE
-			else
-			{
-				float axis = global::UnityEngine.Input.GetAxis("Mouse ScrollWheel");
-				bool flag = global::UnityEngine.Input.GetKey(global::UnityEngine.KeyCode.LeftControl) || global::UnityEngine.Input.GetKey(global::UnityEngine.KeyCode.RightControl);
-				global::UnityEngine.Vector2 vector = global::UnityEngine.Input.mousePosition;
-				if (flag && (axis != 0f || editorIsZooming))
+
+				int num = 0;
+				if (activeCount > 0)
 				{
-					global::UnityEngine.TouchPhase phase2;
-					if (!editorIsZooming)
+					for (int j = 0; j < activeCount; j++)
 					{
-						phase2 = global::UnityEngine.TouchPhase.Began;
-						editorIsZooming = true;
-						lastZoomDistance = editorZoomDistance;
+						var et = active[j];
+						int id = et.touchId;
+						if (!IsTouchCorrupted(id))
+						{
+							var pos = et.screenPosition;
+							var delta = et.delta;
+							var ph = MapPhase(et.phase);
+							touches[num] = CreateTouch(id, pos, delta, ph);
+							num++;
+						}
 					}
-					else if (axis != 0f)
-					{
-						phase2 = global::UnityEngine.TouchPhase.Moved;
-						lastZoomDistance = editorZoomDistance;
-						editorZoomDistance += axis * 1000f;
-					}
-					else
-					{
-						phase2 = global::UnityEngine.TouchPhase.Stationary;
-					}
-					global::UnityEngine.Vector2 vector2 = new global::UnityEngine.Vector2(editorZoomDistance, 0f);
-					global::UnityEngine.Vector2 vectorDelta = new global::UnityEngine.Vector2(editorZoomDistance - lastZoomDistance, 0f);
-					touches[num++] = CreateTouch(10, vector - vector2, -vectorDelta, phase2);
-					touches[num++] = CreateTouch(11, vector + vector2, vectorDelta, phase2);
 				}
+				#if UNITY_EDITOR || UNITY_STANDALONE
 				else
 				{
-					if (editorIsZooming)
+					float axis = 0f;
+					if (Mouse.current != null)
 					{
-						global::UnityEngine.Vector2 vector3 = global::UnityEngine.Input.mousePosition;
-						global::UnityEngine.Vector2 vector4 = new global::UnityEngine.Vector2(editorZoomDistance, 0f);
-						touches[num++] = CreateTouch(10, vector3 - vector4, global::UnityEngine.Vector2.zero, global::UnityEngine.TouchPhase.Ended);
-						touches[num++] = CreateTouch(11, vector3 + vector4, global::UnityEngine.Vector2.zero, global::UnityEngine.TouchPhase.Ended);
-						editorIsZooming = false;
+						axis = Mouse.current.scroll.ReadValue().y;
 					}
-					if (global::UnityEngine.Input.GetMouseButtonDown(0) || global::UnityEngine.Input.GetMouseButton(0) || global::UnityEngine.Input.GetMouseButtonUp(0))
+					bool flag = (Keyboard.current != null && (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed));
+					global::UnityEngine.Vector2 vector = Mouse.current != null ? Mouse.current.position.ReadValue() : global::UnityEngine.Vector2.zero;
+					if (flag && (axis != 0f || editorIsZooming))
 					{
-						global::UnityEngine.TouchPhase phase3;
-						global::UnityEngine.Vector2 delta = global::UnityEngine.Vector2.zero;
-						if (global::UnityEngine.Input.GetMouseButtonDown(0))
+						global::UnityEngine.TouchPhase phase2;
+						if (!editorIsZooming)
 						{
-							phase3 = global::UnityEngine.TouchPhase.Began;
-							lastMousePosition = vector;
+							phase2 = global::UnityEngine.TouchPhase.Began;
+							editorIsZooming = true;
+							lastZoomDistance = editorZoomDistance;
 						}
-						else if (global::UnityEngine.Input.GetMouseButtonUp(0))
+						else if (axis != 0f)
 						{
-							phase3 = global::UnityEngine.TouchPhase.Ended;
-							delta = vector - lastMousePosition;
+							phase2 = global::UnityEngine.TouchPhase.Moved;
+							lastZoomDistance = editorZoomDistance;
+							editorZoomDistance += axis * 1000f;
 						}
 						else
 						{
-							phase3 = global::UnityEngine.TouchPhase.Moved;
-							delta = vector - lastMousePosition;
-							lastMousePosition = vector;
+							phase2 = global::UnityEngine.TouchPhase.Stationary;
 						}
-						touches[num++] = CreateTouch(99, vector, delta, phase3);
+						global::UnityEngine.Vector2 vector2 = new global::UnityEngine.Vector2(editorZoomDistance, 0f);
+						global::UnityEngine.Vector2 vectorDelta = new global::UnityEngine.Vector2(editorZoomDistance - lastZoomDistance, 0f);
+						touches[num++] = CreateTouch(10, vector - vector2, -vectorDelta, phase2);
+						touches[num++] = CreateTouch(11, vector + vector2, vectorDelta, phase2);
+					}
+					else
+					{
+						if (editorIsZooming)
+						{
+							global::UnityEngine.Vector2 vector3 = Mouse.current != null ? Mouse.current.position.ReadValue() : global::UnityEngine.Vector2.zero;
+							global::UnityEngine.Vector2 vector4 = new global::UnityEngine.Vector2(editorZoomDistance, 0f);
+							touches[num++] = CreateTouch(10, vector3 - vector4, global::UnityEngine.Vector2.zero, global::UnityEngine.TouchPhase.Ended);
+							touches[num++] = CreateTouch(11, vector3 + vector4, global::UnityEngine.Vector2.zero, global::UnityEngine.TouchPhase.Ended);
+							editorIsZooming = false;
+						}
+						if (Mouse.current != null && (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.leftButton.isPressed || Mouse.current.leftButton.wasReleasedThisFrame))
+						{
+							global::UnityEngine.TouchPhase phase3;
+							global::UnityEngine.Vector2 delta = global::UnityEngine.Vector2.zero;
+							var mousePos = Mouse.current.position.ReadValue();
+							if (Mouse.current.leftButton.wasPressedThisFrame)
+							{
+								phase3 = global::UnityEngine.TouchPhase.Began;
+								lastMousePosition = mousePos;
+							}
+							else if (Mouse.current.leftButton.wasReleasedThisFrame)
+							{
+								phase3 = global::UnityEngine.TouchPhase.Ended;
+								delta = mousePos - lastMousePosition;
+							}
+							else
+							{
+								phase3 = global::UnityEngine.TouchPhase.Moved;
+								delta = mousePos - lastMousePosition;
+								lastMousePosition = mousePos;
+							}
+							touches[num++] = CreateTouch(99, mousePos, delta, phase3);
+						}
 					}
 				}
+				#endif
+
+				_touchCount = num;
+				if (_touchCount > 0)
+				{
+					global::System.Array.Sort(touches, 0, _touchCount, comparer);
+				}
+				return;
 			}
-#endif
-			_touchCount = num;
-			if (_touchCount > 0)
+			catch (Exception)
 			{
-				global::System.Array.Sort(touches, 0, _touchCount, comparer);
+				// If EnhancedTouch or Input System is not available, fall back to legacy Input is not allowed when Input System is active.
+			}
+		}
+
+		private static global::UnityEngine.TouchPhase MapPhase(UnityEngine.InputSystem.TouchPhase p)
+		{
+			switch (p)
+			{
+				case UnityEngine.InputSystem.TouchPhase.Began:
+					return global::UnityEngine.TouchPhase.Began;
+				case UnityEngine.InputSystem.TouchPhase.Moved:
+					return global::UnityEngine.TouchPhase.Moved;
+				case UnityEngine.InputSystem.TouchPhase.Stationary:
+					return global::UnityEngine.TouchPhase.Stationary;
+				case UnityEngine.InputSystem.TouchPhase.Ended:
+					return global::UnityEngine.TouchPhase.Ended;
+				case UnityEngine.InputSystem.TouchPhase.Canceled:
+					return global::UnityEngine.TouchPhase.Canceled;
+				default:
+					return global::UnityEngine.TouchPhase.Canceled;
 			}
 		}
 
