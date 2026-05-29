@@ -38,20 +38,28 @@ public static class UIUtils
 
 	public static float GetWidthScale()
 	{
+#if UNITY_EDITOR
+		return (float)global::UnityEngine.Screen.width / 960f;
+#else
 		if (widthScale.CompareTo(0f) == 0)
 		{
 			widthScale = (float)global::UnityEngine.Screen.width / 960f;
 		}
 		return widthScale;
+#endif
 	}
 
 	public static float GetHeightScale()
 	{
+#if UNITY_EDITOR
+		return (float)global::UnityEngine.Screen.height / 640f;
+#else
 		if (heightScale.CompareTo(0f) == 0)
 		{
 			heightScale = (float)global::UnityEngine.Screen.height / 640f;
 		}
 		return heightScale;
+#endif
 	}
 
 	public static int GetReferencedScreenHeight()

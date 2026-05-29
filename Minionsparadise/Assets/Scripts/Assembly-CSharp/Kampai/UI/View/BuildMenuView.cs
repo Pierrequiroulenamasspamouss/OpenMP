@@ -40,6 +40,42 @@ namespace Kampai.UI.View
 				rectTransform.offsetMin = offsetMin;
 				rectTransform.offsetMax = offsetMax;
 			}
+
+			// Enforce bottom vertical anchoring and position to keep the button fully visible at the bottom of the screen
+			if (MenuButton != null)
+			{
+				global::UnityEngine.RectTransform rt = MenuButton.transform as global::UnityEngine.RectTransform;
+				if (rt != null)
+				{
+					global::UnityEngine.Vector2 anchorMin = rt.anchorMin;
+					global::UnityEngine.Vector2 anchorMax = rt.anchorMax;
+					anchorMin.y = 0f;
+					anchorMax.y = 0f;
+					rt.anchorMin = anchorMin;
+					rt.anchorMax = anchorMax;
+
+					global::UnityEngine.Vector2 pos = rt.anchoredPosition;
+					pos.y = 50.2f;
+					rt.anchoredPosition = pos;
+				}
+			}
+			if (Backing != null)
+			{
+				global::UnityEngine.RectTransform rt = Backing.transform as global::UnityEngine.RectTransform;
+				if (rt != null)
+				{
+					global::UnityEngine.Vector2 anchorMin = rt.anchorMin;
+					global::UnityEngine.Vector2 anchorMax = rt.anchorMax;
+					anchorMin.y = 0f;
+					anchorMax.y = 0f;
+					rt.anchorMin = anchorMin;
+					rt.anchorMax = anchorMax;
+
+					global::UnityEngine.Vector2 pos = rt.anchoredPosition;
+					pos.y = 50.2f;
+					rt.anchoredPosition = pos;
+				}
+			}
 		}
 
 		public void MoveMenu()
