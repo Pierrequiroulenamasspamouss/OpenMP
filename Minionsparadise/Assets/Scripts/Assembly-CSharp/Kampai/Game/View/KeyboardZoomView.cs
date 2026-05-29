@@ -41,7 +41,7 @@ namespace Kampai.Game.View
 			{
 				scroll = Mouse.current.scroll.ReadValue().y;
 			}
-			velocity = new global::UnityEngine.Vector3(0f, scroll * 2000f, 0f);
+			velocity = new global::UnityEngine.Vector3(0f, scroll * 1000f, 0f);
 		}
 	}
 }
