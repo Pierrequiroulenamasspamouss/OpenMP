@@ -29,13 +29,9 @@ public static class DiscordRPCEditor
     private const string ShowStartTimeKey = "DiscordRPC_ShowStartTime";
     private const string LoggingEnabledKey = "DiscordRPC_LoggingEnabled";
 
-	static DiscordRPCEditor()
-	{
-		if (global::UnityEngine.Application.isBatchMode)
-		{
-			return;
-		}
-		if (!EditorPrefs.HasKey(EnabledKey)) EditorPrefs.SetBool(EnabledKey, true);
+    static DiscordRPCEditor()
+    {
+        if (!EditorPrefs.HasKey(EnabledKey)) EditorPrefs.SetBool(EnabledKey, true);
         if (!EditorPrefs.HasKey(ShowProjectNameKey)) EditorPrefs.SetBool(ShowProjectNameKey, true);
         if (!EditorPrefs.HasKey(ShowSceneNameKey)) EditorPrefs.SetBool(ShowSceneNameKey, true);
         if (!EditorPrefs.HasKey(ShowUnityVersionKey)) EditorPrefs.SetBool(ShowUnityVersionKey, true);
