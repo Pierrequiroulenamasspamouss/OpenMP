@@ -6,7 +6,7 @@ namespace MPUtils
     public static class Utils
     {
         private const string game = "v0.0.4";
-        private const string auth = "markut";
+        private const string auth = "OpenMP";
 
         private static readonly Dictionary<string, float> _timers = new Dictionary<string, float>();
 
