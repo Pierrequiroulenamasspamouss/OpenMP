@@ -233,6 +233,11 @@ namespace Kampai.Main
 			yield return null;
 			int activeLoads = 0;
 			int batchCount = 0;
+			int totalPreloaded = 0;
+			int totalFailed = 0;
+			int totalUnknownType = 0;
+			int totalAssetsCount = assetsQueue.Count;
+			global::Kampai.Util.StartupTimer.LogCheckpoint(string.Format("AssetsPreloadService.IntegratePreloadQueue (Start preloading {0} assets)", totalAssetsCount));
 			while (assetsQueue.Count > 0)
 			{
 				while (activeLoads >= 16)
@@ -256,17 +261,19 @@ namespace Kampai.Main
 						activeLoads--;
 						if (obj != null)
 						{
-							logger.Info("Preloaded async asset '{0}'", assetInfo.name);
+							totalPreloaded++;
 						}
 						else
 						{
+							totalFailed++;
 							logger.Warning("Failed to preload async asset '{0}'", assetInfo.name);
 						}
 					});
 				}
 				else
 				{
-					logger.Info("Failed to preload asset '{0}': type '{1}' is unknown", assetInfo.name, assetInfo.type);
+					totalUnknownType++;
+					logger.Warning("Failed to preload asset '{0}': type '{1}' is unknown", assetInfo.name, assetInfo.type);
 				}
 				batchCount++;
 				if (batchCount >= 10)
@@ -279,6 +286,7 @@ namespace Kampai.Main
 			{
 				yield return null;
 			}
+			logger.Info("Preload queue completed: {0} preloaded, {1} failed, {2} unknown types (total assets in queue: {3})", totalPreloaded, totalFailed, totalUnknownType, totalAssetsCount);
 			global::Kampai.Util.StartupTimer.LogCheckpoint("AssetsPreloadService.IntegratePreloadQueue (Preload queue completed)");
 			integrationCoroutine = null;
 		}

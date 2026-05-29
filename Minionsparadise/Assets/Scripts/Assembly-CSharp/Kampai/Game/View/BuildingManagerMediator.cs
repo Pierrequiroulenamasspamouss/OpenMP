@@ -449,6 +449,7 @@ namespace Kampai.Game.View
 			{
 				yield return null;
 			}
+			global::Kampai.Util.StartupTimer.LogCheckpoint("BuildingManagerMediator.Init (AssetsPreload finished)");
 			global::Kampai.Util.TimeProfiler.StartSection("buildings");
 			global::System.Collections.Generic.ICollection<global::Kampai.Game.Building> buildingList = playerService.GetInstancesByType<global::Kampai.Game.Building>();
 			global::Kampai.Util.TimeProfiler.StartSection("restoring");
@@ -465,7 +466,9 @@ namespace Kampai.Game.View
 			}
 			sw.Stop();
 			global::Kampai.Util.TimeProfiler.EndSection("restoring");
+			global::Kampai.Util.StartupTimer.LogCheckpoint("BuildingManagerMediator.Init (Restoring loop finished)");
 			yield return coroutineProgressMonitor.waitForPreviousTaskToComplete;
+			global::Kampai.Util.StartupTimer.LogCheckpoint("BuildingManagerMediator.Init (CoroutineProgressMonitor tasks finished)");
 			global::Kampai.Util.TimeProfiler.StartSection("expansions");
 			setupBrokenBridgesSignal.Dispatch();
 			setupLandExpansionsSignal.Dispatch();

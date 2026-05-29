@@ -70,6 +70,8 @@ namespace Kampai.Util
 			}
 		}
 
+		private string lastTasksLog = string.Empty;
+
 		public bool HasRunningTasks()
 		{
 			int count = GetRunningTasksCount();
@@ -79,7 +81,15 @@ namespace Kampai.Util
 				foreach (var t in tasksQueue) tasks += t.Tag + ", ";
 				foreach (var t in waitQueue) tasks += t.Tag + " (waiting), ";
 				foreach (var t in tasksWaitingForNextFrame) tasks += t.Tag + " (next frame), ";
-				UnityEngine.Debug.Log("CoroutineProgressMonitor: Waiting for tasks: " + tasks);
+				if (tasks != lastTasksLog)
+				{
+					lastTasksLog = tasks;
+					UnityEngine.Debug.Log("CoroutineProgressMonitor: Waiting for tasks: " + tasks);
+				}
+			}
+			else
+			{
+				lastTasksLog = string.Empty;
 			}
 			return count > 0;
 		}

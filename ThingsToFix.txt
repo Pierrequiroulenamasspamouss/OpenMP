@@ -1,0 +1,92 @@
+<color=red>[V2-ERROR]</color> DCNTokenCommand failed with response code: 500
+UnityEngine.Debug:LogError(Object)
+Kampai.Util.KampaiLoggerV2:LogIt(KampaiLogLevel, String) (at Assets/Scripts/Assembly-CSharp/Kampai/Util/KampaiLoggerV2.cs:121)
+Kampai.Util.KampaiLoggerV2:Log(KampaiLogLevel, String) (at Assets/Scripts/Assembly-CSharp/Kampai/Util/KampaiLoggerV2.cs:26)
+Kampai.Game.DCNTokenCommand:Response(IResponse) (at Assets/Scripts/Assembly-CSharp/Kampai/Game/DCNTokenCommand.cs:48)
+strange.extensions.signal.impl.Signal`1:Dispatch(IResponse) (at Assets/Scripts/StrangeIoC/strange/extensions/signal/impl/Signal.cs:98)
+Kampai.Splash.DownloadService:NotifyResponse(IResponse) (at Assets/Scripts/Assembly-CSharp/Kampai/Splash/DownloadService.cs:319)
+Kampai.Splash.DownloadService:RequestCallback(IResponse) (at Assets/Scripts/Assembly-CSharp/Kampai/Splash/DownloadService.cs:286)
+Kampai.Splash.<RequestCallbackProxy>c__AnonStorey1D9:<>m__1CE() (at Assets/Scripts/Assembly-CSharp/Kampai/Splash/DownloadService.cs:220)
+Kampai.Util.InvokerService:Update() (at Assets/Scripts/Assembly-CSharp/Kampai/Util/InvokerService.cs:43)
+Kampai.Util.Invoker:Update() (at Assets/Scripts/Assembly-CSharp/Kampai/Util/Invoker.cs:21)
+
+
+in offline mode -> Need a fix ( get a dummy token in offline mode or disable dcn tokens)
+
+<color=yellow>[V2-WARN]</color> SendTapEventMetricsComplete response failed
+UnityEngine.Debug:LogWarning(Object)
+Kampai.Util.KampaiLoggerV2:LogIt(KampaiLogLevel, String) (at Assets/Scripts/Assembly-CSharp/Kampai/Util/KampaiLoggerV2.cs:117)
+Kampai.Util.KampaiLoggerV2:Log(KampaiLogLevel, String) (at Assets/Scripts/Assembly-CSharp/Kampai/Util/KampaiLoggerV2.cs:26)
+Kampai.Util.KampaiLoggerV2:Warning(String) (at Assets/Scripts/Assembly-CSharp/Kampai/Util/KampaiLoggerV2.cs:71)
+Kampai.Common.Controller.LogTapEventMetricsCommand:SendTapEventMetricsComplete(IResponse) (at Assets/Scripts/Assembly-CSharp/Kampai/Common/Controller/LogTapEventMetricsCommand.cs:74)
+strange.extensions.signal.impl.Signal`1:CallAndClearOnceListener(IResponse) (at Assets/Scripts/StrangeIoC/strange/extensions/signal/impl/Signal.cs:128)
+strange.extensions.signal.impl.Signal`1:Dispatch(IResponse) (at Assets/Scripts/StrangeIoC/strange/extensions/signal/impl/Signal.cs:99)
+Kampai.Splash.DownloadService:NotifyResponse(IResponse) (at Assets/Scripts/Assembly-CSharp/Kampai/Splash/DownloadService.cs:319)
+Kampai.Splash.DownloadService:RequestCallback(IResponse) (at Assets/Scripts/Assembly-CSharp/Kampai/Splash/DownloadService.cs:286)
+Kampai.Splash.<RequestCallbackProxy>c__AnonStorey1D9:<>m__1CE() (at Assets/Scripts/Assembly-CSharp/Kampai/Splash/DownloadService.cs:220)
+Kampai.Util.InvokerService:Update() (at Assets/Scripts/Assembly-CSharp/Kampai/Util/InvokerService.cs:43)
+Kampai.Util.Invoker:Update() (at Assets/Scripts/Assembly-CSharp/Kampai/Util/Invoker.cs:21)
+
+
+in offline mode -> needs a fix too (disabled in offline mode) 	
+
+
+Packing sprites:
+- Skipping packing - Sprite Packer is off.
+Reloading assemblies for play mode.
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\UnityEngine.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\UnityEditor.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\Unity.Locator.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Mono\lib\mono\2.0\I18N.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Mono\lib\mono\2.0\I18N.West.dll (this message is harmless)
+Registering custom dll's ...
+Register platform support module: C:\Program Files\Unity\5.3.5p4\Editor\Data\PlaybackEngines\AndroidPlayer/UnityEditor.Android.Extensions.dll
+Register platform support module: C:\Program Files\Unity\5.3.5p4\Editor\Data\PlaybackEngines\WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Mono\lib\mono\2.0\System.Core.dll (this message is harmless)
+Registered in 0.472782 seconds.
+Non platform assembly: C:\Unity\LATEST\Minionsparadise\Library\ScriptAssemblies\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Unity\LATEST\Minionsparadise\Library\ScriptAssemblies\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Non platform assembly: C:\Unity\LATEST\Minionsparadise\Library\ScriptAssemblies\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Unity\LATEST\Minionsparadise\Library\ScriptAssemblies\Assembly-CSharp.dll into Unity Child Domain
+Non platform assembly: C:\Unity\LATEST\Minionsparadise\Library\ScriptAssemblies\Assembly-CSharp-Editor-firstpass.dll (this message is harmless)
+Loading C:\Unity\LATEST\Minionsparadise\Library\ScriptAssemblies\Assembly-CSharp-Editor-firstpass.dll into Unity Child Domain
+Non platform assembly: C:\Unity\LATEST\Minionsparadise\Library\ScriptAssemblies\Assembly-CSharp-Editor.dll (this message is harmless)
+Loading C:\Unity\LATEST\Minionsparadise\Library\ScriptAssemblies\Assembly-CSharp-Editor.dll into Unity Child Domain
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\PackageManager\Unity\PackageManager\5.3.5\Unity.PackageManager.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\PackageManager\Unity\PackageManager\5.3.5\Unity.PackageManager.dll into Unity Child Domain
+Non platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\Advertisements\Editor\UnityEditor.Advertisements.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\Advertisements\Editor\UnityEditor.Advertisements.dll into Unity Child Domain
+Non platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\EditorTestsRunner\Editor\nunit.framework.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\EditorTestsRunner\Editor\nunit.framework.dll into Unity Child Domain
+Non platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\EditorTestsRunner\Editor\UnityEditor.EditorTestsRunner.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\EditorTestsRunner\Editor\UnityEditor.EditorTestsRunner.dll into Unity Child Domain
+Non platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\GUISystem\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\GUISystem\UnityEngine.UI.dll into Unity Child Domain
+Non platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\GUISystem\Editor\UnityEditor.UI.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\GUISystem\Editor\UnityEditor.UI.dll into Unity Child Domain
+Non platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\Networking\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\Networking\UnityEngine.Networking.dll into Unity Child Domain
+Non platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\Networking\Editor\UnityEditor.Networking.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\Networking\Editor\UnityEditor.Networking.dll into Unity Child Domain
+Non platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\TreeEditor\Editor\UnityEditor.TreeEditor.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\UnityExtensions\Unity\TreeEditor\Editor\UnityEditor.TreeEditor.dll into Unity Child Domain
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\UnityEditor.Graphs.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\UnityEditor.Graphs.dll into Unity Child Domain
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll into Unity Child Domain
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll (this message is harmless)
+Loading C:\Program Files\Unity\5.3.5p4\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll into Unity Child Domain
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\nunit.core.interfaces.dll (this message is harmless)
+Refreshing native plugins compatible for Editor in 33.60 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\Mono.Cecil.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\Unity.SerializationLogic.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\Unity.DataContract.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Mono\lib\mono\2.0\UnityScript.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\ICSharpCode.NRefactory.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Mono\lib\mono\2.0\System.Xml.Linq.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\Unity.IvyParser.dll (this message is harmless)
+Platform assembly: C:\Program Files\Unity\5.3.5p4\Editor\Data\Managed\nunit.core.dll (this message is harmless)
+
+Meaning ? Maybe there are things to fix here ? Or is this fine ? 
