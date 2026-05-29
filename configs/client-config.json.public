@@ -1,0 +1,5 @@
+{
+  "serverUrl": "http://bluebridge.homeonthewater.com:44733",
+  "wsUrl": "ws://bluebridge.homeonthewater.com:44733",
+  "environment": "public"
+}

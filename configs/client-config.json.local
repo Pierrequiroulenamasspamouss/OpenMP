@@ -1,0 +1,5 @@
+{
+  "serverUrl": "http://localhost:44733",
+  "wsUrl": "ws://localhost:44733",
+  "environment": "local"
+}

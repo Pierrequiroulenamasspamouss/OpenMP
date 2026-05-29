@@ -1,0 +1,40 @@
+{
+  "allConfigs": {
+    "anyDeviceType": {
+      "serverPushNotifications": true,
+      "minimumVersion": 0.1,
+      "maxRPS": 10,
+      "killSwitches": [],
+      "msHeartbeat": 5000,
+      "fpsHeartbeat": 10,
+      "logLevel": 0,
+      "healthMetricPercentage": 100,
+      "nudgeUpgradePercentage": 0,
+      "dlcManifests": {
+        "low": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json",
+        "medium": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json",
+        "med": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json",
+        "high": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json",
+        "verylow": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json",
+        "LOW": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json",
+        "MEDIUM": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json",
+        "MED": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json",
+        "HIGH": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json",
+        "VERYLOW": "http://bluebridge.homeonthewater.com:44733/rest/dlc/manifests/d7c606f6-44bb-42ab-a655-96d03f1467e0.json"
+      },
+      "featureAccess": {},
+      "targetPerformance": 0,
+      "definitionId": "0",
+      "definitions": "http://bluebridge.homeonthewater.com:44733/rest/definitions/0.json",
+      "isAllowed": true,
+      "isNudgeAllowed": false,
+      "videoUri": "http://bluebridge.homeonthewater.com:44733/video.mp4",
+      "httpRequestTimeout": 30000,
+      "httpRequestReadWriteTimeout": 30000,
+      "autoSaveIntervalUnlinkedAccount": 60,
+      "autoSaveIntervalLinkedAccount": 30,
+      "loggingConfig": {},
+      "AprilsFool": true
+    }
+  }
+}
