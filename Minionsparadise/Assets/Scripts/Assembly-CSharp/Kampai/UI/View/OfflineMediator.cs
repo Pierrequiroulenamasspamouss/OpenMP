@@ -36,20 +36,6 @@ namespace Kampai.UI.View
 			retryButtonViews.Clear();
 			playOfflineButtonViews.Clear();
 
-			// Toggle panels to show 2-button layout (panel_CTA_2up) and hide 1-button layout (panel_CTA_1up)
-			// to prevent the buttons from being overlayed on top of each other.
-			foreach (global::UnityEngine.Transform child in view.GetComponentsInChildren<global::UnityEngine.Transform>(true))
-			{
-				if (child.name == "panel_CTA_1up")
-				{
-					child.gameObject.SetActive(false);
-				}
-				else if (child.name == "panel_CTA_2up")
-				{
-					child.gameObject.SetActive(true);
-				}
-			}
-
 			foreach (global::Kampai.UI.View.ButtonView b in view.GetComponentsInChildren<global::Kampai.UI.View.ButtonView>(true))
 			{
 				bool isRetry = false;
