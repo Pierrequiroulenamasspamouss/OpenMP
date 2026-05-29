@@ -1,16 +1,19 @@
-public class BuildingLiftCameraView : global::UnityEngine.MonoBehaviour
+public class BuildingLiftCameraView : MonoBehaviour
 {
-	public global::UnityEngine.Camera m_camera;
+    public Camera m_camera;
+    public Camera m_gameCamera;
+    public Transform m_gameCameraTransform;
 
-	public global::UnityEngine.Camera m_gameCamera;
+    private void OnPreRender()
+    {
+        if (m_camera.fieldOfView != m_gameCamera.fieldOfView)
+        {
+            m_camera.fieldOfView = m_gameCamera.fieldOfView;
+            Debug.Log("[BuildingLiftCameraView] FOV changed: " + m_camera.fieldOfView);
+        }
 
-	public global::UnityEngine.Transform m_gameCameraTransform;
-
-	private void OnPreRender()
-	{
-		m_camera.fieldOfView = m_gameCamera.fieldOfView;
-		base.gameObject.transform.localPosition = m_gameCameraTransform.localPosition;
-		base.gameObject.transform.localRotation = m_gameCameraTransform.localRotation;
-		base.gameObject.transform.localScale = m_gameCameraTransform.localScale;
-	}
+        base.gameObject.transform.localPosition = m_gameCameraTransform.localPosition;
+        base.gameObject.transform.localRotation = m_gameCameraTransform.localRotation;
+        base.gameObject.transform.localScale = m_gameCameraTransform.localScale;
+    }
 }
