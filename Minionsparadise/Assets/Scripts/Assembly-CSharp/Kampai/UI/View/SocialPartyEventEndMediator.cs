@@ -52,13 +52,17 @@ namespace Kampai.UI.View
 
 		public void OnGetSocialEventStateResponse(global::Kampai.Game.SocialTeamResponse response, global::Kampai.Game.ErrorResponse error)
 		{
-			if (error != null && response.UserEvent != null && !response.UserEvent.RewardClaimed && response.Team != null && response.Team.OrderProgress.Count == timedSocialEventService.GetCurrentSocialEvent().Orders.Count)
+			if (error == null && response != null && response.UserEvent != null)
 			{
-				eventComplete = true;
+				global::Kampai.Game.TimedSocialEventDefinition currentSocialEvent = timedSocialEventService.GetCurrentSocialEvent();
+				if (currentSocialEvent != null && !response.UserEvent.RewardClaimed && response.Team != null && response.Team.OrderProgress != null && response.Team.OrderProgress.Count == currentSocialEvent.Orders.Count)
+				{
+					eventComplete = true;
+				}
 			}
 			else
 			{
-				logger.Error("OnGetSocialEventStateResponse unexpected result");
+				logger.Error("OnGetSocialEventStateResponse unexpected result or error: " + ((error != null && error.Error != null) ? error.Error.Message : "Unknown"));
 			}
 		}
 

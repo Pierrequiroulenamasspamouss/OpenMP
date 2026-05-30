@@ -29,6 +29,14 @@ namespace Kampai.UI.View
 			{
 				return false;
 			}
+			if (gameContext != null)
+			{
+				global::Kampai.Game.VillainLairModel instance = gameContext.injectionBinder.GetInstance<global::Kampai.Game.VillainLairModel>();
+				if (instance == null || instance.currentActiveLair == null)
+				{
+					return false;
+				}
+			}
 			return true;
 		}
 
