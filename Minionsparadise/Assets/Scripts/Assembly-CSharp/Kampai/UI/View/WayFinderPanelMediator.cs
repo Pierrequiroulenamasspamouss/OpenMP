@@ -61,7 +61,7 @@ namespace Kampai.UI.View
 
 		public override void OnRegister()
 		{
-			View.Init(logger, TikiBarService, PlayerService, PrestigeService, PositionService, pickControllerModel);
+			View.Init(logger, TikiBarService, PlayerService, PrestigeService, PositionService, pickControllerModel, lairModel);
 			CreateWayFinderSignal.AddListener(CreateWayFinder);
 			RemoveWayFinderSignal.AddListener(RemoveWayFinder);
 			GetWayFinderSignal.AddListener(GetWayFinder);

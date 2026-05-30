@@ -156,14 +156,14 @@ namespace Prime31
 
 		private void OnDestroy()
 		{
-			global::UnityEngine.Application.RegisterLogCallback(null);
+			global::UnityEngine.Application.logMessageReceived -= handleLog;
 		}
 
 		private void Update()
 		{
 			if (!_logRegistered)
 			{
-				global::UnityEngine.Application.RegisterLogCallback(handleLog);
+				global::UnityEngine.Application.logMessageReceived += handleLog;
 				_logRegistered = true;
 				_isWindowsPhone = global::UnityEngine.Application.platform.ToString().ToLower().Contains("wp8");
 			}

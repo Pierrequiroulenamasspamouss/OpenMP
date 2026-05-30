@@ -38,7 +38,7 @@ namespace Prime31
 
 		private static void buildIndents(int indents, global::System.Text.StringBuilder output)
 		{
-			for (indents = indents; indents > 0; indents--)
+			for (; indents > 0; indents--)
 			{
 				output.Append("\t");
 			}

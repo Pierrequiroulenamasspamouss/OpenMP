@@ -5,5 +5,13 @@ namespace Kampai.Common
 		public bool isConnectionLost { get; set; }
 
 		public global::UnityEngine.NetworkReachability reachability { get; set; }
+
+		public bool isConnected
+		{
+			get
+			{
+				return reachability != global::UnityEngine.NetworkReachability.NotReachable;
+			}
+		}
 	}
 }

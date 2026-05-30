@@ -320,6 +320,11 @@ namespace Kampai.Util
 
 		public static void StartAssetLoadSection(string name)
 		{
+			if (currentInstance != null)
+			{
+				global::Kampai.Util.TimeProfiler.Section section = new global::Kampai.Util.TimeProfiler.Section(name);
+				currentInstance.sections.Add(section);
+			}
 		}
 
 		public static void EndAssetLoadSection()
@@ -327,11 +332,14 @@ namespace Kampai.Util
 			if (currentInstance != null)
 			{
 				global::Kampai.Util.TimeProfiler.Section lastSection = currentInstance.GetLastSection(true);
-				global::System.TimeSpan sectionTime = lastSection.GetSectionTime();
-				currentInstance.totalAssetsLoadTime += sectionTime;
-				if (currentInstance.sections.Count > 0)
+				if (lastSection != null)
 				{
-					currentInstance.GetLastSection(false).mergeSubSection(sectionTime);
+					global::System.TimeSpan sectionTime = lastSection.GetSectionTime();
+					currentInstance.totalAssetsLoadTime += sectionTime;
+					if (currentInstance.sections.Count > 0)
+					{
+						currentInstance.GetLastSection(false).mergeSubSection(sectionTime);
+					}
 				}
 			}
 		}

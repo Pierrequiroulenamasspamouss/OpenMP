@@ -38,7 +38,7 @@ namespace Prime31
 		{
 			if (!(_threadingCallbackHelper != null))
 			{
-				_threadingCallbackHelper = global::UnityEngine.Object.FindObjectOfType(typeof(global::Prime31.ThreadingCallbackHelper)) as global::Prime31.ThreadingCallbackHelper;
+				_threadingCallbackHelper = global::UnityEngine.Object.FindFirstObjectByType(typeof(global::Prime31.ThreadingCallbackHelper)) as global::Prime31.ThreadingCallbackHelper;
 				if (!(_threadingCallbackHelper != null))
 				{
 					global::UnityEngine.GameObject prime31ManagerGameObject = getPrime31ManagerGameObject();
@@ -66,7 +66,7 @@ namespace Prime31
 		{
 			try
 			{
-				global::UnityEngine.MonoBehaviour monoBehaviour = global::UnityEngine.Object.FindObjectOfType(type) as global::UnityEngine.MonoBehaviour;
+				global::UnityEngine.MonoBehaviour monoBehaviour = global::UnityEngine.Object.FindFirstObjectByType(type) as global::UnityEngine.MonoBehaviour;
 				if (!(monoBehaviour != null))
 				{
 					global::UnityEngine.GameObject prime31ManagerGameObject = getPrime31ManagerGameObject();

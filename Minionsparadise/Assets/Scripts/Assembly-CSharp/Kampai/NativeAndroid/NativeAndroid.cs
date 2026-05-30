@@ -20,7 +20,7 @@ namespace Kampai.Util
 
 		public string BundleIdentifier
 		{
-			get { return global::UnityEngine.Application.bundleIdentifier; }
+			get { return global::UnityEngine.Application.identifier; }
 		}
 
 		public bool IsUserMusicPlaying()

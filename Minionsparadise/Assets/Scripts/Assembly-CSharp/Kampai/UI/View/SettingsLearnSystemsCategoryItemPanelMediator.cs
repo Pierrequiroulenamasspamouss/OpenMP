@@ -31,8 +31,14 @@ namespace Kampai.UI.View
 
 		public override void OnRemove()
 		{
-			categorySelectedSignal.RemoveListener(OnCategorySelected);
-			categoryItemSelectedSignal.RemoveListener(OnCategoryItemSelected);
+			if (categorySelectedSignal != null)
+			{
+				categorySelectedSignal.RemoveListener(OnCategorySelected);
+			}
+			if (categoryItemSelectedSignal != null)
+			{
+				categoryItemSelectedSignal.RemoveListener(OnCategoryItemSelected);
+			}
 		}
 
 		private void OnCategorySelected(int categoryDefinitionId)

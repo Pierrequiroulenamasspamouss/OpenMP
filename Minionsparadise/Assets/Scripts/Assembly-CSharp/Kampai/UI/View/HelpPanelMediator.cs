@@ -40,8 +40,17 @@ namespace Kampai.UI.View
 
 		public override void OnRemove()
 		{
-			view.onlineHelp.ClickedSignal.RemoveListener(OnlineHelpClicked);
-			view.restorePurchases.ClickedSignal.RemoveListener(OnRestorePurchases);
+			if (view != null)
+			{
+				if (view.onlineHelp != null && view.onlineHelp.ClickedSignal != null)
+				{
+					view.onlineHelp.ClickedSignal.RemoveListener(OnlineHelpClicked);
+				}
+				if (view.restorePurchases != null && view.restorePurchases.ClickedSignal != null)
+				{
+					view.restorePurchases.ClickedSignal.RemoveListener(OnRestorePurchases);
+				}
+			}
 		}
 
 		private void Init()

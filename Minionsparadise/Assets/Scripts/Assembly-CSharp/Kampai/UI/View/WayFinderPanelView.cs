@@ -34,15 +34,18 @@ namespace Kampai.UI.View
 
 		private global::Kampai.Common.PickControllerModel pickControllerModel;
 
+		private global::Kampai.Game.VillainLairModel lairModel;
+
 		private global::System.Collections.Generic.List<global::System.Collections.Generic.List<global::Kampai.UI.View.WayFinderPanelView.PriorityFunction>> allPriorityFunctions;
 
-		internal void Init(global::Kampai.Util.IKampaiLogger logger, global::Kampai.Game.ITikiBarService tikiBarService, global::Kampai.Game.IPlayerService playerService, global::Kampai.Game.IPrestigeService prestigeService, global::Kampai.UI.IPositionService positionService, global::Kampai.Common.PickControllerModel pickControllerModel)
+		internal void Init(global::Kampai.Util.IKampaiLogger logger, global::Kampai.Game.ITikiBarService tikiBarService, global::Kampai.Game.IPlayerService playerService, global::Kampai.Game.IPrestigeService prestigeService, global::Kampai.UI.IPositionService positionService, global::Kampai.Common.PickControllerModel pickControllerModel, global::Kampai.Game.VillainLairModel lairModel)
 		{
 			this.logger = logger;
 			this.tikiBarService = tikiBarService;
 			this.playerService = playerService;
 			this.prestigeService = prestigeService;
 			this.pickControllerModel = pickControllerModel;
+			this.lairModel = lairModel;
 			tikiBarParentWayFinderSettings = new global::Kampai.UI.View.WayFinderSettings(313);
 			cabanaParentWayFinderSettings = new global::Kampai.UI.View.WayFinderSettings(1000008087);
 			orderBoardWayFinderSettings = new global::Kampai.UI.View.WayFinderSettings(309);
@@ -294,6 +297,11 @@ namespace Kampai.UI.View
 		internal global::Kampai.UI.View.IWayFinderView CreateWayFinder(global::Kampai.UI.View.WayFinderSettings settings, bool updatePriority = true)
 		{
 			int trackedId = settings.TrackedId;
+			global::Kampai.Game.Prestige prestigeForWayFinder = GetPrestigeForWayFinder(trackedId);
+			if (IsFluxLairWayFinder(prestigeForWayFinder) && (lairModel == null || lairModel.currentActiveLair == null))
+			{
+				return null;
+			}
 			global::Kampai.UI.View.IWayFinderView wayFinderView = null;
 			if ((wayFinderView = GetWayFinder(trackedId)) != null)
 			{
@@ -542,6 +550,25 @@ namespace Kampai.UI.View
 
 		internal void UpdateWayFinderPriority()
 		{
+			if (lairModel == null || lairModel.currentActiveLair == null)
+			{
+				global::System.Collections.Generic.List<int> toRemove = new global::System.Collections.Generic.List<int>();
+				foreach (global::System.Collections.Generic.KeyValuePair<int, global::Kampai.UI.View.IWayFinderView> pair in trackedWayFinders)
+				{
+					if (pair.Value != null)
+					{
+						global::Kampai.Game.Prestige prestige = GetPrestigeForWayFinder(pair.Key);
+						if (IsFluxLairWayFinder(prestige))
+						{
+							toRemove.Add(pair.Key);
+						}
+					}
+				}
+				foreach (int id in toRemove)
+				{
+					RemoveWayFinder(id, false);
+				}
+			}
 			foreach (global::Kampai.UI.View.IParentWayFinderView value in trackedParentWayFinders.Values)
 			{
 				value.UpdateWayFinderIcon();
