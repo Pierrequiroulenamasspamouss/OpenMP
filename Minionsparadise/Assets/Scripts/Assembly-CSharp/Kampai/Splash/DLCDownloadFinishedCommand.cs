@@ -22,24 +22,12 @@ namespace Kampai.Splash
 			if (global::Kampai.Main.LoadState.Get() != global::Kampai.Main.LoadStateType.STARTED)
 			{
 				global::Kampai.Main.LoadState.Set(global::Kampai.Main.LoadStateType.BOOTING);
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
-				// On Windows/Editor, bypass re-initialization (scene reload) to keep the flow moving and avoid stalls
+				// Bypass re-initialization (scene reload) to keep the flow moving and avoid stalls
 				if (!localPersistService.HasKeyPlayer("COPPA_Age_Year"))
 				{
 					assetsPreloadService.PreloadAllAssets();
 				}
 				loginSignal.Dispatch();
-#else
-				if (!localPersistService.HasKeyPlayer("COPPA_Age_Year"))
-				{
-					assetsPreloadService.PreloadAllAssets();
-					loginSignal.Dispatch();
-				}
-				else
-				{
-					reInitializeGameSignal.Dispatch(string.Empty);
-				}
-#endif
 			}
 		}
 	}

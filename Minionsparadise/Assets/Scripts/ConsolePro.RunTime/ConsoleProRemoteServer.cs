@@ -10,7 +10,7 @@ public class ConsoleProRemoteServer : global::UnityEngine.MonoBehaviour
 		{
 			get
 			{
-				return global::UnityEngine.WWW.UnEscapeURL(context.Request.Url.AbsolutePath);
+				return global::UnityEngine.Networking.UnityWebRequest.UnEscapeURL(context.Request.Url.AbsolutePath);
 			}
 		}
 
@@ -78,7 +78,7 @@ public class ConsoleProRemoteServer : global::UnityEngine.MonoBehaviour
 
 	private void OnEnable()
 	{
-		global::UnityEngine.Application.RegisterLogCallback(LogCallback);
+		global::UnityEngine.Application.logMessageReceived += LogCallback;
 	}
 
 	private void Update()
@@ -91,7 +91,7 @@ public class ConsoleProRemoteServer : global::UnityEngine.MonoBehaviour
 
 	private void OnDisable()
 	{
-		global::UnityEngine.Application.RegisterLogCallback(null);
+		global::UnityEngine.Application.logMessageReceived -= LogCallback;
 	}
 
 	public static void LogCallback(string logString, string stackTrace, global::UnityEngine.LogType type)

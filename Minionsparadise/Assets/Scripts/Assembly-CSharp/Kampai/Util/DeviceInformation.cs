@@ -23,7 +23,7 @@ namespace Kampai.Util
 			global::UnityEngine.Resolution currentResolution = global::UnityEngine.Screen.currentResolution;
 			screenWidth = currentResolution.width;
 			screenHeight = currentResolution.height;
-			screenRefresh = currentResolution.refreshRate;
+			screenRefresh = (int)global::System.Math.Round(currentResolution.refreshRateRatio.value);
 			model = global::UnityEngine.SystemInfo.deviceModel;
 			processorCount = global::UnityEngine.SystemInfo.processorCount;
 			ram = global::UnityEngine.SystemInfo.systemMemorySize;

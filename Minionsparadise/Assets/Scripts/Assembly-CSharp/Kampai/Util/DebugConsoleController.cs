@@ -956,7 +956,7 @@ namespace Kampai.Util
 		{
 			global::UnityEngine.Resolution currentResolution = global::UnityEngine.Screen.currentResolution;
 			outBuilder.AppendLine("\t Model: " + global::UnityEngine.SystemInfo.deviceModel);
-			outBuilder.AppendLine("\t resolution: " + currentResolution.width + "x" + currentResolution.height + ", " + currentResolution.refreshRate);
+			outBuilder.AppendLine("\t resolution: " + currentResolution.width + "x" + currentResolution.height + ", " + currentResolution.refreshRateRatio.value);
 			outBuilder.AppendLine("\t processor count: " + global::UnityEngine.SystemInfo.processorCount);
 			outBuilder.AppendLine("\t ram: " + global::UnityEngine.SystemInfo.systemMemorySize);
 			outBuilder.AppendLine("\t vram: " + global::UnityEngine.SystemInfo.graphicsMemorySize);

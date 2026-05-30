@@ -14,8 +14,15 @@ namespace Kampai.Game
 
 		public TimeService()
 		{
-#if !UNITY_WEBPLAYER
-			startTime = global::System.Diagnostics.Process.GetCurrentProcess().StartTime;
+#if !UNITY_WEBPLAYER && !UNITY_ANDROID
+			try
+			{
+				startTime = global::System.Diagnostics.Process.GetCurrentProcess().StartTime;
+			}
+			catch (global::System.Exception)
+			{
+				startTime = global::System.DateTime.Now;
+			}
 #else
 			startTime = global::System.DateTime.Now;
 #endif
