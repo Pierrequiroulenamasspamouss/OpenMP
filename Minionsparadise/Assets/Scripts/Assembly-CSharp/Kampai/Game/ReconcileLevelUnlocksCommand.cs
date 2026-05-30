@@ -19,7 +19,12 @@ namespace Kampai.Game
 			global::Kampai.Game.LevelUpDefinition levelUpDefinition = definitionService.Get<global::Kampai.Game.LevelUpDefinition>(88888);
 			if (playerService.GetUnlockedQuantityOfID(0) == -1)
 			{
-				global::Kampai.Game.Transaction.TransactionDefinition type = definitionService.Get<global::Kampai.Game.Transaction.TransactionDefinition>(levelUpDefinition.transactionList[(int)playerService.GetQuantity(global::Kampai.Game.StaticItem.LEVEL_ID)]);
+				int levelIndex = (int)playerService.GetQuantity(global::Kampai.Game.StaticItem.LEVEL_ID);
+				if (levelIndex >= levelUpDefinition.transactionList.Count)
+				{
+					levelIndex = levelUpDefinition.transactionList.Count - 1;
+				}
+				global::Kampai.Game.Transaction.TransactionDefinition type = definitionService.Get<global::Kampai.Game.Transaction.TransactionDefinition>(levelUpDefinition.transactionList[levelIndex]);
 				awardLevelSignal.Dispatch(type);
 				return;
 			}

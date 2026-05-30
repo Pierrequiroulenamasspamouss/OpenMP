@@ -2,7 +2,23 @@ namespace Kampai.Game
 {
 	public class Item : global::Kampai.Game.Instance<global::Kampai.Game.ItemDefinition>
 	{
-		public uint Quantity { get; set; }
+		private uint quantity;
+
+		public uint Quantity
+		{
+			get
+			{
+				return quantity;
+			}
+			set
+			{
+				quantity = value;
+				if (Definition != null && Definition.ID == 1 && quantity > 999999)
+				{
+					quantity = 999999;
+				}
+			}
+		}
 
 		public Item(global::Kampai.Game.ItemDefinition def)
 			: base(def)

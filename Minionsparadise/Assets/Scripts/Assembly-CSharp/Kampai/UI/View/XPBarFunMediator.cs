@@ -138,6 +138,18 @@ namespace Kampai.UI.View
 
 		internal void SetXP()
 		{
+			if (levelFunList == null)
+			{
+				levelFunList = definitionService.Get<global::Kampai.Game.LevelFunTable>(1000009681);
+			}
+			if (minionParty == null)
+			{
+				minionParty = playerService.GetMinionPartyInstance();
+			}
+			if (levelFunList == null || levelFunList.partiesNeededList == null || levelFunList.partiesNeededList.Count == 0 || minionParty == null)
+			{
+				return;
+			}
 			if (!view.expTweenAudio)
 			{
 				playSFXSignal.Dispatch("Play_bar_scale_01");
@@ -148,7 +160,8 @@ namespace Kampai.UI.View
 			{
 				_currentLevel = quantity;
 				_currentLevelTotalPoints = partyService.GetCumulativePointsRequiredThisLevel(_currentLevel);
-				view.SetLevel(levelFunList.partiesNeededList[quantity].PointsNeeded, quantity);
+				int clampedLevelIndex = global::UnityEngine.Mathf.Clamp(quantity, 0, levelFunList.partiesNeededList.Count - 1);
+				view.SetLevel(levelFunList.partiesNeededList[clampedLevelIndex].PointsNeeded, quantity);
 			}
 			view.SetXP((uint)partyService.GetCumulativePointsEarnedThisLevel(quantity, minionParty.CurrentPartyIndex, (int)minionParty.CurrentPartyPoints), (uint)_currentLevelTotalPoints);
 			if (minionParty.IsPartyReady)

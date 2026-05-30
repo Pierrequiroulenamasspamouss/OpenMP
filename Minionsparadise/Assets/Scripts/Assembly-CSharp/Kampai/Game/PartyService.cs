@@ -27,6 +27,27 @@ namespace Kampai.Game
 			{
 				levelFunList = DefinitionService.Get<global::Kampai.Game.LevelFunTable>(1000009681);
 			}
+			if (levelFunList != null && levelFunList.partiesNeededList != null)
+			{
+				int targetCount = global::System.Math.Max(101, level + 1);
+				if (levelFunList.partiesNeededList.Count < targetCount)
+				{
+					global::Kampai.Game.PartyUpDefinition template = null;
+					if (levelFunList.partiesNeededList.Count > 0)
+					{
+						template = levelFunList.partiesNeededList[levelFunList.partiesNeededList.Count - 1];
+					}
+					while (levelFunList.partiesNeededList.Count < targetCount)
+					{
+						global::Kampai.Game.PartyUpDefinition newDef = new global::Kampai.Game.PartyUpDefinition();
+						newDef.Multiplier = (template != null) ? template.Multiplier : 1f;
+						newDef.PartyTransaction = (template != null) ? template.PartyTransaction : null;
+						newDef.PointsNeeded = new global::System.Collections.Generic.List<int> { 7200 };
+						newDef.ID = levelFunList.partiesNeededList.Count;
+						levelFunList.partiesNeededList.Add(newDef);
+					}
+				}
+			}
 			level = global::UnityEngine.Mathf.Clamp(level, 0, levelFunList.partiesNeededList.Count - 1);
 			return level;
 		}
@@ -91,7 +112,9 @@ namespace Kampai.Game
 
 		public int GetCumulativePointsEarnedThisLevel(int level, int currentIndex, int currentPartyPoints)
 		{
-			int num = global::System.Linq.Enumerable.Sum(levelFunList.partiesNeededList[ClampLevel(level)].PointsNeeded.GetRange(0, currentIndex));
+			global::System.Collections.Generic.List<int> pointsNeeded = levelFunList.partiesNeededList[ClampLevel(level)].PointsNeeded;
+			int count = global::UnityEngine.Mathf.Clamp(currentIndex, 0, pointsNeeded.Count);
+			int num = global::System.Linq.Enumerable.Sum(pointsNeeded.GetRange(0, count));
 			return num + currentPartyPoints;
 		}
 
