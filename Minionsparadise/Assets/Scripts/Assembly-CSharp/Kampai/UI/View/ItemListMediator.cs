@@ -36,6 +36,9 @@ namespace Kampai.UI.View
 		public global::Kampai.UI.View.BuildMenuDefinitionLoadedSignal defLoadedSignal { get; set; }
 
 		[Inject]
+		public global::Kampai.UI.View.ClearStoreTabsSignal clearTabsSignal { get; set; }
+
+		[Inject]
 		public global::Kampai.UI.View.AddStoreTabSignal addTabSignal { get; set; }
 
 		[Inject]
@@ -121,6 +124,7 @@ namespace Kampai.UI.View
 			defLoadedSignal.AddListener(OnDefinitionLoaded);
 			updateStoreButtonsSignal.AddListener(UpdateStoreButtons);
 			updatePartyButtonsSignal.AddListener(UpdatePartyPointButtons);
+			clearTabsSignal.AddListener(OnClearTabs);
 			addTabSignal.AddListener(AddStoreTab);
 			highlightTabSignal.AddListener(HighlightStoreTab);
 			tabClickSignal.AddListener(OnTabClicked);
@@ -150,6 +154,7 @@ namespace Kampai.UI.View
 			defLoadedSignal.RemoveListener(OnDefinitionLoaded);
 			updateStoreButtonsSignal.RemoveListener(UpdateStoreButtons);
 			updatePartyButtonsSignal.RemoveListener(UpdatePartyPointButtons);
+			clearTabsSignal.RemoveListener(OnClearTabs);
 			addTabSignal.RemoveListener(AddStoreTab);
 			tabClickSignal.RemoveListener(OnTabClicked);
 			highlightTabSignal.RemoveListener(HighlightStoreTab);
@@ -164,6 +169,14 @@ namespace Kampai.UI.View
 			sendBuildingToInventorySignal.RemoveListener(BuildingSentToInventory);
 			moveBaseMenuSignal.RemoveListener(BaseMenuMoved);
 			pauseSignal.RemoveListener(ResetIconDragState);
+		}
+
+		private void OnClearTabs()
+		{
+			if (storeTabs != null)
+			{
+				storeTabs.Clear();
+			}
 		}
 
 		public void BaseMenuMoved(bool show)
@@ -396,7 +409,7 @@ namespace Kampai.UI.View
 
 		internal void AddStoreTab(global::Kampai.UI.View.StoreTab tab)
 		{
-			storeTabs.Add(tab.Type, tab);
+			storeTabs[tab.Type] = tab;
 		}
 
 		internal void OnTabClicked(global::Kampai.Game.StoreItemType type, string localizedTitle)
