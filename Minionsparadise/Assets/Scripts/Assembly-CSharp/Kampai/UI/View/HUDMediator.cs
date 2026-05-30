@@ -584,6 +584,7 @@ namespace Kampai.UI.View
 
 		internal void ToggleHUD(bool enable)
 		{
+			global::UnityEngine.Debug.Log("[HUDMediator] ToggleHUD called with: " + enable);
 			CancelPeek();
 			view.Toggle(enable);
 			if (enable)

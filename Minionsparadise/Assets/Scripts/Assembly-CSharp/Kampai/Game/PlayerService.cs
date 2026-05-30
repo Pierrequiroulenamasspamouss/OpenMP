@@ -443,7 +443,7 @@ namespace Kampai.Game
 
 		public bool IsMinionPartyUnlocked()
 		{
-			return GetUnlockedQuantityOfID(80000) > 0;
+			return true;
 		}
 
 		public bool HasPurchasedMinigamePack()

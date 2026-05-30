@@ -43,7 +43,7 @@ namespace Kampai.UI.View
 
 		internal global::strange.extensions.signal.impl.Signal animateXP = new global::strange.extensions.signal.impl.Signal();
 
-		private global::System.Collections.Generic.List<global::UnityEngine.GameObject> dividers;
+		private global::System.Collections.Generic.List<global::UnityEngine.GameObject> dividers = new global::System.Collections.Generic.List<global::UnityEngine.GameObject>();
 
 		private GoTween _pointsTextTween;
 
@@ -53,8 +53,14 @@ namespace Kampai.UI.View
 
 		public void Init(global::Kampai.UI.IPositionService positionService)
 		{
-			dividers = new global::System.Collections.Generic.List<global::UnityEngine.GameObject>();
-			positionService.AddHUDElementToAvoid(base.gameObject);
+			if (dividers == null)
+			{
+				dividers = new global::System.Collections.Generic.List<global::UnityEngine.GameObject>();
+			}
+			if (positionService != null)
+			{
+				positionService.AddHUDElementToAvoid(base.gameObject);
+			}
 		}
 
 		public void SetXP(uint xp, uint maxXPThisLevel)
@@ -90,73 +96,109 @@ namespace Kampai.UI.View
 		{
 			if (xp >= maxXP)
 			{
-				if (FillImage.anchorMax.x >= 1f)
+				if (FillImage != null && FillImage.anchorMax.x >= 1f)
 				{
 					return;
 				}
 				xp = maxXP;
 			}
-			if (!AnnouncementText.gameObject.activeSelf)
+			if (AnnouncementText != null && !AnnouncementText.gameObject.activeSelf)
 			{
 				if (_pointsFillTween != null)
 				{
 					_pointsFillTween.destroy();
 				}
-				_pointsFillTween = Go.to(FillImage, speed, new GoTweenConfig().vector2Prop("anchorMax", new global::UnityEngine.Vector2((float)xp / (float)maxXP, 1f)).onComplete(delegate
+				if (FillImage != null)
 				{
-					expTweenAudio = false;
-					_pointsFillTween.destroy();
-					_pointsFillTween = null;
-				}));
+					_pointsFillTween = Go.to(FillImage, speed, new GoTweenConfig().vector2Prop("anchorMax", new global::UnityEngine.Vector2((float)xp / (float)maxXP, 1f)).onComplete(delegate
+					{
+						expTweenAudio = false;
+						_pointsFillTween.destroy();
+						_pointsFillTween = null;
+					}));
+				}
 			}
 		}
 
 		internal void SetXPText(uint xp, uint maxXP)
 		{
-			XPAmount.text = string.Format("{0}/{1}", (int)xp, (int)maxXP);
+			if (XPAmount != null)
+			{
+				XPAmount.text = string.Format("{0}/{1}", (int)xp, (int)maxXP);
+			}
 		}
 
 		public void SetLevel(global::System.Collections.Generic.List<int> pointsEachPartyNeeds, int level)
 		{
-			LevelAmount.text = level.ToString();
+			if (LevelAmount != null)
+			{
+				LevelAmount.text = level.ToString();
+			}
 			ClearSegments();
-			SetSegments(pointsEachPartyNeeds);
+			if (pointsEachPartyNeeds != null)
+			{
+				SetSegments(pointsEachPartyNeeds);
+			}
 			ClearBar();
 		}
 
 		public void ClearBar()
 		{
 			expTweenCount = 0;
-			FillImage.anchorMax = new global::UnityEngine.Vector2(0f, 1f);
+			if (FillImage != null)
+			{
+				FillImage.anchorMax = new global::UnityEngine.Vector2(0f, 1f);
+			}
 		}
 
 		public void SetSegments(global::System.Collections.Generic.List<int> pointsPerEachParty)
 		{
+			if (pointsPerEachParty == null || FillBarBacking == null || inspirationMeterSeparator == null)
+			{
+				return;
+			}
 			float x = 0f;
 			float num = global::System.Linq.Enumerable.Sum(pointsPerEachParty);
+			if (num == 0f) return;
 			float num2 = 0f;
 			global::UnityEngine.Transform parent = FillBarBacking.transform;
 			for (int i = 0; i < pointsPerEachParty.Count; i++)
 			{
 				global::UnityEngine.GameObject gameObject = global::UnityEngine.Object.Instantiate(inspirationMeterSeparator);
-				global::UnityEngine.RectTransform component = gameObject.GetComponent<global::UnityEngine.RectTransform>();
-				component.SetParent(parent, false);
-				component.SetAsFirstSibling();
-				component.localScale = global::UnityEngine.Vector2.one;
-				component.sizeDelta = global::UnityEngine.Vector2.zero;
-				num2 += (float)pointsPerEachParty[i];
-				component.anchorMin = new global::UnityEngine.Vector2(x, 0f);
-				x = num2 / num;
-				component.anchorMax = new global::UnityEngine.Vector2(x, 1f);
-				dividers.Add(gameObject);
+				if (gameObject != null)
+				{
+					global::UnityEngine.RectTransform component = gameObject.GetComponent<global::UnityEngine.RectTransform>();
+					if (component != null)
+					{
+						component.SetParent(parent, false);
+						component.SetAsFirstSibling();
+						component.localScale = global::UnityEngine.Vector2.one;
+						component.sizeDelta = global::UnityEngine.Vector2.zero;
+						num2 += (float)pointsPerEachParty[i];
+						component.anchorMin = new global::UnityEngine.Vector2(x, 0f);
+						x = num2 / num;
+						component.anchorMax = new global::UnityEngine.Vector2(x, 1f);
+					}
+					if (dividers != null)
+					{
+						dividers.Add(gameObject);
+					}
+				}
 			}
 		}
 
 		public void ClearSegments()
 		{
-			foreach (global::UnityEngine.GameObject divider in dividers)
+			if (dividers != null)
 			{
-				global::UnityEngine.Object.Destroy(divider);
+				foreach (global::UnityEngine.GameObject divider in dividers)
+				{
+					if (divider != null)
+					{
+						global::UnityEngine.Object.Destroy(divider);
+					}
+				}
+				dividers.Clear();
 			}
 		}
 
