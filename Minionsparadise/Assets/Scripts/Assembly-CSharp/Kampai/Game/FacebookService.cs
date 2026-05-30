@@ -29,6 +29,7 @@ namespace Kampai.Game
 		private bool _useServerLogin = false;
 		private string _serverAccessToken = string.Empty;
 		private string _serverUserID = string.Empty;
+		private global::System.Collections.IEnumerator _loginCoroutine;
 
 		[Inject]
 		public ILocalPersistanceService localPersistence { get; set; }
@@ -120,23 +121,24 @@ namespace Kampai.Game
 			logger.Debug("Discord: Login Source = {0}", LoginSource ?? "N/A");
 			if (!isKillSwitchEnabled)
 			{
-				if (localPersistence.GetData("SocialInProgress") != "True")
+				if (_loginCoroutine != null)
 				{
-					localPersistence.PutData("SocialInProgress", "True");
-					_loginSuccessSignal = successSignal;
-					_loginFailureSignal = failureSignal;
-					if (_useServerLogin)
-					{
-						routineRunner.StartCoroutine(LogInViaServer());
-					}
-					else
-					{
-						routineRunner.StartCoroutine(LogInWithReadPermissions("public_profile", "user_friends"));
-					}
+					logger.Info("Discord: Stopping existing login coroutine to start a new one.");
+					routineRunner.StopCoroutine(_loginCoroutine);
+					_loginCoroutine = null;
+				}
+
+				localPersistence.PutData("SocialInProgress", "True");
+				_loginSuccessSignal = successSignal;
+				_loginFailureSignal = failureSignal;
+				if (_useServerLogin)
+				{
+					_loginCoroutine = LogInViaServer();
+					routineRunner.StartCoroutine(_loginCoroutine);
 				}
 				else
 				{
-					logger.Warning("Discord: Ignoring login attempt as another one is already in progress.");
+					routineRunner.StartCoroutine(LogInWithReadPermissions("public_profile", "user_friends"));
 				}
 			}
 			else
@@ -226,36 +228,48 @@ namespace Kampai.Game
 			OpenBrowserURL(loginUrl);
 			logger.Info("Discord: Opened Server Discord Login for {0}. Polling for token...", uid);
 			bool solved = false;
-			while (!solved)
+			try
 			{
-				yield return new global::UnityEngine.WaitForSeconds(2f);
-				global::UnityEngine.WWW www = new global::UnityEngine.WWW(global::Kampai.Util.GameConstants.Server.CDN_METADATA_URL + "/auth/discord/status?uid=" + uid);
-				yield return www;
-				if (string.IsNullOrEmpty(www.error) && !string.IsNullOrEmpty(www.text))
+				while (!solved)
 				{
-					global::System.Collections.Generic.Dictionary<string, object> result = global::Discord.MiniJSON.Json.Deserialize(www.text) as global::System.Collections.Generic.Dictionary<string, object>;
-					if (result != null && result.ContainsKey("status") && result["status"].ToString() == "success")
+					yield return new global::UnityEngine.WaitForSeconds(2f);
+					using (var www = UnityEngine.Networking.UnityWebRequest.Get(global::Kampai.Util.GameConstants.Server.CDN_METADATA_URL + "/auth/discord/status?uid=" + uid))
 					{
-						_serverAccessToken = result["token"].ToString();
-						_serverUserID = result["uid"].ToString();
-						solved = true;
+						yield return www.SendWebRequest();
+						if (www.result == UnityEngine.Networking.UnityWebRequest.Result.Success && !string.IsNullOrEmpty(www.downloadHandler.text))
+						{
+							global::System.Collections.Generic.Dictionary<string, object> result = global::Discord.MiniJSON.Json.Deserialize(www.downloadHandler.text) as global::System.Collections.Generic.Dictionary<string, object>;
+							if (result != null && result.ContainsKey("status") && result["status"].ToString() == "success")
+							{
+								_serverAccessToken = result["token"].ToString();
+								_serverUserID = result["uid"].ToString();
+								solved = true;
+							}
+						}
 					}
 				}
+				localPersistence.PutData("Discord_AccessToken", _serverAccessToken);
+				localPersistence.PutData("Discord_UserID", _serverUserID);
+				_loginSuccessSignal.Dispatch(this);
 			}
-			localPersistence.PutData("SocialInProgress", "False");
-			localPersistence.PutData("Discord_AccessToken", _serverAccessToken);
-			localPersistence.PutData("Discord_UserID", _serverUserID);
-			_loginSuccessSignal.Dispatch(this);
+			finally
+			{
+				localPersistence.PutData("SocialInProgress", "False");
+			}
 		}
 
 		public void Init(global::strange.extensions.signal.impl.Signal<global::Kampai.Game.ISocialService> successSignal, global::strange.extensions.signal.impl.Signal<global::Kampai.Game.ISocialService> failureSignal)
 		{
 			logger.Debug("Discord: Init Called");
+			localPersistence.PutData("SocialInProgress", "False");
 			updateKillSwitchFlag();
 			_initSuccessSignal = successSignal;
 			_initFailSignal = failureSignal;
 			friends = new global::System.Collections.Generic.Dictionary<string, global::Kampai.Game.FBUser>();
 			userPictures = new global::System.Collections.Generic.Dictionary<string, global::UnityEngine.Texture>();
+#if UNITY_ANDROID || UNITY_IOS
+			_useServerLogin = true;
+#endif
 			try
 			{
 				string appId = global::Kampai.Util.GameConstants.Discord.APP_ID;
@@ -269,9 +283,9 @@ namespace Kampai.Game
 					SetInit();
 				}
 			}
-			catch (global::System.NotImplementedException)
+			catch (global::System.Exception ex)
 			{
-				logger.Info("Discord SDK implies NotImplementedException. Falling back to Server Login.");
+				logger.Info("Discord SDK initialization failed: {0}. Falling back to Server Login.", ex.Message);
 				_useServerLogin = true;
 				_initSuccessSignal.Dispatch(this);
 			}
@@ -468,21 +482,23 @@ namespace Kampai.Game
 		{
 			string url = string.Format("http://" + global::Kampai.Util.GameConstants.Server.SERVER_URL + "/api/{0}/icon.png", id);
 			logger.Info("Discord: Download user picture URL: {0}", url);
-			global::UnityEngine.WWW www = new global::UnityEngine.WWW(url);
-			yield return www;
-			if (!string.IsNullOrEmpty(www.error) || www.texture == null)
+			using (var www = UnityEngine.Networking.UnityWebRequestTexture.GetTexture(url))
 			{
-				logger.Warning("Discord: Download picture failed with error {0}", www.error);
-			}
-			else
-			{
-				global::UnityEngine.Texture texture = www.texture;
-				if (texture.width > 8 && texture.height > 8)
+				yield return www.SendWebRequest();
+				if (www.result != UnityEngine.Networking.UnityWebRequest.Result.Success)
 				{
-					userPictures[id] = texture;
-					if (friends.ContainsKey(id))
+					logger.Warning("Discord: Download picture failed with error {0}", www.error);
+				}
+				else
+				{
+					global::UnityEngine.Texture2D texture = UnityEngine.Networking.DownloadHandlerTexture.GetContent(www);
+					if (texture != null && texture.width > 8 && texture.height > 8)
 					{
-						friends[id].SetTexture(texture, global::UnityEngine.Vector2.zero);
+						userPictures[id] = texture;
+						if (friends.ContainsKey(id))
+						{
+							friends[id].SetTexture(texture, global::UnityEngine.Vector2.zero);
+						}
 					}
 				}
 			}

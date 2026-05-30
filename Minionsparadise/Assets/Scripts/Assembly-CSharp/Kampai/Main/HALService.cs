@@ -13,6 +13,7 @@ namespace Kampai.Main
 		public global::Kampai.Util.IKampaiLogger logger = global::Elevation.Logging.LogManager.GetClassLogger("HALService") as global::Kampai.Util.IKampaiLogger;
 
 		private global::System.Collections.Generic.Dictionary<string, global::Kampai.Main.ILocalString> localStringDict;
+		private global::System.Collections.Generic.Dictionary<string, global::Kampai.Main.ILocalString> fallbackStringDict;
 
 		private string jsonPath;
 
@@ -64,6 +65,32 @@ namespace Kampai.Main
 			{
 				ParseLocalString(item.Value);
 			}
+
+			if (jsonPath != "EN-US")
+			{
+				try
+				{
+					fallbackStringDict = GetLocalizedDictionary(global::Kampai.Util.Native.GetStreamingTextAsset(string.Format("{0}{1}.json", "Loc_Text_Preinstalled/", "EN-US")));
+					string fallbackJson = global::Kampai.Util.Native.GetStreamingTextAsset(string.Format("content/dlc/loc_text/{0}.json", "EN-US"));
+					if (!string.IsNullOrEmpty(fallbackJson))
+					{
+						foreach (global::System.Collections.Generic.KeyValuePair<string, global::Kampai.Main.ILocalString> item2 in GetLocalizedDictionary(fallbackJson))
+						{
+							ParseLocalString(item2.Value);
+							fallbackStringDict[item2.Key] = item2.Value;
+						}
+					}
+				}
+				catch (global::System.Exception exFallback)
+				{
+					logger.Warning("Error obtaining English fallback localization file: {0}", exFallback.ToString());
+				}
+			}
+			else
+			{
+				fallbackStringDict = null;
+			}
+
 			MergeFullLocalizationStrings();
 		}
 
@@ -118,11 +145,11 @@ namespace Kampai.Main
 
 		public bool Contains(string key)
 		{
-			if (key == null || !localStringDict.ContainsKey(key))
+			if (key == null)
 			{
 				return false;
 			}
-			return true;
+			return localStringDict.ContainsKey(key) || (fallbackStringDict != null && fallbackStringDict.ContainsKey(key));
 		}
 
 		public string GetString(string key, params object[] args)
@@ -133,18 +160,26 @@ namespace Kampai.Main
 				logger.Log(global::Kampai.Util.KampaiLogLevel.Warning, text);
 				return text;
 			}
+			global::System.Collections.Generic.Dictionary<string, global::Kampai.Main.ILocalString> dictToUse = localStringDict;
 			if (!localStringDict.ContainsKey(key))
 			{
-				string text2 = string.Format("{0}: {1}", "KEY NOT FOUND", key);
-				logger.Log(global::Kampai.Util.KampaiLogLevel.Warning, text2);
-				return text2;
+				if (fallbackStringDict != null && fallbackStringDict.ContainsKey(key))
+				{
+					dictToUse = fallbackStringDict;
+				}
+				else
+				{
+					string text2 = string.Format("{0}: {1}", "KEY NOT FOUND", key);
+					logger.Log(global::Kampai.Util.KampaiLogLevel.Warning, text2);
+					return text2;
+				}
 			}
-			global::Kampai.Main.LocalQuantityString localQuantityString = localStringDict[key] as global::Kampai.Main.LocalQuantityString;
+			global::Kampai.Main.LocalQuantityString localQuantityString = dictToUse[key] as global::Kampai.Main.LocalQuantityString;
 			if (localQuantityString != null)
 			{
 				return localQuantityString.GetStringFormat(args);
 			}
-			global::Kampai.Main.LocalString localString = localStringDict[key] as global::Kampai.Main.LocalString;
+			global::Kampai.Main.LocalString localString = dictToUse[key] as global::Kampai.Main.LocalString;
 			if (localString != null)
 			{
 				return localString.GetStringFormat(args);

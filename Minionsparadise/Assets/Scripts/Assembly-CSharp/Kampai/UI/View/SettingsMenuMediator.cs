@@ -83,9 +83,13 @@ namespace Kampai.UI.View
 		[Inject]
 		public global::Kampai.UI.View.DisplayDisco3DElements displayDisco3DElements { get; set; }
 
+		[Inject]
+		public global::Kampai.Main.LanguageChangedSignal languageChangedSignal { get; set; }
+
 		public override void OnRegister()
 		{
 			base.OnRegister();
+			languageChangedSignal.AddListener(OnLanguageChanged);
 			base.view.facebookButton.ClickedSignal.AddListener(FacebookButton);
 			base.view.googleButton.ClickedSignal.AddListener(GoogleButton);
 			base.view.rateAppButton.ClickedSignal.AddListener(RateAppButton);
@@ -117,6 +121,7 @@ namespace Kampai.UI.View
 		public override void OnRemove()
 		{
 			base.OnRemove();
+			languageChangedSignal.RemoveListener(OnLanguageChanged);
 			base.view.facebookButton.ClickedSignal.RemoveListener(FacebookButton);
 			base.view.rateAppButton.ClickedSignal.RemoveListener(RateAppButton);
 			base.view.googleButton.ClickedSignal.RemoveListener(GoogleButton);
@@ -135,6 +140,12 @@ namespace Kampai.UI.View
 			{
 				base.view.mods.ClickedSignal.RemoveListener(ShowMods);
 			}
+		}
+
+		private void OnLanguageChanged()
+		{
+			init();
+			UpdateLoginButtonText();
 		}
 
 		private void init()

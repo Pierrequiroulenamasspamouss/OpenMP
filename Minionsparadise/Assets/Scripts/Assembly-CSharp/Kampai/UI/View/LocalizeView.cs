@@ -59,13 +59,18 @@ namespace Kampai.UI.View
 			}
 			set
 			{
-				if (textView == null)
-				{
-					textView = GetComponent<global::UnityEngine.UI.Text>();
-				}
-				textView.text = ((!(textView.name == "txt_ItemQuantity")) ? GetCaseString(value) : ("x" + GetCaseString(value)));
+				SetTextInternal(value);
 				m_isOverriden = true;
 			}
+		}
+
+		private void SetTextInternal(string value)
+		{
+			if (textView == null)
+			{
+				textView = GetComponent<global::UnityEngine.UI.Text>();
+			}
+			textView.text = ((!(textView.name == "txt_ItemQuantity")) ? GetCaseString(value) : ("x" + GetCaseString(value)));
 		}
 
 		public global::UnityEngine.Color color
@@ -102,6 +107,10 @@ namespace Kampai.UI.View
 			if (languageChangedSignal != null)
 			{
 				languageChangedSignal.AddListener(OnLanguageChanged);
+			}
+			if (!m_isOverriden && !string.IsNullOrEmpty(LocKey))
+			{
+				Translate();
 			}
 		}
 
@@ -153,7 +162,7 @@ namespace Kampai.UI.View
 		{
 			if (service != null)
 			{
-				text = service.GetString(Key);
+				SetTextInternal(service.GetString(Key));
 			}
 		}
 

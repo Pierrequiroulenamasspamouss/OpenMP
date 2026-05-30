@@ -56,12 +56,24 @@ namespace Kampai.UI.View
 			moveSkrimTopLayerSignal.AddListener(OnMoveSkirmToTopLevelCallback);
 		}
 
+		private bool m_skrimCounterDecreased;
+
+		private void DecreaseSkrim()
+		{
+			if (!m_skrimCounterDecreased)
+			{
+				m_skrimCounterDecreased = true;
+				PickControllerModel.DecreaseSkrimCounter();
+			}
+		}
+
 		public override void OnRemove()
 		{
 			view.ClickButton.ClickedSignal.RemoveListener(Close);
 			hideSkrim.RemoveListener(HideSkrim);
 			enableSkrimSignal.RemoveListener(EnableSkrimButton);
 			moveSkrimTopLayerSignal.RemoveListener(OnMoveSkirmToTopLevelCallback);
+			DecreaseSkrim();
 		}
 
 		public override void Initialize(global::Kampai.UI.View.GUIArguments args)
@@ -106,7 +118,7 @@ namespace Kampai.UI.View
 
 		private void CallbackDelegate()
 		{
-			PickControllerModel.DecreaseSkrimCounter();
+			DecreaseSkrim();
 			externalCallback.Callback.Dispatch(this);
 		}
 
@@ -205,7 +217,7 @@ namespace Kampai.UI.View
 			gameContext.injectionBinder.GetInstance<global::Kampai.Game.ShowHiddenBuildingsSignal>().Dispatch();
 			global::Kampai.UI.View.IGUICommand command = guiService.BuildCommand(global::Kampai.UI.View.GUIOperation.Unload, "Skrim", guiLabel);
 			guiService.Execute(command);
-			PickControllerModel.DecreaseSkrimCounter();
+			DecreaseSkrim();
 		}
 
 		public void KDispose()
