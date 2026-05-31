@@ -311,6 +311,12 @@ namespace Kampai.UI.View
 				}
 				base.view.LoadSellMarketplacePanel();
 			}
+			StartCoroutine(OpenSellPanelCoroutine(isInstant));
+		}
+
+		private global::System.Collections.IEnumerator OpenSellPanelCoroutine(bool isInstant)
+		{
+			yield return null;
 			if (base.view.BuyPanel != null && base.view.BuyPanel.IsOpen)
 			{
 				base.view.BuyPanel.SetOpen(false);
@@ -363,11 +369,17 @@ namespace Kampai.UI.View
 				}
 				base.view.LoadBuyMarketplacePanel();
 			}
+			StartCoroutine(OpenBuyPanelCoroutine(isInstant));
+		}
+
+		private global::System.Collections.IEnumerator OpenBuyPanelCoroutine(bool isInstant)
+		{
+			yield return null;
 			if (base.view.BuyPanel != null)
 			{
 				openBuyPanelSignal.Dispatch(isInstant);
 				base.view.BuyButtonView.gameObject.SetActive(false);
-				base.view.SellButtonView.gameObject.SetActive(true);
+				base.view.SellButtonView.gameObject.SetActive(false);
 				CheckForMarketplaceSurfacing();
 			}
 			if (!(base.view.SellPanel == null) && base.view.SellPanel.isOpen)
@@ -381,6 +393,7 @@ namespace Kampai.UI.View
 		private void OnBuyPanelClosed()
 		{
 			base.view.BuyButtonView.gameObject.SetActive(true);
+			base.view.SellButtonView.gameObject.SetActive(true);
 			currentMode = global::Kampai.UI.View.StorageBuildingModalTypes.STORAGE;
 			UpdateItems();
 		}

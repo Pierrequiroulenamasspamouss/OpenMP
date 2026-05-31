@@ -44,25 +44,8 @@ Technical documentation and guides.
 ## 🛠️ TODO List
 
 ### High Priority
-- [ ] **Android 8+ crash**: Self explanatory, I assume there is an issue with ARM7 libraries for FMOD 
-- [ ] **REBUILD FMOD PROJECT TO ADD CUSTOM AUDIO LOOPS**: Currently using raw banks extracted from the game, it is difficult to add new audio to the game
-- [ ] **Adding debug command to remove limited time offers**: Self explanatory 
-- [ ] **Events and server-related issues**: Social events not automatically restarted when a week has passed for example, or definitions not working properly
-- [ ] **Loading time very long on Android**: Maybe I should add a bundle mechanic back, if I have a way to rebuild the bundles. 
-- [ ] **Android Discord login doesn't work**: Add media playing and discord login on Android. 
-- [ ] **Video doesn't always play for new user.**: Self explanatory, depending on the platform the intro video should play, tho it doesn't.
-- [ ] **Some users get stuck at 30% loading on Android**: adding some telemetry back MIGHT be useful, some simple one that will send the logs to the server and then upload them in a Google drive folder
-- [ ] **TeamOrderBoard no audio**: Self explanatory 
-- [ ] **Grayed out minion button softlocking the game**: Could be fixed by removing the party prerequisite ?
-- [ ] **Permissions issues on later Android versions**: Self explanatory 
-- [ ] **Apply more recent changes to the Unity 2018 version** Unity 2018 branch needs to be updated. 
-- [ ] **Broken assets**: 
-    'Assets/Resources/content/shared/shared_animation/animations/shared_anim_solo_awareness/a
-    nim_solo_awareness_lookAt_01_minion.prefab'
-    'Assets/Resources/content/dlc/anim_townsquare/anim_solo_minionParty_GachaPlayerAcknowledge02_minion.prefab'
-    'Assets/Resources/content/dlc/anim_townsquare/anim_solo_minionParty_GachaPlayerAcknowledge01_minion.prefab'
-- [ ] **Missing language keys** I need to make a list of the missing keys. I need a tool to sync all the languages, so I can take each key, and see if for exampole a language has keys missing
-
+- [ ] **REBUILD FMOD PROJECT TO ADD CUSTOM AUDIO LOOPS**: Currently using raw banks extracted from the game.
+- [ ] **TeamOrderBoard no audio**: Stuart performance after order completion is missing sound (FMOD event missing).
 
 ### Features & Infrastructure
 - [ ] **TSE Logic Expansion**: Improve The Social Event (TSE) team systems and invitation reliability.

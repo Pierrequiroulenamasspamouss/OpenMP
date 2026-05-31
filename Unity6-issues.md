@@ -1,0 +1,2 @@
+- "Play offline" button is overlaying the "retry" button in ConnectivityLost panel
+- Storage building has the buy/sell buttons that are all messed up. 
