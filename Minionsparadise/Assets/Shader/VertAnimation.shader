@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Standard/Vert Animation" {
     Properties {
         _Color ("Main Color", Color) = (1,1,1,1)
@@ -52,10 +50,8 @@ Shader "Kampai/Standard/Vert Animation" {
             v2f vert (appdata v) {
                 v2f o;
                 
-                // Remap de la couleur du sommet [0, 1] vers [-1, 1] pour avoir un vent dans les deux sens
                 float3 vertColorMask = (2.0 * v.color.rgb) - 1.0;
                 
-                // Onde sinusoïdale propulsée par le temps
                 float3 animWave = vertColorMask * sin(_Time.y * _Speed) * _Scale;
                 v.vertex.xyz += animWave;
                 
@@ -69,7 +65,6 @@ Shader "Kampai/Standard/Vert Animation" {
                 
                 fixed3 finalRGB = lerp(tex.rgb, _BlendedColor.rgb, _BlendedColor.a);
                 
-                // --- Night Mode Injection ---
                 finalRGB = ApplyKampaiNight(finalRGB, _NightGlow);
                 
                 fixed finalAlpha = _Alpha + (tex.a * _FadeAlpha);

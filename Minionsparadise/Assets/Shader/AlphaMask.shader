@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/UI/AlphaMask"
 {
 Properties
@@ -18,9 +16,6 @@ Properties
  [Enum(Kampai.Util.Graphics.ColorMask)] _ColorMask ("Color Mask", Float) = 15
 }
 
-//////////////////////////////////////////////////////////////////
-// ANDROID GLES
-//////////////////////////////////////////////////////////////////
 
 SubShader
 {
@@ -44,7 +39,6 @@ SubShader
   Blend SrcAlpha OneMinusSrcAlpha
   ColorMask [_ColorMask]
 
-  // #pragma only_renderers gles gles3
 
   GLSLPROGRAM
   #version 100
@@ -112,9 +106,6 @@ ENDGLSL
  }
 }
 
-//////////////////////////////////////////////////////////////////
-// WEBPLAYER / DX
-//////////////////////////////////////////////////////////////////
 
 SubShader
 {

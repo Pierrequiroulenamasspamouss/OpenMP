@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Transparent/Vertex Color Stepped Anim" {
     Properties {
         _Color ("Main Color", Color) = (1,1,1,1)
@@ -42,7 +40,6 @@ Shader "Kampai/Transparent/Vertex Color Stepped Anim" {
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.color = v.color;
                 
-                // Calcul du décalage par "pas" (Stepped) pour lire l'image suivante
                 float stepX = 1.0 / _NumFrames;
                 float currentFrame = floor(_Time.y * _ScrollSpeed);
                 

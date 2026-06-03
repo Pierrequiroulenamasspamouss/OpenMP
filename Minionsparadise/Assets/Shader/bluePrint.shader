@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Standard/BluePrint" {
     Properties {
         _Color ("Main Color", Color) = (1,1,1,1)
@@ -69,13 +67,11 @@ Shader "Kampai/Standard/BluePrint" {
                 float4 pos : SV_POSITION;
                 float4 color : COLOR;
                 float2 uvMatCap : TEXCOORD0;
-                // La variable _GradTex_ST était calculée dans ton code original 
-                // mais jamais utilisée dans le fragment. Je l'ai optimisée ici.
             };
 
             sampler2D _GradTex;
             sampler2D _MatCapTex;
-            float _VertexColor; // Utilisé comme un toggle (0 ou 1)
+            float _VertexColor;
             float _Alpha;
             float4 _Color;
             float _FadeAlpha;
@@ -85,31 +81,23 @@ Shader "Kampai/Standard/BluePrint" {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 
-                // Mix entre blanc et la couleur du sommet selon le toggle _VertexColor
                 o.color = lerp(float4(1,1,1,1), v.color, _VertexColor);
                 
-                // Calcul MatCap : transforme la normale en View Space (espace caméra)
                 float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, v.normal);
-                // Transforme de la plage [-1, 1] vers [0, 1] pour les UVs
                 o.uvMatCap = viewNormal.xy * 0.5 + 0.5;
                 
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target {
-                // Lecture de la texture Matcap
                 float matcapX = tex2D(_MatCapTex, i.uvMatCap).r;
                 
-                // Génération customisée des UVs pour le dégradé 
-                // (exactement comme dans ton GLSL "tmpvar_1")
                 float2 gradUV;
                 gradUV.x = matcapX * i.color.r;
                 gradUV.y = 1.0 - i.color.b;
                 
-                // Couleur du dégradé
                 fixed4 gradColor = tex2D(_GradTex, gradUV);
                 
-                // Mix final avec _BlendedColor
                 fixed3 finalRGB = lerp(gradColor.rgb, _BlendedColor.rgb, _BlendedColor.a);
                 fixed finalAlpha = _Alpha * _FadeAlpha;
                 

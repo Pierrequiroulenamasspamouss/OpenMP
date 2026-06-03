@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Standard/Vertex Color" {
     Properties {
         _MainTex ("MainTex", 2D) = "white" {}
@@ -45,14 +43,11 @@ Shader "Kampai/Standard/Vertex Color" {
             fixed4 frag (v2f i) : SV_Target {
                 fixed4 tex = tex2D(_MainTex, i.uv);
                 
-                // Extraction du canal Rouge de la lumière ambiante Unity (glstate_lightmodel_ambient)
                 float ambientLight = 1.0 + (UNITY_LIGHTMODEL_AMBIENT.r * 2.0);
                 
-                // Calcul restauré à partir de : c_1.xyz = diff_2 * ((tex - (v.color * -_boost)) * tex)
                 fixed3 colorMix = tex.rgb + (i.color.rgb * _boost);
                 fixed3 finalRGB = ambientLight * (colorMix * tex.rgb);
                 
-                // --- Night Mode Injection ---
                 finalRGB = ApplyKampaiNight(finalRGB, _NightGlow);
                 
                 return fixed4(finalRGB, 1.0);

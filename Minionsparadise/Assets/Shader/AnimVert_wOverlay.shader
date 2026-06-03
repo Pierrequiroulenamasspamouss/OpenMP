@@ -1,7 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
 Shader "Kampai/Animated/AnimVert_wOverlay" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" { }
@@ -59,9 +55,6 @@ Shader "Kampai/Animated/AnimVert_wOverlay" {
     };
     ENDCG
 
-    // ==========================================
-    // SUBSHADER 1 : LOD 200 (Vertex Anim + Flow Wave)
-    // ==========================================
     SubShader { 
         LOD 200
         Tags { "CanUseSpriteAtlas"="true" }
@@ -87,31 +80,24 @@ Shader "Kampai/Animated/AnimVert_wOverlay" {
             v2f vert_anim (appdata v) {
                 v2f o;
                 
-                // 1. Décodage du FlowDir depuis UV1
                 float2 flowDir = frac(v.uv1.xy);
                 float amplitude = (floor(v.uv1.x) / 64.0) * 0.01;
                 float frequency = floor(v.uv1.y) / 255.0;
                 float2 decodedFlowDir = (flowDir - 0.5) * 2.0;
                 
-                // 2. Animation des Sommets (Bruit)
                 float3 magicVector = float3(12.9898, 78.233, 0.0);
                 float dotProd = dot(v.normal + _Time.y, magicVector);
                 float3 noise = sin(dotProd * frequency) * amplitude * v.normal;
                 
                 v.vertex.xyz += noise;
                 
-                // 3. Calcul des UV de la MainTex
                 o.uvMain = TRANSFORM_TEX(v.uv0, _MainTex);
                 
-                // 4. Calcul des UV pour la WaveTex basé sur le WORLD SPACE
                 float4 worldPos = mul(unity_ObjectToWorld, v.vertex);
-                // Projection personnalisée : X s'incline en fonction de Y, Y utilise le Z global
                 float2 projUV = float2(worldPos.x - (worldPos.y * 0.5), worldPos.z + (worldPos.y * 0.5));
                 
-                // Application de l'échelle et du décalage (Tiling/Offset) avec un facteur arbitraire de 0.2
                 float2 baseFlowUV = (projUV * _WaveTex_ST.xy + _WaveTex_ST.zw) * 0.2;
                 
-                // 5. Calcul des Phases pour le Flow Mapping
                 float timeVar = frac(_Time.x * 3.0);
                 o.phase0 = baseFlowUV - (decodedFlowDir * timeVar);
                 o.phase1 = baseFlowUV - (decodedFlowDir * frac(timeVar + 0.5));
@@ -124,33 +110,26 @@ Shader "Kampai/Animated/AnimVert_wOverlay" {
             }
 
             half4 frag (v2f i) : SV_Target {
-                // Lecture de la déformation pour les vagues
                 float2 flow0 = tex2D(_WaveTex, i.phase0).xy;
                 float2 flow1 = tex2D(_WaveTex, i.phase1).xy;
                 
                 float2 blendedFlow = lerp(flow0, flow1, i.blendWeight);
                 float2 distortionUV = ((blendedFlow * 2.0) - 1.0) * 0.25;
                 
-                // Lecture de la force des vagues (canal Bleu/Z)
                 float waveStrength = tex2D(_WaveTex, distortionUV).b;
                 
-                // Lecture de la texture principale
                 half4 mainCol = tex2D(_MainTex, i.uvMain) * i.color;
                 
-                // --- Le super mélange de la mort (mix décompilé) ---
-                // 1. Mélange entre la couleur pure du sommet et la texture principale, dicté par l'Alpha du sommet.
                 half3 baseMix = lerp(i.color.rgb, mainCol.rgb, i.color.aaa);
                 
-                // 2. Applique l'effet des vagues, dont l'intensité est contrôlée par l'Alpha du sommet.
                 float waveEffect = lerp(waveStrength, 0.5, i.color.a) * 2.0;
                 
                 half4 finalCol;
                 finalCol.rgb = baseMix * waveEffect;
                 
-                // --- Night Mode Injection ---
                 finalCol.rgb = ApplyKampaiNight(finalCol.rgb, _NightGlow);
                 
-                finalCol.a = _FadeAlpha; // Transparence globale
+                finalCol.a = _FadeAlpha;
 
                 return finalCol;
             }
@@ -158,9 +137,6 @@ Shader "Kampai/Animated/AnimVert_wOverlay" {
         }
     }
 
-    // ==========================================
-    // SUBSHADER 2 : Fallback sans Vertex Anim
-    // ==========================================
     SubShader { 
         Tags { "CanUseSpriteAtlas"="true" }
         
@@ -188,7 +164,6 @@ Shader "Kampai/Animated/AnimVert_wOverlay" {
                 float2 flowDir = frac(v.uv1.xy);
                 float2 decodedFlowDir = (flowDir - 0.5) * 2.0;
                 
-                // Pas d'animation des sommets
                 o.uvMain = TRANSFORM_TEX(v.uv0, _MainTex);
                 
                 float4 worldPos = mul(unity_ObjectToWorld, v.vertex);
@@ -206,7 +181,6 @@ Shader "Kampai/Animated/AnimVert_wOverlay" {
                 return o;
             }
 
-            // Réutilisation de la fonction Fragment
             half4 frag (v2f i) : SV_Target {
                 float2 flow0 = tex2D(_WaveTex, i.phase0).xy;
                 float2 flow1 = tex2D(_WaveTex, i.phase1).xy;
@@ -223,7 +197,6 @@ Shader "Kampai/Animated/AnimVert_wOverlay" {
                 half4 finalCol;
                 finalCol.rgb = baseMix * waveEffect;
                 
-                // --- Night Mode Injection ---
                 finalCol.rgb = ApplyKampaiNight(finalCol.rgb, _NightGlow);
                 
                 finalCol.a = _FadeAlpha;

@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Standard/Hidden" {
     Properties {
         _Color ("Main Color", Color) = (1,1,1,1)
@@ -31,7 +29,6 @@ Shader "Kampai/Standard/Hidden" {
 
             v2f vert (appdata v) {
                 v2f o;
-                // Exclut le sommet du champ de vision de la caméra 
                 o.vertex = UnityObjectToClipPos(v.vertex) - float4(0.0, 0.0, 1000000.0, 0.0);
                 o.uv = v.uv;
                 return o;

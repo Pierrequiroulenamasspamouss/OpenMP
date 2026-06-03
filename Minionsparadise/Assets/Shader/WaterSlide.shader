@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Water/WaterSlide" {
     Properties {
         _AlphaMask ("Alpha Mask", 2D) = "gray" { }
@@ -8,14 +6,11 @@ Shader "Kampai/Water/WaterSlide" {
         _time_scale ("time_scale", Float) = 10
         _NightGlow ("Night Glow", Range(0,1)) = 0
         
-        // Ajoutés pour éviter les erreurs de compilation avec la commande Offset
         [HideInInspector] _OffsetFactor ("Offset Factor", Float) = 0
         [HideInInspector] _OffsetUnits ("Offset Units", Float) = 0
     }
     
     SubShader { 
-        // Le jeu forçait le rendu dans la queue Geometry pour que le toboggan 
-        // s'affiche avant les autres éléments transparents.
         Tags { "QUEUE"="Geometry" "IGNOREPROJECTOR"="true" "RenderType"="Transparent" }
         
         Pass {
@@ -56,10 +51,8 @@ Shader "Kampai/Water/WaterSlide" {
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.color = v.color;
                 
-                // Calcul du défilement de l'eau (scrolling)
                 float scroll = frac(_Time.x * _time_scale);
                 
-                // Application du Tiling (XY) et du Scrolling sur l'axe X (le sens de la descente)
                 o.uvDiff1 = v.uv * _diffuse1_ST.xy;
                 o.uvDiff1.x -= scroll;
                 
@@ -77,15 +70,10 @@ Shader "Kampai/Water/WaterSlide" {
                 fixed4 d2 = tex2D(_diffuse2, i.uvDiff2);
                 fixed4 mask = tex2D(_AlphaMask, i.uvMask);
                 
-                // --- Formule magique "Screen Blend" restaurée ---
-                // Clamp/Saturate garantit que les couleurs ne dépassent pas 1.0
                 fixed3 finalRGB = saturate(1.0 - ((1.0 - d1.rgb) * (1.0 - d2.rgb)));
                 
-                // L'opacité combine l'alpha du sommet (Vertex Color) 
-                // avec l'addition des canaux Rouge et Bleu du masque
                 fixed finalAlpha = i.color.a * saturate(mask.r + mask.b);
                 
-                // --- Night Mode Injection ---
                 finalRGB = ApplyKampaiNight(finalRGB, _NightGlow);
                 
                 return fixed4(finalRGB, finalAlpha);

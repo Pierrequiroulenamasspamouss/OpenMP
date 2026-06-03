@@ -1,7 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-// Upgrade NOTE: replaced tex2D unity_Lightmap with UNITY_SAMPLE_TEX2D
-
 Shader "Kampai/Standard/Matcap" {
     Properties {
         _Color ("Main Color", Color) = (1,1,1,1)
@@ -26,7 +22,6 @@ Shader "Kampai/Standard/Matcap" {
         [Enum(Kampai.Editor.MatCapBlend)] _MatCapBlend ("MatCap Blend", Float) = 0
         [Enum(Kampai.Util.Graphics.ColorMask)] _ColorMask ("Color Mask", Float) = 15
         
-        // Stencil properties omitted for brevity, but kept in SubShader
         __Stencil ("Ref", Float) = 0
         __StencilComp ("Comparison", Float) = 8
         __StencilReadMask ("Read Mask", Float) = 255
@@ -53,9 +48,7 @@ Shader "Kampai/Standard/Matcap" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // Compilation conditionnelle pour l'animation des sommets
             #pragma multi_compile VERTEX_STANDARD VERTEX_ANIM
-            // Compilation conditionnelle pour les lightmaps
             #pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON
             #include "UnityCG.cginc"
 
@@ -88,10 +81,9 @@ Shader "Kampai/Standard/Matcap" {
                 v2f o;
                 
                 #ifdef VERTEX_ANIM
-                    // Animation "waving" basée sur le temps et la couleur des sommets
                     float3 animOffset = (2.0 * v.color.rgb - 1.0) * sin(_Time.y * _VertexAnimSpeed) * _VertexAnimScale;
                     v.vertex.xyz += animOffset;
-                    o.color = fixed4(1,1,1,1); // Surcharge la couleur
+                    o.color = fixed4(1,1,1,1);
                 #else
                     o.color = lerp(fixed4(1,1,1,1), v.color, _VertexColor);
                 #endif
@@ -99,7 +91,6 @@ Shader "Kampai/Standard/Matcap" {
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 
-                // Calcul du Matcap (Normale Vue)
                 float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, v.normal);
                 o.uvMatCap = normalize(viewNormal).xy * 0.5 + 0.5;
 
@@ -114,7 +105,6 @@ Shader "Kampai/Standard/Matcap" {
                 fixed4 tex = tex2D(_MainTex, i.uv) * i.color * _Color * _Boost;
                 fixed3 matcap = tex2D(_MatCapTex, i.uvMatCap).rgb * _MatCapBoost;
                 
-                // Mix MatCap selon l'enum _MatCapBlend (0 = Multiply, 1 = Additive)
                 fixed3 mixedMatcap = lerp(tex.rgb * matcap, tex.rgb + matcap, _MatCapBlend);
                 fixed3 finalRGB = lerp(mixedMatcap, _BlendedColor.rgb, _BlendedColor.a);
                 
@@ -123,7 +113,7 @@ Shader "Kampai/Standard/Matcap" {
 
                 #ifdef LIGHTMAP_ON
                     fixed4 lm = UNITY_SAMPLE_TEX2D(unity_Lightmap, i.uvLM);
-                    finalCol.rgb *= (lm.rgb * 2.0); // Décodage de la lightmap
+                    finalCol.rgb *= (lm.rgb * 2.0);
                 #endif
 
                 return finalCol;

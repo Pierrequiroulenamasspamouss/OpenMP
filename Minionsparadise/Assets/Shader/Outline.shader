@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Standard/Outline" {
     Properties {
         _Color ("Main Color", Color) = (1,1,1,1)
@@ -34,15 +32,13 @@ Shader "Kampai/Standard/Outline" {
     SubShader { 
         Tags { "LIGHTMODE"="Always" "CanUseSpriteAtlas"="true" }
         
-        // Appelle la passe normale de ton shader BluePrint
         UsePass "Kampai/Standard/BluePrint/BASE"
         
-        // Passe spécifique pour le contour (Outline)
         Pass {
             Tags { "LIGHTMODE"="Always" "CanUseSpriteAtlas"="true" }
             ZTest [_ZTest]
             ZWrite [_ZWrite]
-            Cull Front // <--- C'est ça qui crée l'effet de contour magique !
+            Cull Front
             
             Stencil {
                 Ref [__Stencil] ReadMask [__StencilReadMask] WriteMask [__StencilWriteMask]
@@ -75,10 +71,8 @@ Shader "Kampai/Standard/Outline" {
 
             v2f vert (appdata v) {
                 v2f o;
-                // Détermine si on utilise la couleur du sommet ou du blanc pur
                 float4 vColor = lerp(float4(1,1,1,1), v.color, _VertexColor);
                 
-                // Le canal Vert (G) dicte l'épaisseur de l'outline à cet endroit précis
                 float displacement = _Outline * (vColor.g * 0.01);
                 v.vertex.xyz += v.normal * displacement;
                 

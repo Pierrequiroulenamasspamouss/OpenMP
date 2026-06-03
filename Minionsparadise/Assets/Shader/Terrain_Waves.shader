@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Water/Terrain Waves" {
     Properties {
         _Diffuse ("Diffuse", 2D) = "white" { }
@@ -53,11 +51,9 @@ Shader "Kampai/Water/Terrain Waves" {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 
-                // Scrolling des UV sur l'axe Y pour la texture diffuse
                 float2 uvOffset = float2(0.0, frac(_Time.y * _Speed));
                 o.uvDiffuse = (v.uv0 * _Diffuse_ST.xy) + _Diffuse_ST.zw + uvOffset;
                 
-                // Le masque ne bouge pas (il utilise un autre set d'UVs)
                 o.uvMask = (v.uv1 * _AlphaMask_ST.xy) + _AlphaMask_ST.zw;
                 return o;
             }
@@ -68,10 +64,8 @@ Shader "Kampai/Water/Terrain Waves" {
                 
                 fixed3 finalRGB = _Color.rgb + diff.rgb;
                 
-                // --- Night Mode Injection ---
                 finalRGB = ApplyKampaiNight(finalRGB, _NightGlow);
 
-                // L'alpha est multiplié par le canal Rouge de la diffuse ET du masque
                 fixed finalAlpha = diff.r * mask * _Color.a * _FadeAlpha;
                 
                 return fixed4(finalRGB, finalAlpha);

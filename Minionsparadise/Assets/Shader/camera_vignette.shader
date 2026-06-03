@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Particles/Camera Vignette"
 {
 Properties
@@ -37,10 +35,6 @@ SubShader
   Blend [_SrcBlend] [_DstBlend]
   Offset [_OffsetFactor], [_OffsetUnits]
 
-  //////////////////////////////////////
-  // GLES / GLES3 PASS
-  //////////////////////////////////////
-  // #pragma only_renderers gles gles3
 
   GLSLPROGRAM
   #version 100
@@ -94,9 +88,6 @@ SubShader
   ENDGLSL
  }
 
- //////////////////////////////////////
- // DX9 / DX11 / WebPlayer FALLBACK
- //////////////////////////////////////
  Pass
  {
   Tags { "LIGHTMODE"="ForwardBase" }
