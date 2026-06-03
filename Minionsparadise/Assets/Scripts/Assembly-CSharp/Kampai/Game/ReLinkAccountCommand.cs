@@ -69,10 +69,10 @@ namespace Kampai.Game
 		private void RelinkAccount()
 		{
 			global::Kampai.Game.UserSession userSession = userSessionService.UserSession;
-			string arg = global::UnityEngine.WWW.EscapeURL(userSession.UserID);
+			string arg = global::System.Uri.EscapeDataString(userSession.UserID);
 			string plainText = LocalPersistService.GetData("AnonymousID");
 			encryptionService.TryDecrypt(plainText, "Kampai!", out plainText);
-			string arg2 = global::UnityEngine.WWW.EscapeURL(plainText);
+			string arg2 = global::System.Uri.EscapeDataString(plainText);
 			global::Kampai.Game.AccountReLinkRequest accountReLinkRequest = new global::Kampai.Game.AccountReLinkRequest();
 			if (socialService.isLoggedIn)
 			{

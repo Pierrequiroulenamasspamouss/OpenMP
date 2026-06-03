@@ -26,7 +26,7 @@ public class Go : global::UnityEngine.MonoBehaviour
 		{
 			if (!_instance && !_applicationIsQuitting)
 			{
-				_instance = global::UnityEngine.Object.FindObjectOfType(typeof(Go)) as Go;
+				_instance = global::UnityEngine.Object.FindFirstObjectByType(typeof(Go)) as Go;
 				if (!_instance)
 				{
 					global::UnityEngine.GameObject gameObject = new global::UnityEngine.GameObject("GoKit");

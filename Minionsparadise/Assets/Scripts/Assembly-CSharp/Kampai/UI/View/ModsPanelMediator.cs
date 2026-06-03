@@ -200,7 +200,7 @@ namespace Kampai.UI.View
 			m_lastClickTime = Time.time;
 
 			Debug.Log("[ModsMediator] Night Toggle Clicked!");
-			DayNightCycleManager manager = Object.FindObjectOfType<DayNightCycleManager>();
+			DayNightCycleManager manager = Object.FindFirstObjectByType<DayNightCycleManager>();
 			if (manager != null)
 			{
 				manager.CycleNightMode();
@@ -218,7 +218,7 @@ namespace Kampai.UI.View
 		{
 			if (view.nightToggleText != null)
 			{
-				DayNightCycleManager manager = Object.FindObjectOfType<DayNightCycleManager>();
+				DayNightCycleManager manager = Object.FindFirstObjectByType<DayNightCycleManager>();
 				if (manager != null)
 				{
 					view.nightToggleText.text = "MODE: " + manager.GetCurrentMode().ToString();

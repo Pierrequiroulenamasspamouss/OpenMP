@@ -160,10 +160,12 @@ namespace Kampai.Game
 			gameObject.transform.parent = parent;
 			global::UnityEngine.LineRenderer lineRenderer = gameObject.AddComponent<global::UnityEngine.LineRenderer>();
 			lineRenderer.material = material;
-			lineRenderer.SetWidth(0.025f, 0.025f);
-			lineRenderer.SetColors(color, color);
+			lineRenderer.startWidth = 0.025f;
+			lineRenderer.endWidth = 0.025f;
+			lineRenderer.startColor = color;
+			lineRenderer.endColor = color;
 			int num = 0;
-			lineRenderer.SetVertexCount(2 * cols + 2);
+			lineRenderer.positionCount = 2 * cols + 2;
 			for (int i = 0; i <= cols; i++)
 			{
 				float x = (float)i - 0.5f;
@@ -181,10 +183,12 @@ namespace Kampai.Game
 			gameObject.transform.parent = parent;
 			lineRenderer = gameObject.AddComponent<global::UnityEngine.LineRenderer>();
 			lineRenderer.material = material;
-			lineRenderer.SetWidth(0.025f, 0.025f);
-			lineRenderer.SetColors(color, color);
+			lineRenderer.startWidth = 0.025f;
+			lineRenderer.endWidth = 0.025f;
+			lineRenderer.startColor = color;
+			lineRenderer.endColor = color;
 			num = 0;
-			lineRenderer.SetVertexCount(2 * rows + 2);
+			lineRenderer.positionCount = 2 * rows + 2;
 			for (int j = 0; j <= rows; j++)
 			{
 				float z3 = (float)j - 0.5f;

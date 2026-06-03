@@ -293,7 +293,7 @@ public class SwrveSDK
 			global::UnityEngine.PlayerPrefs.Save();
 		}
 		SwrveLog.Log("Your user id is: " + userId);
-		escapedUserId = global::UnityEngine.WWW.EscapeURL(userId);
+		escapedUserId = global::System.Uri.EscapeDataString(userId);
 		if (string.IsNullOrEmpty(Language))
 		{
 			Language = GetDeviceLanguage();
@@ -512,7 +512,7 @@ public class SwrveSDK
 		{
 			abTestUserResourcesDiffConnecting = true;
 			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder(abTestResourcesDiffUrl);
-			stringBuilder.AppendFormat("?user={0}&api_key={1}&app_version={2}&joined={3}", escapedUserId, apiKey, global::UnityEngine.WWW.EscapeURL(GetAppVersion()), installTimeEpoch);
+			stringBuilder.AppendFormat("?user={0}&api_key={1}&app_version={2}&joined={3}", escapedUserId, apiKey, global::System.Uri.EscapeDataString(GetAppVersion()), installTimeEpoch);
 			SwrveLog.Log("AB Test User Resources Diff request: " + stringBuilder.ToString());
 			StartTask("GetUserResourcesDiff_Coroutine", GetUserResourcesDiff_Coroutine(stringBuilder.ToString(), onResult, onError, "rsdfngt2"));
 		}
@@ -2153,7 +2153,7 @@ public class SwrveSDK
 			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder(resourcesAndCampaignsUrl).AppendFormat("?user={0}&api_key={1}&app_version={2}&joined={3}", escapedUserId, ApiKey, global::UnityEngine.WWW.EscapeURL(GetAppVersion()), installTimeEpoch);
 			if (config.TalkEnabled)
 			{
-				stringBuilder.AppendFormat("&version={0}&orientation={1}&language={2}&app_store={3}&device_width={4}&device_height={5}&device_dpi={6}&os_version={7}&device_name={8}", CampaignEndpointVersion, config.Orientation.ToString().ToLower(), Language, config.AppStore, deviceWidth, deviceHeight, num, global::UnityEngine.WWW.EscapeURL(operatingSystem), global::UnityEngine.WWW.EscapeURL(deviceModel));
+				stringBuilder.AppendFormat("&version={0}&orientation={1}&language={2}&app_store={3}&device_width={4}&device_height={5}&device_dpi={6}&os_version={7}&device_name={8}", CampaignEndpointVersion, config.Orientation.ToString().ToLower(), Language, config.AppStore, deviceWidth, deviceHeight, num, global::System.Uri.EscapeDataString(operatingSystem), global::System.Uri.EscapeDataString(deviceModel));
 			}
 			if (!string.IsNullOrEmpty(lastETag))
 			{

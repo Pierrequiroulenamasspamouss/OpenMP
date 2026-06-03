@@ -8,7 +8,7 @@ public class AlligatorCameraController : global::UnityEngine.MonoBehaviour
 
 	public void Start()
 	{
-		parentView = global::UnityEngine.Object.FindObjectOfType<global::Kampai.Game.Mignette.AlligatorSkiing.View.AlligatorSkiingMignetteManagerView>();
+		parentView = global::UnityEngine.Object.FindFirstObjectByType<global::Kampai.Game.Mignette.AlligatorSkiing.View.AlligatorSkiingMignetteManagerView>();
 	}
 
 	public void AlignWithTransform(global::UnityEngine.Transform t, float duration, GoEaseType easeType, global::System.Action onComplete = null)

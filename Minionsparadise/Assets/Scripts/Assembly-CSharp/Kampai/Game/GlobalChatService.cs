@@ -4,6 +4,7 @@ using Kampai.Main;
 using Kampai.UI.View;
 using Kampai.Util;
 using UnityEngine;
+using UnityEngine.Networking;
 using Newtonsoft.Json;
 
 namespace Kampai.Game

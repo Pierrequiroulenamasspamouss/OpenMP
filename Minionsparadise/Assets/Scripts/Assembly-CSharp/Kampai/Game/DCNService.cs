@@ -165,7 +165,7 @@ namespace Kampai.Game
 
 		public string GetLaunchURL()
 		{
-			string value = global::UnityEngine.WWW.EscapeURL("minions:\\dcn");
+			string value = global::System.Uri.EscapeDataString("minions:\\dcn");
 			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder(dcnModel.FeaturedUrl).Append("&token=").Append(GetToken()).Append("&return_name=")
 				.Append("Minions")
 				.Append("&return_url=")

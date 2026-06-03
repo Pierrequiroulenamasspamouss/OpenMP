@@ -21,7 +21,7 @@ namespace Kampai.Util.AnimatorStateInfo
 			gameObject.transform.localScale = global::UnityEngine.Vector3.one;
 			global::UnityEngine.GameObject original = global::UnityEngine.Resources.Load<global::UnityEngine.GameObject>("Debug/UI/AnimatorStateView");
 			global::System.Collections.Generic.List<global::UnityEngine.Transform> list = new global::System.Collections.Generic.List<global::UnityEngine.Transform>();
-			global::UnityEngine.Animator[] array = global::UnityEngine.Object.FindObjectsOfType<global::UnityEngine.Animator>();
+			global::UnityEngine.Animator[] array = global::UnityEngine.Object.FindObjectsByType<global::UnityEngine.Animator>(global::UnityEngine.FindObjectsSortMode.None);
 			foreach (global::UnityEngine.Animator animator in array)
 			{
 				if (!list.Contains(animator.transform))

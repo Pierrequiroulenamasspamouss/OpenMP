@@ -16,7 +16,7 @@ public class WaterslideCameraTrigger : global::UnityEngine.MonoBehaviour
 
 	public void Start()
 	{
-		parentView = global::UnityEngine.Object.FindObjectOfType<global::Kampai.Game.Mignette.WaterSlide.View.WaterSlideMignetteManagerView>();
+		parentView = global::UnityEngine.Object.FindFirstObjectByType<global::Kampai.Game.Mignette.WaterSlide.View.WaterSlideMignetteManagerView>();
 	}
 
 	private void OnTriggerEnter(global::UnityEngine.Collider other)
