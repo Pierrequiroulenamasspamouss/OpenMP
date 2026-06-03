@@ -1,54 +1,79 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
+
 namespace Prime31
 {
 	public static class DeserializationExtensions
 	{
-		public static global::System.Collections.Generic.List<T> toList<T>(this global::System.Collections.IList self)
+		public static List<T> toList<T>(this IList self)
 		{
-			global::System.Collections.Generic.List<T> list = new global::System.Collections.Generic.List<T>();
-			foreach (global::System.Collections.Generic.Dictionary<string, object> item in self)
+			List<T> list = new List<T>();
+			IEnumerator enumerator = self.GetEnumerator();
+			try
 			{
-				list.Add(item.toClass<T>());
+				while (enumerator.MoveNext())
+				{
+					Dictionary<string, object> self2 = (Dictionary<string, object>)enumerator.Current;
+					list.Add(self2.toClass<T>());
+				}
+				return list;
 			}
-			return list;
+			finally
+			{
+				IDisposable disposable;
+				if ((disposable = (enumerator as IDisposable)) != null)
+				{
+					disposable.Dispose();
+				}
+			}
 		}
 
-		public static T toClass<T>(this global::System.Collections.IDictionary self)
+		public static T toClass<T>(this IDictionary self)
 		{
-			object obj = global::System.Activator.CreateInstance(typeof(T));
-			global::System.Reflection.FieldInfo[] fields = typeof(T).GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic);
-			foreach (global::System.Reflection.FieldInfo fieldInfo in fields)
+			object obj = Activator.CreateInstance(typeof(T));
+			FieldInfo[] fields = typeof(T).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+			foreach (FieldInfo fieldInfo in fields)
 			{
-				object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(global::Prime31.P31DeserializeableFieldAttribute), true);
+				object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(P31DeserializeableFieldAttribute), true);
 				foreach (object obj2 in customAttributes)
 				{
-					global::Prime31.P31DeserializeableFieldAttribute p31DeserializeableFieldAttribute = obj2 as global::Prime31.P31DeserializeableFieldAttribute;
+					P31DeserializeableFieldAttribute p31DeserializeableFieldAttribute = obj2 as P31DeserializeableFieldAttribute;
 					if (!self.Contains(p31DeserializeableFieldAttribute.key))
 					{
 						continue;
 					}
 					object obj3 = self[p31DeserializeableFieldAttribute.key];
-					if (obj3 is global::System.Collections.IDictionary)
+					if (obj3 is IDictionary)
 					{
-						global::System.Reflection.MethodInfo methodInfo = typeof(global::Prime31.DeserializationExtensions).GetMethod("toClass").MakeGenericMethod(p31DeserializeableFieldAttribute.type);
-						object value = methodInfo.Invoke(null, new object[1] { obj3 });
+						MethodInfo methodInfo = typeof(DeserializationExtensions).GetMethod("toClass").MakeGenericMethod(p31DeserializeableFieldAttribute.type);
+						object value = methodInfo.Invoke(null, new object[1]
+						{
+							obj3
+						});
 						fieldInfo.SetValue(obj, value);
 						self.Remove(p31DeserializeableFieldAttribute.key);
 					}
-					else if (obj3 is global::System.Collections.IList)
+					else if (obj3 is IList)
 					{
 						if (!p31DeserializeableFieldAttribute.isCollection)
 						{
-							global::UnityEngine.Debug.LogError("found an IList but the field is not a collection: " + p31DeserializeableFieldAttribute.key);
+							Debug.LogError("found an IList but the field is not a collection: " + p31DeserializeableFieldAttribute.key);
 							continue;
 						}
-						global::System.Reflection.MethodInfo methodInfo2 = typeof(global::Prime31.DeserializationExtensions).GetMethod("toList").MakeGenericMethod(p31DeserializeableFieldAttribute.type);
-						object value2 = methodInfo2.Invoke(null, new object[1] { obj3 });
+						MethodInfo methodInfo2 = typeof(DeserializationExtensions).GetMethod("toList").MakeGenericMethod(p31DeserializeableFieldAttribute.type);
+						object value2 = methodInfo2.Invoke(null, new object[1]
+						{
+							obj3
+						});
 						fieldInfo.SetValue(obj, value2);
 						self.Remove(p31DeserializeableFieldAttribute.key);
 					}
 					else
 					{
-						fieldInfo.SetValue(obj, global::System.Convert.ChangeType(obj3, fieldInfo.FieldType));
+						fieldInfo.SetValue(obj, Convert.ChangeType(obj3, fieldInfo.FieldType));
 						self.Remove(p31DeserializeableFieldAttribute.key);
 					}
 				}
@@ -56,23 +81,36 @@ namespace Prime31
 			return (T)obj;
 		}
 
-		public static global::System.Collections.Generic.Dictionary<string, object> toDictionary(this object self)
+		public static Dictionary<string, object> toDictionary(this object self)
 		{
-			global::System.Collections.Generic.Dictionary<string, object> dictionary = new global::System.Collections.Generic.Dictionary<string, object>();
-			global::System.Reflection.FieldInfo[] fields = self.GetType().GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic);
-			foreach (global::System.Reflection.FieldInfo fieldInfo in fields)
+			Dictionary<string, object> dictionary = new Dictionary<string, object>();
+			FieldInfo[] fields = self.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+			foreach (FieldInfo fieldInfo in fields)
 			{
-				object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(global::Prime31.P31DeserializeableFieldAttribute), true);
+				object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(P31DeserializeableFieldAttribute), true);
 				foreach (object obj in customAttributes)
 				{
-					global::Prime31.P31DeserializeableFieldAttribute p31DeserializeableFieldAttribute = obj as global::Prime31.P31DeserializeableFieldAttribute;
+					P31DeserializeableFieldAttribute p31DeserializeableFieldAttribute = obj as P31DeserializeableFieldAttribute;
 					if (p31DeserializeableFieldAttribute.isCollection)
 					{
-						global::System.Collections.IEnumerable enumerable = fieldInfo.GetValue(self) as global::System.Collections.IEnumerable;
-						global::System.Collections.ArrayList arrayList = new global::System.Collections.ArrayList();
-						foreach (object item in enumerable)
+						IEnumerable enumerable = fieldInfo.GetValue(self) as IEnumerable;
+						ArrayList arrayList = new ArrayList();
+						IEnumerator enumerator = enumerable.GetEnumerator();
+						try
 						{
-							arrayList.Add(item.toDictionary());
+							while (enumerator.MoveNext())
+							{
+								object current = enumerator.Current;
+								arrayList.Add(current.toDictionary());
+							}
+						}
+						finally
+						{
+							IDisposable disposable;
+							if ((disposable = (enumerator as IDisposable)) != null)
+							{
+								disposable.Dispose();
+							}
 						}
 						dictionary[p31DeserializeableFieldAttribute.key] = arrayList;
 					}
@@ -89,24 +127,37 @@ namespace Prime31
 			return dictionary;
 		}
 
-		[global::System.Obsolete("Use the toDictionary method to get a proper generic Dictionary returned. Hashtables are obsolute.")]
-		public static global::System.Collections.Hashtable toHashtable(this object self)
+		[Obsolete("Use the toDictionary method to get a proper generic Dictionary returned. Hashtables are obsolute.")]
+		public static Hashtable toHashtable(this object self)
 		{
-			global::System.Collections.Hashtable hashtable = new global::System.Collections.Hashtable();
-			global::System.Reflection.FieldInfo[] fields = self.GetType().GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic);
-			foreach (global::System.Reflection.FieldInfo fieldInfo in fields)
+			Hashtable hashtable = new Hashtable();
+			FieldInfo[] fields = self.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+			foreach (FieldInfo fieldInfo in fields)
 			{
-				object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(global::Prime31.P31DeserializeableFieldAttribute), true);
+				object[] customAttributes = fieldInfo.GetCustomAttributes(typeof(P31DeserializeableFieldAttribute), true);
 				foreach (object obj in customAttributes)
 				{
-					global::Prime31.P31DeserializeableFieldAttribute p31DeserializeableFieldAttribute = obj as global::Prime31.P31DeserializeableFieldAttribute;
+					P31DeserializeableFieldAttribute p31DeserializeableFieldAttribute = obj as P31DeserializeableFieldAttribute;
 					if (p31DeserializeableFieldAttribute.isCollection)
 					{
-						global::System.Collections.IEnumerable enumerable = fieldInfo.GetValue(self) as global::System.Collections.IEnumerable;
-						global::System.Collections.ArrayList arrayList = new global::System.Collections.ArrayList();
-						foreach (object item in enumerable)
+						IEnumerable enumerable = fieldInfo.GetValue(self) as IEnumerable;
+						ArrayList arrayList = new ArrayList();
+						IEnumerator enumerator = enumerable.GetEnumerator();
+						try
 						{
-							arrayList.Add(item.toHashtable());
+							while (enumerator.MoveNext())
+							{
+								object current = enumerator.Current;
+								arrayList.Add(current.toHashtable());
+							}
+						}
+						finally
+						{
+							IDisposable disposable;
+							if ((disposable = (enumerator as IDisposable)) != null)
+							{
+								disposable.Dispose();
+							}
 						}
 						hashtable[p31DeserializeableFieldAttribute.key] = arrayList;
 					}

@@ -1,12 +1,16 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
 namespace Prime31
 {
-	public class ThreadingCallbackHelper : global::UnityEngine.MonoBehaviour
+	public class ThreadingCallbackHelper : MonoBehaviour
 	{
-		private global::System.Collections.Generic.List<global::System.Action> _actions = new global::System.Collections.Generic.List<global::System.Action>();
+		private List<Action> _actions = new List<Action>();
 
-		private global::System.Collections.Generic.List<global::System.Action> _currentActions = new global::System.Collections.Generic.List<global::System.Action>();
+		private List<Action> _currentActions = new List<Action>();
 
-		public void addActionToQueue(global::System.Action action)
+		public void addActionToQueue(Action action)
 		{
 			lock (_actions)
 			{

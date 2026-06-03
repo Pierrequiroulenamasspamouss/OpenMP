@@ -1,6 +1,8 @@
+using System.Collections.Generic;
+
 namespace Prime31
 {
-	public class JsonArray : global::System.Collections.Generic.List<object>
+	public class JsonArray : List<object>
 	{
 		public JsonArray()
 		{
@@ -13,7 +15,7 @@ namespace Prime31
 
 		public override string ToString()
 		{
-			return global::Prime31.JsonFormatter.prettyPrint(global::Prime31.SimpleJson.encode(this)) ?? string.Empty;
+			return JsonFormatter.prettyPrint(SimpleJson.encode(this)) ?? string.Empty;
 		}
 	}
 }

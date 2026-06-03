@@ -1,8 +1,11 @@
+using System;
+using UnityEngine;
+
 namespace Prime31
 {
-	public class LifecycleHelper : global::UnityEngine.MonoBehaviour
+	public class LifecycleHelper : MonoBehaviour
 	{
-		public event global::System.Action<bool> onApplicationPausedEvent;
+		public event Action<bool> onApplicationPausedEvent;
 
 		private void OnApplicationPause(bool paused)
 		{

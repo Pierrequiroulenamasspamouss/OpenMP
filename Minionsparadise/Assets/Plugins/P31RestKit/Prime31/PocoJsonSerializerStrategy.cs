@@ -1,27 +1,39 @@
+using Prime31.Reflection;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
+
 namespace Prime31
 {
-	public class PocoJsonSerializerStrategy : global::Prime31.IJsonSerializerStrategy
+	public class PocoJsonSerializerStrategy : IJsonSerializerStrategy
 	{
-		internal global::Prime31.Reflection.CacheResolver cacheResolver;
+		internal CacheResolver cacheResolver;
 
-		private static readonly string[] Iso8601Format = new string[3] { "yyyy-MM-dd\\THH:mm:ss.FFFFFFF\\Z", "yyyy-MM-dd\\THH:mm:ss\\Z", "yyyy-MM-dd\\THH:mm:ssK" };
+		private static readonly string[] Iso8601Format = new string[3]
+		{
+			"yyyy-MM-dd\\THH:mm:ss.FFFFFFF\\Z",
+			"yyyy-MM-dd\\THH:mm:ss\\Z",
+			"yyyy-MM-dd\\THH:mm:ssK"
+		};
 
 		public PocoJsonSerializerStrategy()
 		{
-			cacheResolver = new global::Prime31.Reflection.CacheResolver(buildMap);
+			cacheResolver = new CacheResolver(buildMap);
 		}
 
-		protected virtual void buildMap(global::System.Type type, global::Prime31.Reflection.SafeDictionary<string, global::Prime31.Reflection.CacheResolver.MemberMap> memberMaps)
+		protected virtual void buildMap(Type type, SafeDictionary<string, CacheResolver.MemberMap> memberMaps)
 		{
-			global::System.Reflection.PropertyInfo[] properties = type.GetProperties(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic);
-			foreach (global::System.Reflection.PropertyInfo propertyInfo in properties)
+			PropertyInfo[] properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+			foreach (PropertyInfo propertyInfo in properties)
 			{
-				memberMaps.add(propertyInfo.Name, new global::Prime31.Reflection.CacheResolver.MemberMap(propertyInfo));
+				memberMaps.add(propertyInfo.Name, new CacheResolver.MemberMap(propertyInfo));
 			}
-			global::System.Reflection.FieldInfo[] fields = type.GetFields(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic);
-			foreach (global::System.Reflection.FieldInfo fieldInfo in fields)
+			FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+			foreach (FieldInfo fieldInfo in fields)
 			{
-				memberMaps.add(fieldInfo.Name, new global::Prime31.Reflection.CacheResolver.MemberMap(fieldInfo));
+				memberMaps.add(fieldInfo.Name, new CacheResolver.MemberMap(fieldInfo));
 			}
 		}
 
@@ -30,130 +42,130 @@ namespace Prime31
 			return trySerializeKnownTypes(input, out output) || trySerializeUnknownTypes(input, out output);
 		}
 
-		public virtual object deserializeObject(object value, global::System.Type type)
+		public virtual object deserializeObject(object value, Type type)
 		{
-			object obj = null;
+			object result = null;
 			if (value is string)
 			{
 				string text = value as string;
-				obj = ((string.IsNullOrEmpty(text) || (type != typeof(global::System.DateTime) && (!global::Prime31.Reflection.ReflectionUtils.isNullableType(type) || global::System.Nullable.GetUnderlyingType(type) != typeof(global::System.DateTime)))) ? text : ((object)global::System.DateTime.ParseExact(text, Iso8601Format, global::System.Globalization.CultureInfo.InvariantCulture, global::System.Globalization.DateTimeStyles.AdjustToUniversal | global::System.Globalization.DateTimeStyles.AssumeUniversal)));
+				result = ((string.IsNullOrEmpty(text) || (type != typeof(DateTime) && (!ReflectionUtils.isNullableType(type) || Nullable.GetUnderlyingType(type) != typeof(DateTime)))) ? text : ((object)DateTime.ParseExact(text, Iso8601Format, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal)));
 			}
 			else if (value is bool)
 			{
-				obj = value;
+				result = value;
 			}
 			else if (value == null)
 			{
-				obj = null;
+				result = null;
 			}
 			else if ((value is long && type == typeof(long)) || (value is double && type == typeof(double)))
 			{
-				obj = value;
+				result = value;
 			}
 			else
 			{
 				if ((!(value is double) || type == typeof(double)) && (!(value is long) || type == typeof(long)))
 				{
-					if (value is global::System.Collections.Generic.IDictionary<string, object>)
+					if (value is IDictionary<string, object>)
 					{
-						global::System.Collections.Generic.IDictionary<string, object> dictionary = (global::System.Collections.Generic.IDictionary<string, object>)value;
-						if (global::Prime31.Reflection.ReflectionUtils.isTypeDictionary(type))
+						IDictionary<string, object> dictionary = (IDictionary<string, object>)value;
+						if (ReflectionUtils.isTypeDictionary(type))
 						{
-							global::System.Type type2 = type.GetGenericArguments()[0];
-							global::System.Type type3 = type.GetGenericArguments()[1];
-							global::System.Type type4 = typeof(global::System.Collections.Generic.Dictionary<, >).MakeGenericType(type2, type3);
-							global::System.Collections.IDictionary dictionary2 = (global::System.Collections.IDictionary)global::Prime31.Reflection.CacheResolver.getNewInstance(type4);
-							foreach (global::System.Collections.Generic.KeyValuePair<string, object> item in dictionary)
+							Type type2 = type.GetGenericArguments()[0];
+							Type type3 = type.GetGenericArguments()[1];
+							Type type4 = typeof(Dictionary<, >).MakeGenericType(type2, type3);
+							IDictionary dictionary2 = (IDictionary)CacheResolver.getNewInstance(type4);
+							foreach (KeyValuePair<string, object> item in dictionary)
 							{
 								dictionary2.Add(item.Key, deserializeObject(item.Value, type3));
 							}
-							obj = dictionary2;
+							result = dictionary2;
 						}
 						else
 						{
-							obj = global::Prime31.Reflection.CacheResolver.getNewInstance(type);
-							global::Prime31.Reflection.SafeDictionary<string, global::Prime31.Reflection.CacheResolver.MemberMap> safeDictionary = cacheResolver.loadMaps(type);
-							if (safeDictionary == null)
+							result = CacheResolver.getNewInstance(type);
+							SafeDictionary<string, CacheResolver.MemberMap> safeDictionary = cacheResolver.loadMaps(type);
+							if (safeDictionary != null)
 							{
-								obj = value;
-							}
-							else
-							{
-								foreach (global::System.Collections.Generic.KeyValuePair<string, global::Prime31.Reflection.CacheResolver.MemberMap> item2 in safeDictionary)
 								{
-									global::Prime31.Reflection.CacheResolver.MemberMap value2 = item2.Value;
-									if (value2.Setter != null)
+									foreach (KeyValuePair<string, CacheResolver.MemberMap> item2 in safeDictionary)
 									{
-										string key = item2.Key;
-										if (dictionary.ContainsKey(key))
+										CacheResolver.MemberMap value2 = item2.Value;
+										if (value2.Setter != null)
 										{
-											object value3 = deserializeObject(dictionary[key], value2.Type);
-											value2.Setter(obj, value3);
+											string key = item2.Key;
+											if (dictionary.ContainsKey(key))
+											{
+												object value3 = deserializeObject(dictionary[key], value2.Type);
+												value2.Setter(result, value3);
+											}
 										}
 									}
+									return result;
 								}
 							}
+							result = value;
 						}
 					}
-					else if (value is global::System.Collections.Generic.IList<object>)
+					else if (value is IList<object>)
 					{
-						global::System.Collections.Generic.IList<object> list = (global::System.Collections.Generic.IList<object>)value;
-						global::System.Collections.IList list2 = null;
+						IList<object> list = (IList<object>)value;
+						IList list2 = null;
 						if (type.IsArray)
 						{
-							list2 = (global::System.Collections.IList)global::System.Activator.CreateInstance(type, list.Count);
+							list2 = (IList)Activator.CreateInstance(type, list.Count);
 							int num = 0;
 							foreach (object item3 in list)
 							{
 								list2[num++] = deserializeObject(item3, type.GetElementType());
 							}
 						}
-						else if (global::Prime31.Reflection.ReflectionUtils.isTypeGenericeCollectionInterface(type) || typeof(global::System.Collections.IList).IsAssignableFrom(type))
+						else if (ReflectionUtils.isTypeGenericeCollectionInterface(type) || typeof(IList).IsAssignableFrom(type))
 						{
-							global::System.Type type5 = type.GetGenericArguments()[0];
-							global::System.Type type6 = typeof(global::System.Collections.Generic.List<>).MakeGenericType(type5);
-							list2 = (global::System.Collections.IList)global::Prime31.Reflection.CacheResolver.getNewInstance(type6);
+							Type type5 = type.GetGenericArguments()[0];
+							Type type6 = typeof(List<>).MakeGenericType(type5);
+							list2 = (IList)CacheResolver.getNewInstance(type6);
 							foreach (object item4 in list)
 							{
 								list2.Add(deserializeObject(item4, type5));
 							}
 						}
-						obj = list2;
+						result = list2;
 					}
-					return obj;
+					return result;
 				}
-				obj = ((value is long && type == typeof(global::System.DateTime)) ? ((object)new global::System.DateTime(1970, 1, 1, 0, 0, 0, global::System.DateTimeKind.Utc).AddMilliseconds((long)value)) : ((!type.IsEnum) ? ((!typeof(global::System.IConvertible).IsAssignableFrom(type)) ? value : global::System.Convert.ChangeType(value, type, global::System.Globalization.CultureInfo.InvariantCulture)) : global::System.Enum.ToObject(type, value)));
+				result = ((value is long && type == typeof(DateTime)) ? ((object)new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds((long)value)) : ((!type.IsEnum) ? ((!typeof(IConvertible).IsAssignableFrom(type)) ? value : Convert.ChangeType(value, type, CultureInfo.InvariantCulture)) : Enum.ToObject(type, value)));
 			}
-			if (global::Prime31.Reflection.ReflectionUtils.isNullableType(type))
+			if (ReflectionUtils.isNullableType(type))
 			{
-				return global::Prime31.Reflection.ReflectionUtils.toNullableType(obj, type);
+				return ReflectionUtils.toNullableType(result, type);
 			}
-			return obj;
+			return result;
 		}
 
-		protected virtual object serializeEnum(global::System.Enum p)
+		protected virtual object serializeEnum(Enum p)
 		{
-			return global::System.Convert.ToDouble(p, global::System.Globalization.CultureInfo.InvariantCulture);
+			return Convert.ToDouble(p, CultureInfo.InvariantCulture);
 		}
 
 		protected virtual bool trySerializeKnownTypes(object input, out object output)
 		{
 			bool result = true;
-			if (input is global::System.DateTime)
+			if (input is DateTime)
 			{
-				output = ((global::System.DateTime)input).ToUniversalTime().ToString(Iso8601Format[0], global::System.Globalization.CultureInfo.InvariantCulture);
+				output = ((DateTime)input).ToUniversalTime().ToString(Iso8601Format[0], CultureInfo.InvariantCulture);
 			}
-			else if (input is global::System.Guid)
+			else if (input is Guid)
 			{
-				output = ((global::System.Guid)input).ToString("D");
+				output = ((Guid)input).ToString("D");
 			}
-			else if (input is global::System.Uri)
+			else if (input is Uri)
 			{
 				output = input.ToString();
 			}
-			else if (input is global::System.Enum)
+			else if (input is Enum)
 			{
-				output = serializeEnum((global::System.Enum)input);
+				output = serializeEnum((Enum)input);
 			}
 			else
 			{
@@ -166,14 +178,14 @@ namespace Prime31
 		protected virtual bool trySerializeUnknownTypes(object input, out object output)
 		{
 			output = null;
-			global::System.Type type = input.GetType();
+			Type type = input.GetType();
 			if (type.FullName == null)
 			{
 				return false;
 			}
-			global::System.Collections.Generic.IDictionary<string, object> dictionary = new global::Prime31.JsonObject();
-			global::Prime31.Reflection.SafeDictionary<string, global::Prime31.Reflection.CacheResolver.MemberMap> safeDictionary = cacheResolver.loadMaps(type);
-			foreach (global::System.Collections.Generic.KeyValuePair<string, global::Prime31.Reflection.CacheResolver.MemberMap> item in safeDictionary)
+			IDictionary<string, object> dictionary = new JsonObject();
+			SafeDictionary<string, CacheResolver.MemberMap> safeDictionary = cacheResolver.loadMaps(type);
+			foreach (KeyValuePair<string, CacheResolver.MemberMap> item in safeDictionary)
 			{
 				if (item.Value.Getter != null)
 				{

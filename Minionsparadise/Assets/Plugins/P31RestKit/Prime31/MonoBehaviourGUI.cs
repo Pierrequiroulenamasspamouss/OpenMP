@@ -1,20 +1,23 @@
+using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Prime31
 {
-	public class MonoBehaviourGUI : global::UnityEngine.MonoBehaviour
+	public class MonoBehaviourGUI : MonoBehaviour
 	{
 		protected float _width;
 
 		protected float _buttonHeight;
 
-		protected global::System.Collections.Generic.Dictionary<string, bool> _toggleButtons = new global::System.Collections.Generic.Dictionary<string, bool>();
+		protected Dictionary<string, bool> _toggleButtons = new Dictionary<string, bool>();
 
-		protected global::System.Text.StringBuilder _logBuilder = new global::System.Text.StringBuilder();
+		protected StringBuilder _logBuilder = new StringBuilder();
 
 		private bool _logRegistered;
 
-		private global::UnityEngine.Vector2 _logScrollPosition;
+		private Vector2 _logScrollPosition;
 
 		private bool _isShowingLogConsole;
 
@@ -24,68 +27,68 @@ namespace Prime31
 
 		private bool _isWindowsPhone;
 
-		private global::UnityEngine.Texture2D _normalBackground;
+		private Texture2D _normalBackground;
 
-		private global::UnityEngine.Texture2D _bottomButtonBackground;
+		private Texture2D _bottomButtonBackground;
 
-		private global::UnityEngine.Texture2D _activeBackground;
+		private Texture2D _activeBackground;
 
-		private global::UnityEngine.Texture2D _toggleButtonBackground;
+		private Texture2D _toggleButtonBackground;
 
 		private bool _didRetinaIpadCheck;
 
 		private bool _isRetinaIpad;
 
-		private global::UnityEngine.Texture2D normalBackground
+		private Texture2D normalBackground
 		{
 			get
 			{
 				if (!_normalBackground)
 				{
-					_normalBackground = new global::UnityEngine.Texture2D(1, 1);
-					_normalBackground.SetPixel(0, 0, global::UnityEngine.Color.gray);
+					_normalBackground = new Texture2D(1, 1);
+					_normalBackground.SetPixel(0, 0, Color.gray);
 					_normalBackground.Apply();
 				}
 				return _normalBackground;
 			}
 		}
 
-		private global::UnityEngine.Texture2D bottomButtonBackground
+		private Texture2D bottomButtonBackground
 		{
 			get
 			{
 				if (!_bottomButtonBackground)
 				{
-					_bottomButtonBackground = new global::UnityEngine.Texture2D(1, 1);
-					_bottomButtonBackground.SetPixel(0, 0, global::UnityEngine.Color.Lerp(global::UnityEngine.Color.gray, global::UnityEngine.Color.black, 0.5f));
+					_bottomButtonBackground = new Texture2D(1, 1);
+					_bottomButtonBackground.SetPixel(0, 0, Color.Lerp(Color.gray, Color.black, 0.5f));
 					_bottomButtonBackground.Apply();
 				}
 				return _bottomButtonBackground;
 			}
 		}
 
-		private global::UnityEngine.Texture2D activeBackground
+		private Texture2D activeBackground
 		{
 			get
 			{
 				if (!_activeBackground)
 				{
-					_activeBackground = new global::UnityEngine.Texture2D(1, 1);
-					_activeBackground.SetPixel(0, 0, global::UnityEngine.Color.yellow);
+					_activeBackground = new Texture2D(1, 1);
+					_activeBackground.SetPixel(0, 0, Color.yellow);
 					_activeBackground.Apply();
 				}
 				return _activeBackground;
 			}
 		}
 
-		private global::UnityEngine.Texture2D toggleButtonBackground
+		private Texture2D toggleButtonBackground
 		{
 			get
 			{
 				if (!_toggleButtonBackground)
 				{
-					_toggleButtonBackground = new global::UnityEngine.Texture2D(1, 1);
-					_toggleButtonBackground.SetPixel(0, 0, global::UnityEngine.Color.black);
+					_toggleButtonBackground = new Texture2D(1, 1);
+					_toggleButtonBackground.SetPixel(0, 0, Color.black);
 					_toggleButtonBackground.Apply();
 				}
 				return _toggleButtonBackground;
@@ -94,14 +97,14 @@ namespace Prime31
 
 		private bool isRetinaOrLargeScreen()
 		{
-			return _isWindowsPhone || global::UnityEngine.Screen.width >= 960 || global::UnityEngine.Screen.height >= 960;
+			return _isWindowsPhone || Screen.width >= 960 || Screen.height >= 960;
 		}
 
 		private bool isRetinaIpad()
 		{
 			if (!_didRetinaIpadCheck)
 			{
-				if (global::UnityEngine.Screen.height >= 2048 || global::UnityEngine.Screen.width >= 2048)
+				if (Screen.height >= 2048 || Screen.width >= 2048)
 				{
 					_isRetinaIpad = true;
 				}
@@ -138,46 +141,56 @@ namespace Prime31
 
 		private void paintWindow(int id)
 		{
-			global::UnityEngine.GUI.skin.label.alignment = global::UnityEngine.TextAnchor.UpperLeft;
-			global::UnityEngine.GUI.skin.label.fontSize = buttonFontSize();
-			_logScrollPosition = global::UnityEngine.GUILayout.BeginScrollView(_logScrollPosition);
-			if (global::UnityEngine.GUILayout.Button("Clear Console"))
+			GUI.skin.label.alignment = TextAnchor.UpperLeft;
+			GUI.skin.label.fontSize = buttonFontSize();
+			_logScrollPosition = GUILayout.BeginScrollView(_logScrollPosition);
+			if (GUILayout.Button("Clear Console"))
 			{
 				_logBuilder.Remove(0, _logBuilder.Length);
 			}
-			global::UnityEngine.GUILayout.Label(_logBuilder.ToString());
-			global::UnityEngine.GUILayout.EndScrollView();
+			GUILayout.Label(_logBuilder.ToString());
+			GUILayout.EndScrollView();
 		}
 
-		private void handleLog(string logString, string stackTrace, global::UnityEngine.LogType type)
+		private void handleLog(string logString, string stackTrace, LogType type)
 		{
 			_logBuilder.AppendFormat("{0}\n", logString);
 		}
 
 		private void OnDestroy()
 		{
-			global::UnityEngine.Application.logMessageReceived -= handleLog;
+#if UNITY_2020_1_OR_NEWER
+			Application.logMessageReceived -= handleLog;
+#else
+			Application.RegisterLogCallback(null);
+#endif
 		}
 
 		private void Update()
 		{
 			if (!_logRegistered)
 			{
-				global::UnityEngine.Application.logMessageReceived += handleLog;
+#if UNITY_2020_1_OR_NEWER
+				Application.logMessageReceived += handleLog;
+#else
+				Application.RegisterLogCallback(handleLog);
+#endif
 				_logRegistered = true;
-				_isWindowsPhone = global::UnityEngine.Application.platform.ToString().ToLower().Contains("wp8");
+				_isWindowsPhone = Application.platform.ToString().ToLower().Contains("wp8");
 			}
 			bool flag = false;
+
+			// Use Input System for mouse double-click detection
 			if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
 			{
-				float num = global::UnityEngine.Time.time - _previousClickTime;
+				float num = Time.time - _previousClickTime;
 				if (num < _doubleClickDelay)
 				{
 					flag = true;
 				}
 				else
 				{
-					_previousClickTime = global::UnityEngine.Time.time;
+					_previousClickTime = Time.time;
 				}
 			}
 			if (flag)
@@ -188,28 +201,28 @@ namespace Prime31
 
 		protected void beginColumn()
 		{
-			_width = global::UnityEngine.Screen.width / 2 - 15;
+			_width = Screen.width / 2 - 15;
 			_buttonHeight = buttonHeight();
-			global::UnityEngine.GUI.skin.button.fontSize = buttonFontSize();
-			global::UnityEngine.GUI.skin.button.margin = new global::UnityEngine.RectOffset(0, 0, 10, 0);
-			global::UnityEngine.GUI.skin.button.stretchWidth = true;
-			global::UnityEngine.GUI.skin.button.fixedHeight = _buttonHeight;
-			global::UnityEngine.GUI.skin.button.wordWrap = false;
-			global::UnityEngine.GUI.skin.button.hover.background = normalBackground;
-			global::UnityEngine.GUI.skin.button.normal.background = normalBackground;
-			global::UnityEngine.GUI.skin.button.active.background = activeBackground;
-			global::UnityEngine.GUI.skin.button.active.textColor = global::UnityEngine.Color.black;
-			global::UnityEngine.GUI.skin.label.normal.textColor = global::UnityEngine.Color.black;
-			global::UnityEngine.GUI.skin.label.fontSize = buttonFontSize();
+			GUI.skin.button.fontSize = buttonFontSize();
+			GUI.skin.button.margin = new RectOffset(0, 0, 10, 0);
+			GUI.skin.button.stretchWidth = true;
+			GUI.skin.button.fixedHeight = _buttonHeight;
+			GUI.skin.button.wordWrap = false;
+			GUI.skin.button.hover.background = normalBackground;
+			GUI.skin.button.normal.background = normalBackground;
+			GUI.skin.button.active.background = activeBackground;
+			GUI.skin.button.active.textColor = Color.black;
+			GUI.skin.label.normal.textColor = Color.black;
+			GUI.skin.label.fontSize = buttonFontSize();
 			if (_isShowingLogConsole)
 			{
-				global::UnityEngine.GUILayout.BeginArea(new global::UnityEngine.Rect(0f, 0f, 0f, 0f));
+				GUILayout.BeginArea(new Rect(0f, 0f, 0f, 0f));
 			}
 			else
 			{
-				global::UnityEngine.GUILayout.BeginArea(new global::UnityEngine.Rect(10f, 10f, _width, global::UnityEngine.Screen.height));
+				GUILayout.BeginArea(new Rect(10f, 10f, _width, Screen.height));
 			}
-			global::UnityEngine.GUILayout.BeginVertical();
+			GUILayout.BeginVertical();
 		}
 
 		protected void endColumn()
@@ -219,11 +232,11 @@ namespace Prime31
 
 		protected void endColumn(bool hasSecondColumn)
 		{
-			global::UnityEngine.GUILayout.EndVertical();
-			global::UnityEngine.GUILayout.EndArea();
+			GUILayout.EndVertical();
+			GUILayout.EndArea();
 			if (_isShowingLogConsole)
 			{
-				global::UnityEngine.GUILayout.Window(1, new global::UnityEngine.Rect(0f, 0f, global::UnityEngine.Screen.width, global::UnityEngine.Screen.height), paintWindow, "prime[31] Log Console - double tap to dismiss");
+				GUILayout.Window(1, new Rect(0f, 0f, Screen.width, Screen.height), paintWindow, "prime[31] Log Console - double tap to dismiss");
 			}
 			if (hasSecondColumn)
 			{
@@ -235,42 +248,42 @@ namespace Prime31
 		{
 			if (_isShowingLogConsole)
 			{
-				global::UnityEngine.GUILayout.BeginArea(new global::UnityEngine.Rect(0f, 0f, 0f, 0f));
+				GUILayout.BeginArea(new Rect(0f, 0f, 0f, 0f));
 			}
 			else
 			{
-				global::UnityEngine.GUILayout.BeginArea(new global::UnityEngine.Rect((float)global::UnityEngine.Screen.width - _width - 10f, 10f, _width, global::UnityEngine.Screen.height));
+				GUILayout.BeginArea(new Rect((float)Screen.width - _width - 10f, 10f, _width, Screen.height));
 			}
-			global::UnityEngine.GUILayout.BeginVertical();
+			GUILayout.BeginVertical();
 		}
 
 		protected bool button(string text)
 		{
-			return global::UnityEngine.GUILayout.Button(text);
+			return GUILayout.Button(text);
 		}
 
 		protected bool bottomRightButton(string text, float width = 150f)
 		{
-			global::UnityEngine.GUI.skin.button.hover.background = bottomButtonBackground;
-			global::UnityEngine.GUI.skin.button.normal.background = bottomButtonBackground;
-			width = (float)global::UnityEngine.Screen.width / 2f - 35f - 20f;
-			return global::UnityEngine.GUI.Button(new global::UnityEngine.Rect((float)global::UnityEngine.Screen.width - width - 10f, (float)global::UnityEngine.Screen.height - _buttonHeight - 10f, width, _buttonHeight), text);
+			GUI.skin.button.hover.background = bottomButtonBackground;
+			GUI.skin.button.normal.background = bottomButtonBackground;
+			width = (float)Screen.width / 2f - 35f - 20f;
+			return GUI.Button(new Rect((float)Screen.width - width - 10f, (float)Screen.height - _buttonHeight - 10f, width, _buttonHeight), text);
 		}
 
 		protected bool bottomLeftButton(string text, float width = 150f)
 		{
-			global::UnityEngine.GUI.skin.button.hover.background = bottomButtonBackground;
-			global::UnityEngine.GUI.skin.button.normal.background = bottomButtonBackground;
-			width = (float)global::UnityEngine.Screen.width / 2f - 35f - 20f;
-			return global::UnityEngine.GUI.Button(new global::UnityEngine.Rect(10f, (float)global::UnityEngine.Screen.height - _buttonHeight - 10f, width, _buttonHeight), text);
+			GUI.skin.button.hover.background = bottomButtonBackground;
+			GUI.skin.button.normal.background = bottomButtonBackground;
+			width = (float)Screen.width / 2f - 35f - 20f;
+			return GUI.Button(new Rect(10f, (float)Screen.height - _buttonHeight - 10f, width, _buttonHeight), text);
 		}
 
 		protected bool bottomCenterButton(string text, float width = 150f)
 		{
-			global::UnityEngine.GUI.skin.button.hover.background = bottomButtonBackground;
-			global::UnityEngine.GUI.skin.button.normal.background = bottomButtonBackground;
-			float x = (float)(global::UnityEngine.Screen.width / 2) - width / 2f;
-			return global::UnityEngine.GUI.Button(new global::UnityEngine.Rect(x, (float)global::UnityEngine.Screen.height - _buttonHeight - 10f, width, _buttonHeight), text);
+			GUI.skin.button.hover.background = bottomButtonBackground;
+			GUI.skin.button.normal.background = bottomButtonBackground;
+			float x = (float)(Screen.width / 2) - width / 2f;
+			return GUI.Button(new Rect(x, (float)Screen.height - _buttonHeight - 10f, width, _buttonHeight), text);
 		}
 
 		protected bool toggleButton(string defaultText, string selectedText)
@@ -279,24 +292,24 @@ namespace Prime31
 			{
 				_toggleButtons[defaultText] = true;
 			}
-			string text = ((!_toggleButtons[defaultText]) ? selectedText : defaultText);
-			global::UnityEngine.GUI.skin.button.normal.background = toggleButtonBackground;
+			string text = (!_toggleButtons[defaultText]) ? selectedText : defaultText;
+			GUI.skin.button.normal.background = toggleButtonBackground;
 			if (!_toggleButtons[defaultText])
 			{
-				global::UnityEngine.GUI.contentColor = global::UnityEngine.Color.yellow;
+				GUI.contentColor = Color.yellow;
 			}
 			else
 			{
-				global::UnityEngine.GUI.skin.button.fontStyle = global::UnityEngine.FontStyle.Bold;
-				global::UnityEngine.GUI.contentColor = global::UnityEngine.Color.red;
+				GUI.skin.button.fontStyle = FontStyle.Bold;
+				GUI.contentColor = Color.red;
 			}
-			if (global::UnityEngine.GUILayout.Button(text))
+			if (GUILayout.Button(text))
 			{
-				_toggleButtons[defaultText] = text != defaultText;
+				_toggleButtons[defaultText] = (text != defaultText);
 			}
-			global::UnityEngine.GUI.skin.button.normal.background = normalBackground;
-			global::UnityEngine.GUI.skin.button.fontStyle = global::UnityEngine.FontStyle.Normal;
-			global::UnityEngine.GUI.contentColor = global::UnityEngine.Color.white;
+			GUI.skin.button.normal.background = normalBackground;
+			GUI.skin.button.fontStyle = FontStyle.Normal;
+			GUI.contentColor = Color.white;
 			return _toggleButtons[defaultText];
 		}
 
@@ -307,44 +320,6 @@ namespace Prime31
 				_toggleButtons[defaultText] = true;
 			}
 			return _toggleButtons[defaultText];
-		}
-
-		public static void loadLevel(int level)
-		{
-			try
-			{
-				typeof(global::UnityEngine.Application).GetMethod("LoadLevel", new global::System.Type[1] { typeof(int) }).Invoke(null, new object[1] { level });
-			}
-			catch
-			{
-				try
-				{
-					typeof(global::UnityEngine.SceneManagement.SceneManager).GetMethod("LoadScene", new global::System.Type[1] { typeof(int) }).Invoke(null, new object[1] { level });
-				}
-				catch
-				{
-					global::UnityEngine.Debug.LogError("Could not load scene. Both Application.LoadLevel and SceneManager.LoadScene failed to load the scene.");
-				}
-			}
-		}
-
-		public static void loadLevel(string level)
-		{
-			try
-			{
-				typeof(global::UnityEngine.Application).GetMethod("LoadLevel", new global::System.Type[1] { typeof(string) }).Invoke(null, new object[1] { level });
-			}
-			catch
-			{
-				try
-				{
-					typeof(global::UnityEngine.SceneManagement.SceneManager).GetMethod("LoadScene", new global::System.Type[1] { typeof(string) }).Invoke(null, new object[1] { level });
-				}
-				catch
-				{
-					global::UnityEngine.Debug.LogError("Could not load scene. Both Application.LoadLevel and SceneManager.LoadScene failed to load the scene.");
-				}
-			}
 		}
 	}
 }

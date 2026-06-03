@@ -1,15 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+
 namespace Prime31
 {
 	public class DTOBase
 	{
-		public static global::System.Collections.Generic.List<T> listFromJson<T>(string json) where T : global::Prime31.DTOBase
+		public static List<T> listFromJson<T>(string json) where T : DTOBase
 		{
-			global::System.Collections.Generic.List<object> list = json.listFromJson();
-			global::System.Collections.Generic.List<T> list2 = new global::System.Collections.Generic.List<T>();
+			List<object> list = json.listFromJson();
+			List<T> list2 = new List<T>();
 			foreach (object item2 in list)
 			{
-				T item = global::System.Activator.CreateInstance<T>();
-				item.setDataFromDictionary(item2 as global::System.Collections.Generic.Dictionary<string, object>);
+				T item = Activator.CreateInstance<T>();
+				item.setDataFromDictionary(item2 as Dictionary<string, object>);
 				list2.Add(item);
 			}
 			return list2;
@@ -20,10 +25,10 @@ namespace Prime31
 			setDataFromDictionary(json.dictionaryFromJson());
 		}
 
-		public void setDataFromDictionary(global::System.Collections.Generic.Dictionary<string, object> dict)
+		public void setDataFromDictionary(Dictionary<string, object> dict)
 		{
-			global::System.Collections.Generic.Dictionary<string, global::System.Action<object>> membersWithSetters = getMembersWithSetters();
-			foreach (global::System.Collections.Generic.KeyValuePair<string, object> item in dict)
+			Dictionary<string, Action<object>> membersWithSetters = getMembersWithSetters();
+			foreach (KeyValuePair<string, object> item in dict)
 			{
 				if (membersWithSetters.ContainsKey(item.Key))
 				{
@@ -31,15 +36,15 @@ namespace Prime31
 					{
 						membersWithSetters[item.Key](item.Value);
 					}
-					catch (global::System.Exception obj)
+					catch (Exception obj)
 					{
-						global::Prime31.Utils.logObject(obj);
+						Utils.logObject(obj);
 					}
 				}
 			}
 		}
 
-		private bool shouldIncludeTypeWithSetters(global::System.Type type)
+		private bool shouldIncludeTypeWithSetters(Type type)
 		{
 			if (type.IsGenericType)
 			{
@@ -52,27 +57,27 @@ namespace Prime31
 			return false;
 		}
 
-		protected global::System.Collections.Generic.Dictionary<string, global::System.Action<object>> getMembersWithSetters()
+		protected Dictionary<string, Action<object>> getMembersWithSetters()
 		{
-			global::System.Collections.Generic.Dictionary<string, global::System.Action<object>> dictionary = new global::System.Collections.Generic.Dictionary<string, global::System.Action<object>>();
-			global::System.Reflection.FieldInfo[] fields = GetType().GetFields();
-			foreach (global::System.Reflection.FieldInfo fieldInfo in fields)
+			Dictionary<string, Action<object>> dictionary = new Dictionary<string, Action<object>>();
+			FieldInfo[] fields = GetType().GetFields();
+			foreach (FieldInfo fieldInfo in fields)
 			{
 				if (shouldIncludeTypeWithSetters(fieldInfo.FieldType))
 				{
-					global::System.Reflection.FieldInfo theInfo = fieldInfo;
+					FieldInfo theInfo = fieldInfo;
 					dictionary[fieldInfo.Name] = delegate(object val)
 					{
 						theInfo.SetValue(this, val);
 					};
 				}
 			}
-			global::System.Reflection.PropertyInfo[] properties = GetType().GetProperties();
-			foreach (global::System.Reflection.PropertyInfo propertyInfo in properties)
+			PropertyInfo[] properties = GetType().GetProperties();
+			foreach (PropertyInfo propertyInfo in properties)
 			{
 				if (shouldIncludeTypeWithSetters(propertyInfo.PropertyType) && propertyInfo.CanWrite && propertyInfo.GetSetMethod() != null)
 				{
-					global::System.Reflection.PropertyInfo theInfo2 = propertyInfo;
+					PropertyInfo theInfo2 = propertyInfo;
 					dictionary[propertyInfo.Name] = delegate(object val)
 					{
 						theInfo2.SetValue(this, val, null);
@@ -84,15 +89,15 @@ namespace Prime31
 
 		public override string ToString()
 		{
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder();
+			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.AppendFormat("[{0}]:", GetType());
-			global::System.Reflection.FieldInfo[] fields = GetType().GetFields();
-			foreach (global::System.Reflection.FieldInfo fieldInfo in fields)
+			FieldInfo[] fields = GetType().GetFields();
+			foreach (FieldInfo fieldInfo in fields)
 			{
 				stringBuilder.AppendFormat(", {0}: {1}", fieldInfo.Name, fieldInfo.GetValue(this));
 			}
-			global::System.Reflection.PropertyInfo[] properties = GetType().GetProperties();
-			foreach (global::System.Reflection.PropertyInfo propertyInfo in properties)
+			PropertyInfo[] properties = GetType().GetProperties();
+			foreach (PropertyInfo propertyInfo in properties)
 			{
 				stringBuilder.AppendFormat(", {0}: {1}", propertyInfo.Name, propertyInfo.GetValue(this, null));
 			}

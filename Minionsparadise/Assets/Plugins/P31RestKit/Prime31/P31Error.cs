@@ -1,27 +1,46 @@
+using System;
+using System.Collections.Generic;
+
 namespace Prime31
 {
 	public sealed class P31Error
 	{
 		private bool _containsOnlyMessage;
 
-		public string message { get; private set; }
-
-		public string domain { get; private set; }
-
-		public int code { get; private set; }
-
-		public global::System.Collections.Generic.Dictionary<string, object> userInfo { get; private set; }
-
-		public static global::Prime31.P31Error errorFromJson(string json)
+		public string message
 		{
-			global::Prime31.P31Error p31Error = new global::Prime31.P31Error();
+			get;
+			private set;
+		}
+
+		public string domain
+		{
+			get;
+			private set;
+		}
+
+		public int code
+		{
+			get;
+			private set;
+		}
+
+		public Dictionary<string, object> userInfo
+		{
+			get;
+			private set;
+		}
+
+		public static P31Error errorFromJson(string json)
+		{
+			P31Error p31Error = new P31Error();
 			if (!json.StartsWith("{"))
 			{
 				p31Error.message = json;
 				p31Error._containsOnlyMessage = true;
 				return p31Error;
 			}
-			global::System.Collections.Generic.Dictionary<string, object> dictionary = global::Prime31.Json.decode(json) as global::System.Collections.Generic.Dictionary<string, object>;
+			Dictionary<string, object> dictionary = Json.decode(json) as Dictionary<string, object>;
 			if (dictionary == null)
 			{
 				p31Error.message = "Unknown error";
@@ -31,7 +50,7 @@ namespace Prime31
 				p31Error.message = ((!dictionary.ContainsKey("message")) ? null : dictionary["message"].ToString());
 				p31Error.domain = ((!dictionary.ContainsKey("domain")) ? null : dictionary["domain"].ToString());
 				p31Error.code = ((!dictionary.ContainsKey("code")) ? (-1) : int.Parse(dictionary["code"].ToString()));
-				p31Error.userInfo = ((!dictionary.ContainsKey("userInfo")) ? null : (dictionary["userInfo"] as global::System.Collections.Generic.Dictionary<string, object>));
+				p31Error.userInfo = ((!dictionary.ContainsKey("userInfo")) ? null : (dictionary["userInfo"] as Dictionary<string, object>));
 			}
 			return p31Error;
 		}
@@ -44,10 +63,10 @@ namespace Prime31
 			}
 			try
 			{
-				string input = global::Prime31.Json.encode(this);
-				return string.Format("[P31Error]: {0}", global::Prime31.JsonFormatter.prettyPrint(input));
+				string input = Json.encode(this);
+				return string.Format("[P31Error]: {0}", JsonFormatter.prettyPrint(input));
 			}
-			catch (global::System.Exception)
+			catch (Exception)
 			{
 				return string.Format("[P31Error]: {0}", message);
 			}

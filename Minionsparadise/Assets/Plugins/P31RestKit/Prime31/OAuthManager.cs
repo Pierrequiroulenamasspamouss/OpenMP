@@ -1,12 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+
 namespace Prime31
 {
 	public class OAuthManager
 	{
-		private static readonly global::System.DateTime _epoch = new global::System.DateTime(1970, 1, 1, 0, 0, 0, 0);
+		private static readonly DateTime _epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0);
 
-		private global::System.Collections.Generic.SortedDictionary<string, string> _params;
+		private SortedDictionary<string, string> _params;
 
-		private global::System.Random _random;
+		private Random _random;
 
 		private static string unreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
 
@@ -18,13 +25,13 @@ namespace Prime31
 				{
 					return _params[ix];
 				}
-				throw new global::System.ArgumentException(ix);
+				throw new ArgumentException(ix);
 			}
 			set
 			{
 				if (!_params.ContainsKey(ix))
 				{
-					throw new global::System.ArgumentException(ix);
+					throw new ArgumentException(ix);
 				}
 				_params[ix] = value;
 			}
@@ -32,8 +39,8 @@ namespace Prime31
 
 		public OAuthManager()
 		{
-			_random = new global::System.Random();
-			_params = new global::System.Collections.Generic.SortedDictionary<string, string>();
+			_random = new Random();
+			_params = new SortedDictionary<string, string>();
 			_params["consumer_key"] = "";
 			_params["consumer_secret"] = "";
 			_params["timestamp"] = generateTimeStamp();
@@ -56,7 +63,7 @@ namespace Prime31
 
 		private string generateTimeStamp()
 		{
-			return global::System.Convert.ToInt64((global::System.DateTime.UtcNow - _epoch).TotalSeconds).ToString();
+			return Convert.ToInt64((DateTime.UtcNow - _epoch).TotalSeconds).ToString();
 		}
 
 		private void prepareNewRequest()
@@ -67,7 +74,7 @@ namespace Prime31
 
 		private string generateNonce()
 		{
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder();
+			StringBuilder stringBuilder = new StringBuilder();
 			for (int i = 0; i < 8; i++)
 			{
 				if (_random.Next(3) == 0)
@@ -82,13 +89,13 @@ namespace Prime31
 			return stringBuilder.ToString();
 		}
 
-		private global::System.Collections.Generic.SortedDictionary<string, string> extractQueryParameters(string queryString)
+		private SortedDictionary<string, string> extractQueryParameters(string queryString)
 		{
 			if (queryString.StartsWith("?"))
 			{
 				queryString = queryString.Remove(0, 1);
 			}
-			global::System.Collections.Generic.SortedDictionary<string, string> sortedDictionary = new global::System.Collections.Generic.SortedDictionary<string, string>();
+			SortedDictionary<string, string> sortedDictionary = new SortedDictionary<string, string>();
 			if (string.IsNullOrEmpty(queryString))
 			{
 				return sortedDictionary;
@@ -114,7 +121,7 @@ namespace Prime31
 
 		public static string urlEncode(string value)
 		{
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder();
+			StringBuilder stringBuilder = new StringBuilder();
 			foreach (char c in value)
 			{
 				if (unreservedChars.IndexOf(c) != -1)
@@ -129,14 +136,14 @@ namespace Prime31
 			return stringBuilder.ToString();
 		}
 
-		private static global::System.Collections.Generic.SortedDictionary<string, string> mergePostParamsWithOauthParams(global::System.Collections.Generic.SortedDictionary<string, string> postParams, global::System.Collections.Generic.SortedDictionary<string, string> oAuthParams)
+		private static SortedDictionary<string, string> mergePostParamsWithOauthParams(SortedDictionary<string, string> postParams, SortedDictionary<string, string> oAuthParams)
 		{
-			global::System.Collections.Generic.SortedDictionary<string, string> sortedDictionary = new global::System.Collections.Generic.SortedDictionary<string, string>();
-			foreach (global::System.Collections.Generic.KeyValuePair<string, string> postParam in postParams)
+			SortedDictionary<string, string> sortedDictionary = new SortedDictionary<string, string>();
+			foreach (KeyValuePair<string, string> postParam in postParams)
 			{
 				sortedDictionary.Add(postParam.Key, postParam.Value);
 			}
-			foreach (global::System.Collections.Generic.KeyValuePair<string, string> oAuthParam in oAuthParams)
+			foreach (KeyValuePair<string, string> oAuthParam in oAuthParams)
 			{
 				if (!string.IsNullOrEmpty(oAuthParam.Value) && !oAuthParam.Key.EndsWith("secret"))
 				{
@@ -146,10 +153,10 @@ namespace Prime31
 			return sortedDictionary;
 		}
 
-		private static string encodeRequestParameters(global::System.Collections.Generic.SortedDictionary<string, string> p)
+		private static string encodeRequestParameters(SortedDictionary<string, string> p)
 		{
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder();
-			foreach (global::System.Collections.Generic.KeyValuePair<string, string> item in p)
+			StringBuilder stringBuilder = new StringBuilder();
+			foreach (KeyValuePair<string, string> item in p)
 			{
 				if (!string.IsNullOrEmpty(item.Value) && !item.Key.EndsWith("secret"))
 				{
@@ -159,31 +166,31 @@ namespace Prime31
 			return stringBuilder.ToString().TrimEnd(' ').TrimEnd(',');
 		}
 
-		public static byte[] encodePostParameters(global::System.Collections.Generic.SortedDictionary<string, string> p)
+		public static byte[] encodePostParameters(SortedDictionary<string, string> p)
 		{
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder();
-			foreach (global::System.Collections.Generic.KeyValuePair<string, string> item in p)
+			StringBuilder stringBuilder = new StringBuilder();
+			foreach (KeyValuePair<string, string> item in p)
 			{
 				if (!string.IsNullOrEmpty(item.Value))
 				{
 					stringBuilder.AppendFormat("{0}={1}, ", urlEncode(item.Key), urlEncode(item.Value));
 				}
 			}
-			return global::System.Text.Encoding.UTF8.GetBytes(stringBuilder.ToString().TrimEnd(' ').TrimEnd(','));
+			return Encoding.UTF8.GetBytes(stringBuilder.ToString().TrimEnd(' ').TrimEnd(','));
 		}
 
-		public global::Prime31.OAuthResponse acquireRequestToken(string uri, string method)
+		public OAuthResponse acquireRequestToken(string uri, string method)
 		{
 			prepareNewRequest();
 			string authorizationHeader = getAuthorizationHeader(uri, method);
-			global::System.Net.HttpWebRequest httpWebRequest = (global::System.Net.HttpWebRequest)global::System.Net.WebRequest.Create(uri);
+			HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
 			httpWebRequest.Headers.Add("Authorization", authorizationHeader);
 			httpWebRequest.Method = method;
-			using (global::System.Net.HttpWebResponse httpWebResponse = (global::System.Net.HttpWebResponse)httpWebRequest.GetResponse())
+			using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
 			{
-				using (global::System.IO.StreamReader streamReader = new global::System.IO.StreamReader(httpWebResponse.GetResponseStream()))
+				using (StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream()))
 				{
-					global::Prime31.OAuthResponse oAuthResponse = new global::Prime31.OAuthResponse(streamReader.ReadToEnd());
+					OAuthResponse oAuthResponse = new OAuthResponse(streamReader.ReadToEnd());
 					this["token"] = oAuthResponse["oauth_token"];
 					try
 					{
@@ -200,19 +207,19 @@ namespace Prime31
 			}
 		}
 
-		public global::Prime31.OAuthResponse acquireAccessToken(string uri, string method, string verifier)
+		public OAuthResponse acquireAccessToken(string uri, string method, string verifier)
 		{
 			prepareNewRequest();
 			_params["verifier"] = verifier;
 			string authorizationHeader = getAuthorizationHeader(uri, method);
-			global::System.Net.HttpWebRequest httpWebRequest = (global::System.Net.HttpWebRequest)global::System.Net.WebRequest.Create(uri);
+			HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
 			httpWebRequest.Headers.Add("Authorization", authorizationHeader);
 			httpWebRequest.Method = method;
-			using (global::System.Net.HttpWebResponse httpWebResponse = (global::System.Net.HttpWebResponse)httpWebRequest.GetResponse())
+			using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
 			{
-				using (global::System.IO.StreamReader streamReader = new global::System.IO.StreamReader(httpWebResponse.GetResponseStream()))
+				using (StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream()))
 				{
-					global::Prime31.OAuthResponse oAuthResponse = new global::Prime31.OAuthResponse(streamReader.ReadToEnd());
+					OAuthResponse oAuthResponse = new OAuthResponse(streamReader.ReadToEnd());
 					this["token"] = oAuthResponse["oauth_token"];
 					this["token_secret"] = oAuthResponse["oauth_token_secret"];
 					return oAuthResponse;
@@ -241,64 +248,64 @@ namespace Prime31
 		{
 			if (string.IsNullOrEmpty(_params["consumer_key"]))
 			{
-				throw new global::System.ArgumentNullException("consumer_key");
+				throw new ArgumentNullException("consumer_key");
 			}
 			if (string.IsNullOrEmpty(_params["signature_method"]))
 			{
-				throw new global::System.ArgumentNullException("signature_method");
+				throw new ArgumentNullException("signature_method");
 			}
 			sign(uri, method);
-			string text = encodeRequestParameters(_params);
-			return (!string.IsNullOrEmpty(realm)) ? (string.Format("OAuth realm=\"{0}\", ", realm) + text) : ("OAuth " + text);
+			string str = encodeRequestParameters(_params);
+			return (!string.IsNullOrEmpty(realm)) ? (string.Format("OAuth realm=\"{0}\", ", realm) + str) : ("OAuth " + str);
 		}
 
 		private void sign(string uri, string method)
 		{
 			string signatureBase = getSignatureBase(uri, method);
-			global::System.Security.Cryptography.HashAlgorithm hash = getHash();
-			byte[] bytes = global::System.Text.Encoding.ASCII.GetBytes(signatureBase);
+			HashAlgorithm hash = getHash();
+			byte[] bytes = Encoding.ASCII.GetBytes(signatureBase);
 			byte[] inArray = hash.ComputeHash(bytes);
-			this["signature"] = global::System.Convert.ToBase64String(inArray);
+			this["signature"] = Convert.ToBase64String(inArray);
 		}
 
 		private string getSignatureBase(string url, string method)
 		{
-			global::System.Uri uri = new global::System.Uri(url);
+			Uri uri = new Uri(url);
 			string text = string.Format("{0}://{1}", uri.Scheme, uri.Host);
 			if ((!(uri.Scheme == "http") || uri.Port != 80) && (!(uri.Scheme == "https") || uri.Port != 443))
 			{
 				text = text + ":" + uri.Port;
 			}
 			text += uri.AbsolutePath;
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder();
+			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.Append(method).Append('&').Append(urlEncode(text))
 				.Append('&');
-			global::System.Collections.Generic.SortedDictionary<string, string> sortedDictionary = extractQueryParameters(uri.Query);
-			foreach (global::System.Collections.Generic.KeyValuePair<string, string> item in _params)
+			SortedDictionary<string, string> sortedDictionary = extractQueryParameters(uri.Query);
+			foreach (KeyValuePair<string, string> param in _params)
 			{
-				if (!string.IsNullOrEmpty(_params[item.Key]) && !item.Key.EndsWith("_secret") && !item.Key.EndsWith("signature"))
+				if (!string.IsNullOrEmpty(_params[param.Key]) && !param.Key.EndsWith("_secret") && !param.Key.EndsWith("signature"))
 				{
-					sortedDictionary.Add("oauth_" + item.Key, item.Value);
+					sortedDictionary.Add("oauth_" + param.Key, param.Value);
 				}
 			}
-			global::System.Text.StringBuilder stringBuilder2 = new global::System.Text.StringBuilder();
-			foreach (global::System.Collections.Generic.KeyValuePair<string, string> item2 in sortedDictionary)
+			StringBuilder stringBuilder2 = new StringBuilder();
+			foreach (KeyValuePair<string, string> item in sortedDictionary)
 			{
-				stringBuilder2.AppendFormat("{0}={1}&", item2.Key, item2.Value);
+				stringBuilder2.AppendFormat("{0}={1}&", item.Key, item.Value);
 			}
 			stringBuilder.Append(urlEncode(stringBuilder2.ToString().TrimEnd('&')));
 			return stringBuilder.ToString();
 		}
 
-		private global::System.Security.Cryptography.HashAlgorithm getHash()
+		private HashAlgorithm getHash()
 		{
 			if (this["signature_method"] != "HMAC-SHA1")
 			{
-				throw new global::System.NotImplementedException();
+				throw new NotImplementedException();
 			}
 			string s = string.Format("{0}&{1}", urlEncode(this["consumer_secret"]), urlEncode(this["token_secret"]));
-			global::System.Security.Cryptography.HMACSHA1 hMACSHA = new global::System.Security.Cryptography.HMACSHA1();
-			hMACSHA.Key = global::System.Text.Encoding.ASCII.GetBytes(s);
+			HMACSHA1 hMACSHA = new HMACSHA1();
+			hMACSHA.Key = Encoding.ASCII.GetBytes(s);
 			return hMACSHA;
 		}
 	}

@@ -1,11 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace Prime31
 {
 	public class JsonFormatter
 	{
 		private enum JsonContextType
 		{
-			Object = 0,
-			Array = 1
+			Object,
+			Array
 		}
 
 		private const int defaultIndent = 0;
@@ -22,23 +26,23 @@ namespace Prime31
 
 		private char prevChar = '\0';
 
-		private global::System.Collections.Generic.Stack<global::Prime31.JsonFormatter.JsonContextType> context = new global::System.Collections.Generic.Stack<global::Prime31.JsonFormatter.JsonContextType>();
+		private Stack<JsonContextType> context = new Stack<JsonContextType>();
 
 		public static string prettyPrint(string input)
 		{
 			try
 			{
-				return new global::Prime31.JsonFormatter().print(input);
+				return new JsonFormatter().print(input);
 			}
-			catch (global::System.Exception)
+			catch (Exception)
 			{
 				return null;
 			}
 		}
 
-		private static void buildIndents(int indents, global::System.Text.StringBuilder output)
+		private static void buildIndents(int indents, StringBuilder output)
 		{
-			for (; indents > 0; indents--)
+			for (indents = indents; indents > 0; indents--)
 			{
 				output.Append("\t");
 			}
@@ -51,7 +55,7 @@ namespace Prime31
 
 		public string print(string input)
 		{
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder(input.Length * 2);
+			StringBuilder stringBuilder = new StringBuilder(input.Length * 2);
 			foreach (char c in input)
 			{
 				switch (c)
@@ -59,14 +63,14 @@ namespace Prime31
 				case '{':
 					if (!inString())
 					{
-						if (inVariableAssignment || (context.Count > 0 && context.Peek() != global::Prime31.JsonFormatter.JsonContextType.Array))
+						if (inVariableAssignment || (context.Count > 0 && context.Peek() != JsonContextType.Array))
 						{
-							stringBuilder.Append(global::System.Environment.NewLine);
+							stringBuilder.Append(Environment.NewLine);
 							buildIndents(context.Count, stringBuilder);
 						}
 						stringBuilder.Append(c);
-						context.Push(global::Prime31.JsonFormatter.JsonContextType.Object);
-						stringBuilder.Append(global::System.Environment.NewLine);
+						context.Push(JsonContextType.Object);
+						stringBuilder.Append(Environment.NewLine);
 						buildIndents(context.Count, stringBuilder);
 					}
 					else
@@ -77,7 +81,7 @@ namespace Prime31
 				case '}':
 					if (!inString())
 					{
-						stringBuilder.Append(global::System.Environment.NewLine);
+						stringBuilder.Append(Environment.NewLine);
 						context.Pop();
 						buildIndents(context.Count, stringBuilder);
 						stringBuilder.Append(c);
@@ -91,7 +95,7 @@ namespace Prime31
 					stringBuilder.Append(c);
 					if (!inString())
 					{
-						context.Push(global::Prime31.JsonFormatter.JsonContextType.Array);
+						context.Push(JsonContextType.Array);
 					}
 					break;
 				case ']':
@@ -114,10 +118,10 @@ namespace Prime31
 					{
 						stringBuilder.Append(" ");
 					}
-					if (!inString() && context.Peek() != global::Prime31.JsonFormatter.JsonContextType.Array)
+					if (!inString() && context.Peek() != JsonContextType.Array)
 					{
 						buildIndents(context.Count, stringBuilder);
-						stringBuilder.Append(global::System.Environment.NewLine);
+						stringBuilder.Append(Environment.NewLine);
 						buildIndents(context.Count, stringBuilder);
 						inVariableAssignment = false;
 					}
