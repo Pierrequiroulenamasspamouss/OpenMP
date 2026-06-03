@@ -38,7 +38,7 @@ namespace Newtonsoft.Json
 
 		private static global::System.TimeSpan GetUtcOffset(global::System.DateTime dateTime)
 		{
-			return global::System.TimeZone.CurrentTimeZone.GetUtcOffset(dateTime);
+			return global::System.TimeZoneInfo.Local.GetUtcOffset(dateTime);
 		}
 
 		internal static void WriteDateTimeString(global::System.IO.TextWriter writer, global::System.DateTime value)

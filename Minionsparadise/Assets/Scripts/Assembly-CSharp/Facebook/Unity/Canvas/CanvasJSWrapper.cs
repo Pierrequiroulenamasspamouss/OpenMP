@@ -24,12 +24,10 @@ namespace Discord.Unity.Canvas
 
 		public void ExternalCall(string functionName, params object[] args)
 		{
-			global::UnityEngine.Application.ExternalCall(functionName, args);
 		}
 
 		public void ExternalEval(string script)
 		{
-			global::UnityEngine.Application.ExternalEval(script);
 		}
 
 		public void DisableFullScreen()

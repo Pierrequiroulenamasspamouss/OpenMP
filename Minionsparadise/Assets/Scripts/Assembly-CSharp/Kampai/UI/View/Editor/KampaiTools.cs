@@ -44,7 +44,7 @@ namespace Kampai.Editor
             }
 
             // 3. Save changes
-            PrefabUtility.ReplacePrefab(instance, prefabAsset, ReplacePrefabOptions.ConnectToPrefab);
+            PrefabUtility.SaveAsPrefabAsset(instance, SETTINGS_PREFAB_PATH);
             DestroyImmediate(instance);
 
             Debug.Log(string.Format("<b>[KampaiTools] SUCCESS: Removed {0} redundant mediators and repaired scaling.</b>", removedCount));

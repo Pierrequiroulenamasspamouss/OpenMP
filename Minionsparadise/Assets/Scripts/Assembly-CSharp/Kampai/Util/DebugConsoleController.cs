@@ -801,7 +801,7 @@ namespace Kampai.Util
 		{
 			if (hudView == null)
 			{
-				hudView = global::UnityEngine.Object.FindObjectOfType<global::Kampai.UI.View.HUDView>();
+				hudView = global::UnityEngine.Object.FindFirstObjectByType<global::Kampai.UI.View.HUDView>();
 			}
 			if (hudView != null)
 			{

@@ -26,7 +26,7 @@ namespace GooglePlayGames
 
 		private string mUnlockedImageUrl = string.Empty;
 
-		private global::UnityEngine.WWW mImageFetcher;
+		private global::UnityEngine.Networking.UnityWebRequest mImageFetcher;
 
 		private global::UnityEngine.Texture2D mImage;
 
@@ -204,7 +204,8 @@ namespace GooglePlayGames
 			{
 				if (mImageFetcher == null || mImageFetcher.url != text)
 				{
-					mImageFetcher = new global::UnityEngine.WWW(text);
+					mImageFetcher = global::UnityEngine.Networking.UnityWebRequestTexture.GetTexture(text);
+					mImageFetcher.SendWebRequest();
 					mImage = null;
 				}
 				if (mImage != null)
@@ -213,7 +214,10 @@ namespace GooglePlayGames
 				}
 				if (mImageFetcher.isDone)
 				{
-					mImage = mImageFetcher.texture;
+					if (mImageFetcher.result == global::UnityEngine.Networking.UnityWebRequest.Result.Success)
+					{
+						mImage = global::UnityEngine.Networking.DownloadHandlerTexture.GetContent(mImageFetcher);
+					}
 					return mImage;
 				}
 			}

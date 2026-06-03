@@ -48,7 +48,7 @@ namespace Newtonsoft.Json.Serialization
 			string typeName = typeNameKey.TypeName;
 			if (assemblyName != null)
 			{
-				global::System.Reflection.Assembly assembly = global::System.Reflection.Assembly.LoadWithPartialName(assemblyName);
+				global::System.Reflection.Assembly assembly = global::System.Reflection.Assembly.Load(new global::System.Reflection.AssemblyName(assemblyName));
 				if (assembly == null)
 				{
 					throw new global::Newtonsoft.Json.JsonSerializationException(global::Newtonsoft.Json.Utilities.StringUtils.FormatWith("Could not load assembly '{0}'.", global::System.Globalization.CultureInfo.InvariantCulture, assemblyName));

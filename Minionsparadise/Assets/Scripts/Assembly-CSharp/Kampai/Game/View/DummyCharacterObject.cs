@@ -173,10 +173,11 @@ namespace Kampai.Game.View
 
 		private void ReplacingClips(ref global::UnityEngine.AnimatorOverrideController overrideController)
 		{
-			global::UnityEngine.AnimationClipPair[] clips = overrideController.clips;
-			for (int i = 0; i < clips.Length; i++)
+			var overrides = new global::System.Collections.Generic.List<global::System.Collections.Generic.KeyValuePair<global::UnityEngine.AnimationClip, global::UnityEngine.AnimationClip>>();
+			overrideController.GetOverrides(overrides);
+			for (int i = 0; i < overrides.Count; i++)
 			{
-				GrabClipBasedOnName(ref overrideController, clips[i].originalClip.name);
+				GrabClipBasedOnName(ref overrideController, overrides[i].Key.name);
 			}
 		}
 

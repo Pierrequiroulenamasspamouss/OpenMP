@@ -80,27 +80,35 @@ public class HockeyAppIOS : global::UnityEngine.MonoBehaviour
 			}
 			string lContent = postForm.headers["Content-Type"].ToString();
 			lContent = lContent.Replace("\"", string.Empty);
-			global::UnityEngine.WWW www = new global::UnityEngine.WWW(headers: new global::System.Collections.Generic.Dictionary<string, string> { { "Content-Type", lContent } }, url: url, postData: postForm.data);
-			yield return www;
-			if (string.IsNullOrEmpty(www.error))
+			
+			using (global::UnityEngine.Networking.UnityWebRequest webRequest = new global::UnityEngine.Networking.UnityWebRequest(url, "POST"))
 			{
+				webRequest.uploadHandler = new global::UnityEngine.Networking.UploadHandlerRaw(postForm.data);
+				webRequest.uploadHandler.contentType = lContent;
+				webRequest.downloadHandler = new global::UnityEngine.Networking.DownloadHandlerBuffer();
+				webRequest.SetRequestHeader("Content-Type", lContent);
+				yield return webRequest.SendWebRequest();
+				
+				if (string.IsNullOrEmpty(webRequest.error))
+				{
 #if !UNITY_WEBPLAYER
-				try
-				{
-					global::System.IO.File.Delete(log);
-				}
-				catch (global::System.Exception ex)
-				{
-					if (global::UnityEngine.Debug.isDebugBuild)
+					try
 					{
-						global::UnityEngine.Debug.Log("Failed to delete exception log: " + ex);
+						global::System.IO.File.Delete(log);
 					}
-				}
+					catch (global::System.Exception ex)
+					{
+						if (global::UnityEngine.Debug.isDebugBuild)
+						{
+							global::UnityEngine.Debug.Log("Failed to delete exception log: " + ex);
+						}
+					}
 #endif
-			}
-			if (crashReportCallback != null)
-			{
-				crashReportCallback();
+				}
+				if (crashReportCallback != null)
+				{
+					crashReportCallback();
+				}
 			}
 		}
 	}

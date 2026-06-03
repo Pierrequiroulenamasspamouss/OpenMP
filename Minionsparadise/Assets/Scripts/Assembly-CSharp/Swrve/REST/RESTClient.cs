@@ -13,11 +13,11 @@ namespace Swrve.REST
 				headers.Add("Accept-Encoding", "gzip");
 			}
 			long start = global::Swrve.Helpers.SwrveHelper.GetMilliseconds();
-			using (global::UnityEngine.WWW www = global::Swrve.CrossPlatformUtils.MakeWWW(url, null, headers))
+			using (global::UnityEngine.Networking.UnityWebRequest webRequest = global::Swrve.CrossPlatformUtils.MakeWebRequest(url, null, headers))
 			{
-				yield return www;
+				yield return webRequest.SendWebRequest();
 				long wwwTime = global::Swrve.Helpers.SwrveHelper.GetMilliseconds() - start;
-				ProcessResponse(www, wwwTime, url, listener);
+				ProcessResponse(webRequest, wwwTime, url, listener);
 			}
 		}
 
@@ -28,11 +28,11 @@ namespace Swrve.REST
 				headers = AddMetricsHeader(headers);
 			}
 			long start = global::Swrve.Helpers.SwrveHelper.GetMilliseconds();
-			using (global::UnityEngine.WWW www = global::Swrve.CrossPlatformUtils.MakeWWW(url, encodedData, headers))
+			using (global::UnityEngine.Networking.UnityWebRequest webRequest = global::Swrve.CrossPlatformUtils.MakeWebRequest(url, encodedData, headers))
 			{
-				yield return www;
+				yield return webRequest.SendWebRequest();
 				long wwwTime = global::Swrve.Helpers.SwrveHelper.GetMilliseconds() - start;
-				ProcessResponse(www, wwwTime, url, listener);
+				ProcessResponse(webRequest, wwwTime, url, listener);
 			}
 		}
 
@@ -55,36 +55,38 @@ namespace Swrve.REST
 			metrics.Add(item);
 		}
 
-		protected void ProcessResponse(global::UnityEngine.WWW www, long wwwTime, string url, global::System.Action<global::Swrve.REST.RESTResponse> listener)
+		protected void ProcessResponse(global::UnityEngine.Networking.UnityWebRequest webRequest, long wwwTime, string url, global::System.Action<global::Swrve.REST.RESTResponse> listener)
 		{
 			try
 			{
-				global::Swrve.Helpers.WwwDeducedError wwwDeducedError = global::Swrve.Helpers.UnityWwwHelper.DeduceWwwError(www);
-				if (wwwDeducedError == global::Swrve.Helpers.WwwDeducedError.NoError)
+				global::Swrve.Helpers.WwwDeducedError webRequestError = global::Swrve.Helpers.UnityWwwHelper.DeduceWebRequestError(webRequest);
+				if (webRequestError == global::Swrve.Helpers.WwwDeducedError.NoError)
 				{
+					byte[] responseData = webRequest.downloadHandler.data;
 					string decodedString = null;
-					bool flag = global::Swrve.Helpers.ResponseBodyTester.TestUTF8(www.bytes, out decodedString);
+					bool flag = global::Swrve.Helpers.ResponseBodyTester.TestUTF8(responseData, out decodedString);
 					global::System.Collections.Generic.Dictionary<string, string> dictionary = new global::System.Collections.Generic.Dictionary<string, string>();
 					string value = null;
-					if (www.responseHeaders != null)
+					var responseHeaders = webRequest.GetResponseHeaders();
+					if (responseHeaders != null)
 					{
-						foreach (string key in www.responseHeaders.Keys)
+						foreach (string key in responseHeaders.Keys)
 						{
 							if (string.Equals(key, "Content-Encoding", global::System.StringComparison.OrdinalIgnoreCase))
 							{
-								www.responseHeaders.TryGetValue(key, out value);
+								responseHeaders.TryGetValue(key, out value);
 								break;
 							}
-							dictionary.Add(key.ToUpper(), www.responseHeaders[key]);
+							dictionary.Add(key.ToUpper(), responseHeaders[key]);
 						}
 					}
-					if (www.bytes != null && www.bytes.Length > 4 && value != null && string.Equals(value, "gzip", global::System.StringComparison.OrdinalIgnoreCase) && decodedString != null && (!decodedString.StartsWith("{") || !decodedString.EndsWith("}")) && (!decodedString.StartsWith("[") || !decodedString.EndsWith("]")))
+					if (responseData != null && responseData.Length > 4 && value != null && string.Equals(value, "gzip", global::System.StringComparison.OrdinalIgnoreCase) && decodedString != null && (!decodedString.StartsWith("{") || !decodedString.EndsWith("}")) && (!decodedString.StartsWith("[") || !decodedString.EndsWith("]")))
 					{
-						int num = global::System.BitConverter.ToInt32(www.bytes, 0);
+						int num = global::System.BitConverter.ToInt32(responseData, 0);
 						if (num > 0)
 						{
 							byte[] array = new byte[num];
-							using (global::System.IO.MemoryStream memoryStream = new global::System.IO.MemoryStream(www.bytes))
+							using (global::System.IO.MemoryStream memoryStream = new global::System.IO.MemoryStream(responseData))
 							{
 								using (global::ICSharpCode.SharpZipLib.GZip.GZipInputStream gZipInputStream = new global::ICSharpCode.SharpZipLib.GZip.GZipInputStream(memoryStream))
 								{
@@ -110,7 +112,7 @@ namespace Swrve.REST
 				else
 				{
 					AddMetrics(url, wwwTime, true);
-					listener(new global::Swrve.REST.RESTResponse(wwwDeducedError));
+					listener(new global::Swrve.REST.RESTResponse(webRequestError));
 				}
 			}
 			catch (global::System.Exception message)
