@@ -86,19 +86,18 @@ namespace GooglePlayGames
 		{
 			if (!string.IsNullOrEmpty(AvatarURL))
 			{
-				global::UnityEngine.WWW www = new global::UnityEngine.WWW(AvatarURL);
-				while (!www.isDone)
+				using (global::UnityEngine.Networking.UnityWebRequest webRequest = global::UnityEngine.Networking.UnityWebRequestTexture.GetTexture(AvatarURL))
 				{
-					yield return null;
-				}
-				if (www.error == null)
-				{
-					mImage = www.texture;
-				}
-				else
-				{
-					mImage = global::UnityEngine.Texture2D.blackTexture;
-					global::UnityEngine.Debug.Log("Error downloading image: " + www.error);
+					yield return webRequest.SendWebRequest();
+					if (webRequest.result == global::UnityEngine.Networking.UnityWebRequest.Result.Success)
+					{
+						mImage = global::UnityEngine.Networking.DownloadHandlerTexture.GetContent(webRequest);
+					}
+					else
+					{
+						mImage = global::UnityEngine.Texture2D.blackTexture;
+						global::UnityEngine.Debug.Log("Error downloading image: " + webRequest.error);
+					}
 				}
 				mImageLoading = false;
 			}

@@ -26,16 +26,17 @@ public class AlligatorVFXParticleRotation : global::UnityEngine.MonoBehaviour
 
 	private void Update()
 	{
+		var main = particleSys.main;
 		switch (followAxis)
 		{
 		case AlligatorVFXParticleRotation.FollowAxis.X:
-			particleSys.startRotation = base.transform.rotation.eulerAngles.x * ((float)global::System.Math.PI / 180f);
+			main.startRotation = base.transform.rotation.eulerAngles.x * ((float)global::System.Math.PI / 180f);
 			break;
 		case AlligatorVFXParticleRotation.FollowAxis.Y:
-			particleSys.startRotation = base.transform.rotation.eulerAngles.y * ((float)global::System.Math.PI / 180f);
+			main.startRotation = base.transform.rotation.eulerAngles.y * ((float)global::System.Math.PI / 180f);
 			break;
 		case AlligatorVFXParticleRotation.FollowAxis.Z:
-			particleSys.startRotation = base.transform.rotation.eulerAngles.z * ((float)global::System.Math.PI / 180f);
+			main.startRotation = base.transform.rotation.eulerAngles.z * ((float)global::System.Math.PI / 180f);
 			break;
 		}
 	}

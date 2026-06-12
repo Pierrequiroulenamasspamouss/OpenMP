@@ -1,10 +1,16 @@
+using System.Collections.Generic;
+
 namespace Prime31
 {
 	public class OAuthResponse
 	{
-		private global::System.Collections.Generic.Dictionary<string, string> _params;
+		private Dictionary<string, string> _params;
 
-		public string responseText { get; set; }
+		public string responseText
+		{
+			get;
+			set;
+		}
 
 		public string this[string ix]
 		{
@@ -17,7 +23,7 @@ namespace Prime31
 		public OAuthResponse(string alltext)
 		{
 			responseText = alltext;
-			_params = new global::System.Collections.Generic.Dictionary<string, string>();
+			_params = new Dictionary<string, string>();
 			string[] array = alltext.Split('&');
 			string[] array2 = array;
 			foreach (string text in array2)

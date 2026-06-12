@@ -1,10 +1,8 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Standard/Specular" {
     Properties {
         _Color ("Main Color", Color) = (1,1,1,1)
         _MainTex ("Base (RGB) Gloss (A)", 2D) = "white" {}
-        _Boost ("Boost", Float) = 1 // Propriété déclarée mais inutilisée dans l'original
+        _Boost ("Boost", Float) = 1
         _Spec ("Specular", Float) = 0.078125
         _UVScroll ("UV Scroll", Vector) = (0,0,0,0)
         _OffsetFactor ("Offset Factor", Float) = 0
@@ -49,7 +47,6 @@ Shader "Kampai/Standard/Specular" {
             v2f vert (appdata v) {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
-                // Gère le tiling/offset standard de Unity + le scrolling basé sur le temps
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex) + frac(_UVScroll.xy * _Time.x);
                 o.normalWorld = UnityObjectToWorldNormal(v.normal);
                 o.viewDir = WorldSpaceViewDir(v.vertex);
@@ -62,12 +59,10 @@ Shader "Kampai/Standard/Specular" {
                 float3 viewDir = normalize(i.viewDir);
                 float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
 
-                // --- Calcul du reflet spéculaire (Blinn-Phong) ---
                 float3 halfVector = normalize(viewDir + lightDir);
                 float specPower = _Spec * 128.0;
                 float specTerm = pow(max(0.0, dot(halfVector, normal)), specPower);
                 
-                // Le canal Alpha de la texture dicte l'intensité de la brillance
                 float3 specularColor = tex.a * specTerm * _LightColor0.rgb;
 
                 fixed4 finalCol;

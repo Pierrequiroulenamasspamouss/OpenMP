@@ -158,6 +158,24 @@ public class DiscordController : MonoBehaviour
         return "Unity " + Application.unityVersion;
     }
 
+    private string GetPlatformText()
+    {
+        switch (Application.platform)
+        {
+            case RuntimePlatform.WindowsPlayer:
+            case RuntimePlatform.WindowsEditor:
+                return "Playing on Windows.";
+            case RuntimePlatform.LinuxPlayer:
+            case RuntimePlatform.LinuxEditor:
+                return "Playing on Linux.";
+            case RuntimePlatform.OSXPlayer:
+            case RuntimePlatform.OSXEditor:
+                return "Playing on macOS.";
+            default:
+                return "Playing on " + Application.platform.ToString() + ".";
+        }
+    }
+
     private void TryReadPlayerLevelFromService()
     {
         try
@@ -278,7 +296,7 @@ public class DiscordController : MonoBehaviour
 
         ActivityAssets assets = new ActivityAssets();
         assets.SetLargeImage(imageKey);
-        assets.SetLargeText("Unity Game");
+        assets.SetLargeText(GetPlatformText());
         activity.SetAssets(assets);
 
         ActivityTimestamps timestamps = new ActivityTimestamps();
@@ -296,7 +314,7 @@ public class DiscordController : MonoBehaviour
         {
             if (!hasLoggedUpdateError)
             {
-                Debug.LogWarning("[DiscordController] Failed to update rich presence: " + result.Error() + " (Only logged once to prevent spam)");
+                Debug.LogWarning("[DiscordController] Failed to update rich presence: " + result.Error());
                 hasLoggedUpdateError = true;
             }
         }

@@ -130,7 +130,7 @@ namespace Kampai.Tools.AnimationToolKit
 		[PostConstruct]
 		public void PostConstruct()
 		{
-			global::UnityEngine.Object[] array = global::UnityEngine.Object.FindObjectsOfType(typeof(global::UnityEngine.Transform));
+			global::UnityEngine.Object[] array = global::UnityEngine.Object.FindObjectsByType(typeof(global::UnityEngine.Transform), global::UnityEngine.FindObjectsSortMode.None);
 			for (int i = 0; i < array.Length; i++)
 			{
 				global::UnityEngine.Transform transform = (global::UnityEngine.Transform)array[i];

@@ -71,7 +71,7 @@ namespace Kampai.Game.View
 					else
 					{
 						component.Stop();
-						StartCoroutine(waitThenDisableParticleSystem(gameObjects[i], component.startLifetime));
+						StartCoroutine(waitThenDisableParticleSystem(gameObjects[i], component.main.startLifetime.constant));
 					}
 				}
 				else

@@ -43,7 +43,7 @@ namespace Kampai.Game
 			{
 				// Call server to unlink Discord
 				string userId = userSessionService.UserSession.UserID;
-				string unlinkUrl = ServerUrl + "/rest/v2/user/" + global::UnityEngine.WWW.EscapeURL(userId) + "/discord/unlink";
+				string unlinkUrl = ServerUrl + "/rest/v2/user/" + global::System.Uri.EscapeDataString(userId) + "/discord/unlink";
 				
 				global::strange.extensions.signal.impl.Signal<global::Ea.Sharkbite.HttpPlugin.Http.Api.IResponse> signal = new global::strange.extensions.signal.impl.Signal<global::Ea.Sharkbite.HttpPlugin.Http.Api.IResponse>();
 				signal.AddListener(OnUnlinkResponse);

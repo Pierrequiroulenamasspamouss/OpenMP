@@ -28,7 +28,7 @@ namespace Kampai.Game.View
 
 		public global::System.Collections.IEnumerator CleanupCoroutine(global::strange.extensions.pool.api.IPool<global::Kampai.Game.View.PoolableVFX> pool)
 		{
-			yield return new global::UnityEngine.WaitForSeconds(vfxGO.GetComponent<global::UnityEngine.ParticleSystem>().duration);
+			yield return new global::UnityEngine.WaitForSeconds(vfxGO.GetComponent<global::UnityEngine.ParticleSystem>().main.duration);
 			pool.ReturnInstance(this);
 		}
 	}

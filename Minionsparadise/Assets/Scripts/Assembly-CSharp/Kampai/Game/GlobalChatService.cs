@@ -4,6 +4,7 @@ using Kampai.Main;
 using Kampai.UI.View;
 using Kampai.Util;
 using UnityEngine;
+using UnityEngine.Networking;
 using Newtonsoft.Json;
 
 namespace Kampai.Game
@@ -76,7 +77,7 @@ namespace Kampai.Game
 			
 			if (!string.IsNullOrEmpty(m_lastTimestamp))
 			{
-				url += (url.Contains("?") ? "&" : "?") + "since=" + WWW.EscapeURL(m_lastTimestamp);
+				url += (url.Contains("?") ? "&" : "?") + "since=" + System.Uri.EscapeDataString(m_lastTimestamp);
 			}
 			
 			return url;
@@ -89,43 +90,46 @@ namespace Kampai.Game
 				string url = GetUrl();
 				if (string.IsNullOrEmpty(url)) yield break;
 
-				WWW www = new WWW(url);
-				yield return www;
-
-				if (string.IsNullOrEmpty(www.error))
+				using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
 				{
-					try
+					webRequest.downloadHandler = new DownloadHandlerBuffer();
+					yield return webRequest.SendWebRequest();
+
+					if (string.IsNullOrEmpty(webRequest.error))
 					{
-						ChatResponse response = JsonConvert.DeserializeObject<ChatResponse>(www.text);
-						if (response != null && response.messages != null)
+						try
 						{
-							if (m_isFirstPoll)
+							ChatResponse response = JsonConvert.DeserializeObject<ChatResponse>(webRequest.downloadHandler.text);
+							if (response != null && response.messages != null)
 							{
-								m_cachedMessages = response.messages;
-								m_isFirstPoll = false;
-								Debug.Log(string.Format("[GlobalChat] Initialized with {0} messages.", m_cachedMessages.Count));
-							}
-							else if (response.messages.Count > 0)
-							{
-								Debug.Log(string.Format("[GlobalChat] Received {0} new messages.", response.messages.Count));
-								m_cachedMessages.AddRange(response.messages);
-							}
+								if (m_isFirstPoll)
+								{
+									m_cachedMessages = response.messages;
+									m_isFirstPoll = false;
+									Debug.Log(string.Format("[GlobalChat] Initialized with {0} messages.", m_cachedMessages.Count));
+								}
+								else if (response.messages.Count > 0)
+								{
+									Debug.Log(string.Format("[GlobalChat] Received {0} new messages.", response.messages.Count));
+									m_cachedMessages.AddRange(response.messages);
+								}
 
-							if (m_cachedMessages.Count > 0)
-							{
-								m_lastTimestamp = m_cachedMessages[m_cachedMessages.Count - 1].timestamp;
-							}
+								if (m_cachedMessages.Count > 0)
+								{
+									m_lastTimestamp = m_cachedMessages[m_cachedMessages.Count - 1].timestamp;
+								}
 
-							if (m_cachedMessages.Count > 100)
-							{
-								m_cachedMessages.RemoveRange(0, m_cachedMessages.Count - 100);
+								if (m_cachedMessages.Count > 100)
+								{
+									m_cachedMessages.RemoveRange(0, m_cachedMessages.Count - 100);
+								}
+								updateSignal.Dispatch(m_cachedMessages);
 							}
-							updateSignal.Dispatch(m_cachedMessages);
 						}
-					}
-					catch (System.Exception ex)
-					{
-						Debug.LogError("[GlobalChat] Failed to parse chat JSON: " + ex.Message);
+						catch (System.Exception ex)
+						{
+							Debug.LogError("[GlobalChat] Failed to parse chat JSON: " + ex.Message);
+						}
 					}
 				}
 				
@@ -138,8 +142,7 @@ namespace Kampai.Game
 			string url = GetUrl();
 			if (string.IsNullOrEmpty(url)) yield break;
 			
-			// For POST sending, we remove any polling parameters
-			if (url.Contains("?")) url = url.Split('?') [0];
+			if (url.Contains("?")) url = url.Split('?')[0];
 
 			string playerName = "Minion " + (playerService != null ? playerService.ID.ToString() : "0");
 			
@@ -148,20 +151,24 @@ namespace Kampai.Game
 				playerName = PlayerPrefs.GetString("PlayerName");
 			}
 
-			WWWForm form = new WWWForm();
-			form.AddField("user", playerName);
-			form.AddField("text", text);
+			string formData = "user=" + System.Uri.EscapeDataString(playerName) + "&text=" + System.Uri.EscapeDataString(text);
+			byte[] bodyData = System.Text.Encoding.UTF8.GetBytes(formData);
 
-			WWW www = new WWW(url, form);
-			yield return www;
+			using (UnityWebRequest webRequest = new UnityWebRequest(url, "POST"))
+			{
+				webRequest.uploadHandler = new UploadHandlerRaw(bodyData);
+				webRequest.uploadHandler.contentType = "application/x-www-form-urlencoded";
+				webRequest.downloadHandler = new DownloadHandlerBuffer();
+				yield return webRequest.SendWebRequest();
 
-			if (!string.IsNullOrEmpty(www.error))
-			{
-				errorSignal.Dispatch("Failed to send message: " + www.error);
-			}
-			else
-			{
-				routineRunner.StartCoroutine(FetchOnceCoroutine());
+				if (!string.IsNullOrEmpty(webRequest.error))
+				{
+					errorSignal.Dispatch("Failed to send message: " + webRequest.error);
+				}
+				else
+				{
+					routineRunner.StartCoroutine(FetchOnceCoroutine());
+				}
 			}
 		}
 
@@ -170,21 +177,24 @@ namespace Kampai.Game
 			string url = GetUrl();
 			if (string.IsNullOrEmpty(url)) yield break;
 
-			WWW www = new WWW(url);
-			yield return www;
-
-			if (string.IsNullOrEmpty(www.error))
+			using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
 			{
-				try
+				webRequest.downloadHandler = new DownloadHandlerBuffer();
+				yield return webRequest.SendWebRequest();
+
+				if (string.IsNullOrEmpty(webRequest.error))
 				{
-					ChatResponse response = JsonConvert.DeserializeObject<ChatResponse>(www.text);
-					if (response != null && response.messages != null)
+					try
 					{
-						m_cachedMessages = response.messages;
-						updateSignal.Dispatch(m_cachedMessages);
+						ChatResponse response = JsonConvert.DeserializeObject<ChatResponse>(webRequest.downloadHandler.text);
+						if (response != null && response.messages != null)
+						{
+							m_cachedMessages = response.messages;
+							updateSignal.Dispatch(m_cachedMessages);
+						}
 					}
+					catch {}
 				}
-				catch {}
 			}
 		}
 	}

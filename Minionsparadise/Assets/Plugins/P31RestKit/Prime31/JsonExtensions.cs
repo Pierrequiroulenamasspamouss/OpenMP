@@ -1,25 +1,28 @@
+using System.Collections;
+using System.Collections.Generic;
+
 namespace Prime31
 {
 	public static class JsonExtensions
 	{
-		public static string toJson(this global::System.Collections.IList obj)
+		public static string toJson(this IList obj)
 		{
-			return global::Prime31.Json.encode(obj);
+			return Json.encode(obj);
 		}
 
-		public static string toJson(this global::System.Collections.IDictionary obj)
+		public static string toJson(this IDictionary obj)
 		{
-			return global::Prime31.Json.encode(obj);
+			return Json.encode(obj);
 		}
 
-		public static global::System.Collections.Generic.List<object> listFromJson(this string json)
+		public static List<object> listFromJson(this string json)
 		{
-			return global::Prime31.Json.decode(json) as global::System.Collections.Generic.List<object>;
+			return Json.decode(json) as List<object>;
 		}
 
-		public static global::System.Collections.Generic.Dictionary<string, object> dictionaryFromJson(this string json)
+		public static Dictionary<string, object> dictionaryFromJson(this string json)
 		{
-			return global::Prime31.Json.decode(json) as global::System.Collections.Generic.Dictionary<string, object>;
+			return Json.decode(json) as Dictionary<string, object>;
 		}
 	}
 }

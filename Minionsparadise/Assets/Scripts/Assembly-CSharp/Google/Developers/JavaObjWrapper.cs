@@ -184,7 +184,7 @@ namespace Google.Developers
 			}
 			if (typeFromHandle == typeof(byte))
 			{
-				return (T)(object)global::UnityEngine.AndroidJNI.CallByteMethod(raw, methodID, args2);
+				return (T)(object)global::UnityEngine.AndroidJNI.CallSByteMethod(raw, methodID, args2);
 			}
 			if (typeFromHandle == typeof(char))
 			{
@@ -229,7 +229,7 @@ namespace Google.Developers
 			}
 			if (typeFromHandle == typeof(byte))
 			{
-				return (T)(object)global::UnityEngine.AndroidJNI.CallStaticByteMethod(clazz, staticMethodID, args2);
+				return (T)(object)global::UnityEngine.AndroidJNI.CallStaticSByteMethod(clazz, staticMethodID, args2);
 			}
 			if (typeFromHandle == typeof(char))
 			{

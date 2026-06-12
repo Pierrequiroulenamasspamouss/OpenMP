@@ -1,12 +1,9 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Standard/Minion" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "gray" {}
         _MatCapBase ("MatCapBase (RGB)", 2D) = "gray" {}
         _LightColor ("Light Color (RGB)", Color) = (0.733,0.706,0.525,1)
         _NightGlow ("Night Glow", Range(0,1)) = 0
-        // ... (Stencils à rajouter au besoin)
     }
 
     SubShader { 
@@ -44,7 +41,6 @@ Shader "Kampai/Standard/Minion" {
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 
-                // Calcul Matcap Corrigé (transformation de la normale, pas de la position)
                 float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, v.normal);
                 o.capCoord = normalize(viewNormal).xy * 0.5 + 0.5;
                 o.color = v.color;
@@ -56,20 +52,15 @@ Shader "Kampai/Standard/Minion" {
                 fixed4 tex = tex2D(_MainTex, i.uv);
                 fixed4 matcap = tex2D(_MatCapBase, i.capCoord);
                 
-                // --- MASQUAGE PAR VERTEX COLORS ---
-                // Canal Rouge du sommet = Intensité diffuse globale et reflets
                 fixed3 diffuse = pow(abs(matcap.r), i.color.r) * _LightColor.rgb;
                 diffuse += diffuse * 0.6;
                 
                 fixed3 spec = (matcap.g * i.color.r * 1.75) + pow(abs(tex.rgb), 2.25);
                 
-                // Canal Bleu du sommet = Intensité du Rim Lighting (contour lumineux)
                 fixed3 rim = clamp((matcap.b * i.color.b * tex.rgb * 1.25) - 0.25, 0.0, 1.0);
                 
-                // Canal Vert du sommet = Illumination propre / Emission
                 fixed3 finalRGB = ((spec + rim) * diffuse) + (i.color.g * 0.1);
                 
-                // --- Night Mode Injection ---
                 finalRGB = ApplyKampaiNight(finalRGB, _NightGlow);
                 
                 return fixed4(finalRGB, 1.0);

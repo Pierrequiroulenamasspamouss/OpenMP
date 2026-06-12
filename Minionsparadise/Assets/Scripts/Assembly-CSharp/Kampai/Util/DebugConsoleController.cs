@@ -595,7 +595,7 @@ namespace Kampai.Util
 		[global::Kampai.Util.DebugCommand]
 		public void AutoOrderBoard(string[] args)
 		{
-			global::Kampai.Game.View.OrderBoardBuildingObjectView orderBoardBuildingObjectView = global::UnityEngine.Object.FindObjectOfType<global::Kampai.Game.View.OrderBoardBuildingObjectView>();
+			global::Kampai.Game.View.OrderBoardBuildingObjectView orderBoardBuildingObjectView = global::UnityEngine.Object.FindFirstObjectByType<global::Kampai.Game.View.OrderBoardBuildingObjectView>();
 			if (orderBoardBuildingObjectView != null)
 			{
 				global::Kampai.Game.Building byInstanceId = playerService.GetByInstanceId<global::Kampai.Game.Building>(orderBoardBuildingObjectView.ID);
@@ -604,7 +604,7 @@ namespace Kampai.Util
 					openBuildingMenuSignal.Dispatch(orderBoardBuildingObjectView, byInstanceId);
 				}
 			}
-			global::Kampai.Util.DebugButton debugButton = global::UnityEngine.Object.FindObjectOfType<global::Kampai.Util.DebugButton>();
+			global::Kampai.Util.DebugButton debugButton = global::UnityEngine.Object.FindFirstObjectByType<global::Kampai.Util.DebugButton>();
 			if (debugButton != null)
 			{
 				debugButton.OnClick(null);
@@ -661,7 +661,7 @@ namespace Kampai.Util
 			}
 			for (int i = 0; i < orderCount; i++)
 			{
-				global::Kampai.UI.View.OrderBoardTicketView[] obtView = global::UnityEngine.Object.FindObjectsOfType<global::Kampai.UI.View.OrderBoardTicketView>();
+				global::Kampai.UI.View.OrderBoardTicketView[] obtView = global::UnityEngine.Object.FindObjectsByType<global::Kampai.UI.View.OrderBoardTicketView>(global::UnityEngine.FindObjectsSortMode.None);
 				if (obtView.Length > 0)
 				{
 					obtView[global::UnityEngine.Random.Range(0, obtView.Length)].TicketButton.ClickedSignal.Dispatch();
@@ -801,7 +801,7 @@ namespace Kampai.Util
 		{
 			if (hudView == null)
 			{
-				hudView = global::UnityEngine.Object.FindObjectOfType<global::Kampai.UI.View.HUDView>();
+				hudView = global::UnityEngine.Object.FindFirstObjectByType<global::Kampai.UI.View.HUDView>();
 			}
 			if (hudView != null)
 			{
@@ -816,7 +816,7 @@ namespace Kampai.Util
 		[global::Kampai.Util.DebugCommand]
 		public void ToggleAnimators(string[] args)
 		{
-			global::UnityEngine.Animator[] array = global::UnityEngine.Object.FindObjectsOfType<global::UnityEngine.Animator>();
+			global::UnityEngine.Animator[] array = global::UnityEngine.Object.FindObjectsByType<global::UnityEngine.Animator>(global::UnityEngine.FindObjectsSortMode.None);
 			foreach (global::UnityEngine.Animator animator in array)
 			{
 				animator.enabled = false;
@@ -837,7 +837,7 @@ namespace Kampai.Util
 				outBuilder.AppendLine(string.Format("Could not find type {0}", args[1]));
 				return;
 			}
-			global::UnityEngine.Object[] array = global::UnityEngine.Object.FindObjectsOfType(typeByName);
+			global::UnityEngine.Object[] array = global::UnityEngine.Object.FindObjectsByType(typeByName, global::UnityEngine.FindObjectsSortMode.None);
 			if (array == null)
 			{
 				return;
@@ -914,7 +914,7 @@ namespace Kampai.Util
 			if (!showTransparent)
 			{
 				HiddenTransparentObjects = new global::System.Collections.Generic.List<global::UnityEngine.GameObject>();
-				global::UnityEngine.Renderer[] array = global::UnityEngine.Object.FindObjectsOfType<global::UnityEngine.Renderer>();
+				global::UnityEngine.Renderer[] array = global::UnityEngine.Object.FindObjectsByType<global::UnityEngine.Renderer>(global::UnityEngine.FindObjectsSortMode.None);
 				foreach (global::UnityEngine.Renderer renderer in array)
 				{
 					if (renderer.material.renderQueue >= 3000)
@@ -941,7 +941,7 @@ namespace Kampai.Util
 			{
 				return;
 			}
-			global::UnityEngine.Renderer[] array = global::UnityEngine.Object.FindObjectsOfType<global::UnityEngine.Renderer>();
+			global::UnityEngine.Renderer[] array = global::UnityEngine.Object.FindObjectsByType<global::UnityEngine.Renderer>(global::UnityEngine.FindObjectsSortMode.None);
 			foreach (global::UnityEngine.Renderer renderer in array)
 			{
 				if (renderer.material.shader.name.ToLower().Contains(args[1].ToLower()))

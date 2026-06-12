@@ -1,3 +1,9 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+
 namespace Prime31
 {
 	public class SimpleJson
@@ -28,11 +34,11 @@ namespace Prime31
 
 		private const int BUILDER_CAPACITY = 2000;
 
-		private static global::Prime31.IJsonSerializerStrategy _currentJsonSerializerStrategy;
+		private static IJsonSerializerStrategy _currentJsonSerializerStrategy;
 
-		private static global::Prime31.PocoJsonSerializerStrategy _pocoJsonSerializerStrategy;
+		private static PocoJsonSerializerStrategy _pocoJsonSerializerStrategy;
 
-		public static global::Prime31.IJsonSerializerStrategy currentJsonSerializerStrategy
+		public static IJsonSerializerStrategy currentJsonSerializerStrategy
 		{
 			get
 			{
@@ -44,17 +50,17 @@ namespace Prime31
 			}
 		}
 
-		public static global::Prime31.PocoJsonSerializerStrategy pocoJsonSerializerStrategy
+		public static PocoJsonSerializerStrategy pocoJsonSerializerStrategy
 		{
 			get
 			{
-				return _pocoJsonSerializerStrategy ?? (_pocoJsonSerializerStrategy = new global::Prime31.PocoJsonSerializerStrategy());
+				return _pocoJsonSerializerStrategy ?? (_pocoJsonSerializerStrategy = new PocoJsonSerializerStrategy());
 			}
 		}
 
 		public static string encode(object obj)
 		{
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder(2000);
+			StringBuilder stringBuilder = new StringBuilder(2000);
 			return (!serializeValue(currentJsonSerializerStrategy, obj, stringBuilder)) ? null : stringBuilder.ToString();
 		}
 
@@ -81,21 +87,26 @@ namespace Prime31
 			{
 				return obj;
 			}
-			global::Prime31.Utils.logObject("Something went wrong deserializing the json. We got a null return. Here is the json we tried to deserialize: " + json);
+			Utils.logObject("Something went wrong deserializing the json. We got a null return. Here is the json we tried to deserialize: " + json);
 			return null;
 		}
 
-		private static object decode(string json, global::System.Type type)
+		private static object decode(string json, Type type)
 		{
 			return decode(json, type, null);
 		}
 
-		public static T decode<T>(string json, string rootElement = null)
+		public static T decode<T>(string json)
+		{
+			return (T)decode(json, typeof(T));
+		}
+
+		public static T decode<T>(string json, string rootElement) where T : new()
 		{
 			return (T)decode(json, typeof(T), rootElement);
 		}
 
-		private static object decode(string json, global::System.Type type, string rootElement = null)
+		private static object decode(string json, Type type, string rootElement = null)
 		{
 			object obj = decode(json);
 			if (type == null || (obj != null && obj.GetType().IsAssignableFrom(type)))
@@ -104,21 +115,21 @@ namespace Prime31
 			}
 			if (rootElement != null)
 			{
-				if (obj is global::Prime31.JsonObject)
+				if (obj is JsonObject)
 				{
-					global::Prime31.JsonObject jsonObject = obj as global::Prime31.JsonObject;
+					JsonObject jsonObject = obj as JsonObject;
 					if (jsonObject.ContainsKey(rootElement))
 					{
 						obj = jsonObject[rootElement];
 					}
 					else
 					{
-						global::Prime31.Utils.logObject(string.Format("A rootElement was requested ({0})  but does not exist in the decoded Dictionary", rootElement));
+						Utils.logObject(string.Format("A rootElement was requested ({0})  but does not exist in the decoded Dictionary", rootElement));
 					}
 				}
 				else
 				{
-					global::Prime31.Utils.logObject(string.Format("A rootElement was requested ({0}) but the decoded object is not a Dictionary. It is a {1}", rootElement, obj.GetType()));
+					Utils.logObject(string.Format("A rootElement was requested ({0}) but the decoded object is not a Dictionary. It is a {1}", rootElement, obj.GetType()));
 				}
 			}
 			return currentJsonSerializerStrategy.deserializeObject(obj, type);
@@ -126,36 +137,36 @@ namespace Prime31
 
 		public static T decodeObject<T>(object jsonObject, string rootElement = null)
 		{
-			global::System.Type typeFromHandle = typeof(T);
+			Type typeFromHandle = typeof(T);
 			if (typeFromHandle == null || (jsonObject != null && jsonObject.GetType().IsAssignableFrom(typeFromHandle)))
 			{
 				return (T)jsonObject;
 			}
 			if (rootElement != null)
 			{
-				if (jsonObject is global::System.Collections.Generic.Dictionary<string, object>)
+				if (jsonObject is Dictionary<string, object>)
 				{
-					global::System.Collections.Generic.Dictionary<string, object> dictionary = jsonObject as global::System.Collections.Generic.Dictionary<string, object>;
+					Dictionary<string, object> dictionary = jsonObject as Dictionary<string, object>;
 					if (dictionary.ContainsKey(rootElement))
 					{
 						jsonObject = dictionary[rootElement];
 					}
 					else
 					{
-						global::Prime31.Utils.logObject(string.Format("A rootElement was requested ({0})  but does not exist in the decoded Dictionary", rootElement));
+						Utils.logObject(string.Format("A rootElement was requested ({0})  but does not exist in the decoded Dictionary", rootElement));
 					}
 				}
 				else
 				{
-					global::Prime31.Utils.logObject(string.Format("A rootElement was requested ({0}) but the decoded object is not a Dictionary. It is a {1}", rootElement, jsonObject.GetType()));
+					Utils.logObject(string.Format("A rootElement was requested ({0}) but the decoded object is not a Dictionary. It is a {1}", rootElement, jsonObject.GetType()));
 				}
 			}
 			return (T)currentJsonSerializerStrategy.deserializeObject(jsonObject, typeFromHandle);
 		}
 
-		protected static global::System.Collections.Generic.IDictionary<string, object> parseObject(char[] json, ref int index, ref bool success)
+		protected static IDictionary<string, object> parseObject(char[] json, ref int index, ref bool success)
 		{
-			global::System.Collections.Generic.IDictionary<string, object> dictionary = new global::Prime31.JsonObject();
+			IDictionary<string, object> dictionary = new JsonObject();
 			nextToken(json, ref index);
 			bool flag = false;
 			while (!flag)
@@ -195,9 +206,9 @@ namespace Prime31
 			return dictionary;
 		}
 
-		protected static global::Prime31.JsonArray parseArray(char[] json, ref int index, ref bool success)
+		protected static JsonArray parseArray(char[] json, ref int index, ref bool success)
 		{
-			global::Prime31.JsonArray jsonArray = new global::Prime31.JsonArray();
+			JsonArray jsonArray = new JsonArray();
 			nextToken(json, ref index);
 			bool flag = false;
 			while (!flag)
@@ -258,7 +269,7 @@ namespace Prime31
 
 		protected static string parseString(char[] json, ref int index, ref bool success)
 		{
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder(2000);
+			StringBuilder stringBuilder = new StringBuilder(2000);
 			eatWhitespace(json, ref index);
 			char c = json[index++];
 			bool flag = false;
@@ -313,7 +324,7 @@ namespace Prime31
 						break;
 					}
 					uint result;
-					if (!(success = uint.TryParse(new string(json, index, 4), global::System.Globalization.NumberStyles.HexNumber, global::System.Globalization.CultureInfo.InvariantCulture, out result)))
+					if (!(success = uint.TryParse(new string(json, index, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out result)))
 					{
 						return "";
 					}
@@ -322,7 +333,7 @@ namespace Prime31
 						index += 4;
 						num = json.Length - index;
 						uint result2;
-						if (num < 6 || !(new string(json, index, 2) == "\\u") || !uint.TryParse(new string(json, index + 2, 4), global::System.Globalization.NumberStyles.HexNumber, global::System.Globalization.CultureInfo.InvariantCulture, out result2) || 56320 > result2 || result2 > 57343)
+						if (num < 6 || !(new string(json, index, 2) == "\\u") || !uint.TryParse(new string(json, index + 2, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out result2) || 56320 > result2 || result2 > 57343)
 						{
 							success = false;
 							return "";
@@ -359,16 +370,16 @@ namespace Prime31
 			int length = lastIndexOfNumber - index + 1;
 			string text = new string(json, index, length);
 			object result2;
-			if (text.IndexOf(".", global::System.StringComparison.OrdinalIgnoreCase) != -1 || text.IndexOf("e", global::System.StringComparison.OrdinalIgnoreCase) != -1)
+			if (text.IndexOf(".", StringComparison.OrdinalIgnoreCase) != -1 || text.IndexOf("e", StringComparison.OrdinalIgnoreCase) != -1)
 			{
 				double result;
-				success = double.TryParse(new string(json, index, length), global::System.Globalization.NumberStyles.Any, global::System.Globalization.CultureInfo.InvariantCulture, out result);
+				success = double.TryParse(new string(json, index, length), NumberStyles.Any, CultureInfo.InvariantCulture, out result);
 				result2 = result;
 			}
 			else
 			{
 				long result3;
-				success = long.TryParse(new string(json, index, length), global::System.Globalization.NumberStyles.Any, global::System.Globalization.CultureInfo.InvariantCulture, out result3);
+				success = long.TryParse(new string(json, index, length), NumberStyles.Any, CultureInfo.InvariantCulture, out result3);
 				result2 = result3;
 			}
 			index = lastIndexOfNumber + 1;
@@ -459,31 +470,31 @@ namespace Prime31
 			}
 		}
 
-		protected static bool serializeValue(global::Prime31.IJsonSerializerStrategy jsonSerializerStrategy, object value, global::System.Text.StringBuilder builder)
+		protected static bool serializeValue(IJsonSerializerStrategy jsonSerializerStrategy, object value, StringBuilder builder)
 		{
 			bool flag = true;
 			if (value is string)
 			{
 				flag = serializeString((string)value, builder);
 			}
-			else if (value is global::System.Collections.Generic.IDictionary<string, object>)
+			else if (value is IDictionary<string, object>)
 			{
-				global::System.Collections.Generic.IDictionary<string, object> dictionary = (global::System.Collections.Generic.IDictionary<string, object>)value;
+				IDictionary<string, object> dictionary = (IDictionary<string, object>)value;
 				flag = serializeObject(jsonSerializerStrategy, dictionary.Keys, dictionary.Values, builder);
 			}
-			else if (value is global::System.Collections.Generic.IDictionary<string, string>)
+			else if (value is IDictionary<string, string>)
 			{
-				global::System.Collections.Generic.IDictionary<string, string> dictionary2 = (global::System.Collections.Generic.IDictionary<string, string>)value;
+				IDictionary<string, string> dictionary2 = (IDictionary<string, string>)value;
 				flag = serializeObject(jsonSerializerStrategy, dictionary2.Keys, dictionary2.Values, builder);
 			}
-			else if (value is global::System.Collections.IDictionary)
+			else if (value is IDictionary)
 			{
-				global::System.Collections.IDictionary dictionary3 = (global::System.Collections.IDictionary)value;
+				IDictionary dictionary3 = (IDictionary)value;
 				flag = serializeObject(jsonSerializerStrategy, dictionary3.Keys, dictionary3.Values, builder);
 			}
-			else if (value is global::System.Collections.IEnumerable)
+			else if (value is IEnumerable)
 			{
-				flag = serializeArray(jsonSerializerStrategy, (global::System.Collections.IEnumerable)value, builder);
+				flag = serializeArray(jsonSerializerStrategy, (IEnumerable)value, builder);
 			}
 			else if (isNumeric(value))
 			{
@@ -509,11 +520,11 @@ namespace Prime31
 			return flag;
 		}
 
-		protected static bool serializeObject(global::Prime31.IJsonSerializerStrategy jsonSerializerStrategy, global::System.Collections.IEnumerable keys, global::System.Collections.IEnumerable values, global::System.Text.StringBuilder builder)
+		protected static bool serializeObject(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable keys, IEnumerable values, StringBuilder builder)
 		{
 			builder.Append("{");
-			global::System.Collections.IEnumerator enumerator = keys.GetEnumerator();
-			global::System.Collections.IEnumerator enumerator2 = values.GetEnumerator();
+			IEnumerator enumerator = keys.GetEnumerator();
+			IEnumerator enumerator2 = values.GetEnumerator();
 			bool flag = true;
 			while (enumerator.MoveNext() && enumerator2.MoveNext())
 			{
@@ -542,27 +553,40 @@ namespace Prime31
 			return true;
 		}
 
-		protected static bool serializeArray(global::Prime31.IJsonSerializerStrategy jsonSerializerStrategy, global::System.Collections.IEnumerable anArray, global::System.Text.StringBuilder builder)
+		protected static bool serializeArray(IJsonSerializerStrategy jsonSerializerStrategy, IEnumerable anArray, StringBuilder builder)
 		{
 			builder.Append("[");
 			bool flag = true;
-			foreach (object item in anArray)
+			IEnumerator enumerator = anArray.GetEnumerator();
+			try
 			{
-				if (!flag)
+				while (enumerator.MoveNext())
 				{
-					builder.Append(",");
+					object current = enumerator.Current;
+					if (!flag)
+					{
+						builder.Append(",");
+					}
+					if (!serializeValue(jsonSerializerStrategy, current, builder))
+					{
+						return false;
+					}
+					flag = false;
 				}
-				if (!serializeValue(jsonSerializerStrategy, item, builder))
+			}
+			finally
+			{
+				IDisposable disposable;
+				if ((disposable = (enumerator as IDisposable)) != null)
 				{
-					return false;
+					disposable.Dispose();
 				}
-				flag = false;
 			}
 			builder.Append("]");
 			return true;
 		}
 
-		protected static bool serializeString(string aString, global::System.Text.StringBuilder builder)
+		protected static bool serializeString(string aString, StringBuilder builder)
 		{
 			builder.Append("\"");
 			char[] array = aString.ToCharArray();
@@ -600,35 +624,35 @@ namespace Prime31
 			return true;
 		}
 
-		protected static bool serializeNumber(object number, global::System.Text.StringBuilder builder)
+		protected static bool serializeNumber(object number, StringBuilder builder)
 		{
 			if (number is long)
 			{
-				builder.Append(((long)number).ToString(global::System.Globalization.CultureInfo.InvariantCulture));
+				builder.Append(((long)number).ToString(CultureInfo.InvariantCulture));
 			}
 			else if (number is ulong)
 			{
-				builder.Append(((ulong)number).ToString(global::System.Globalization.CultureInfo.InvariantCulture));
+				builder.Append(((ulong)number).ToString(CultureInfo.InvariantCulture));
 			}
 			else if (number is int)
 			{
-				builder.Append(((int)number).ToString(global::System.Globalization.CultureInfo.InvariantCulture));
+				builder.Append(((int)number).ToString(CultureInfo.InvariantCulture));
 			}
 			else if (number is uint)
 			{
-				builder.Append(((uint)number).ToString(global::System.Globalization.CultureInfo.InvariantCulture));
+				builder.Append(((uint)number).ToString(CultureInfo.InvariantCulture));
 			}
 			else if (number is decimal)
 			{
-				builder.Append(((decimal)number).ToString(global::System.Globalization.CultureInfo.InvariantCulture));
+				builder.Append(((decimal)number).ToString(CultureInfo.InvariantCulture));
 			}
 			else if (number is float)
 			{
-				builder.Append(((float)number).ToString(global::System.Globalization.CultureInfo.InvariantCulture));
+				builder.Append(((float)number).ToString(CultureInfo.InvariantCulture));
 			}
 			else
 			{
-				builder.Append(global::System.Convert.ToDouble(number, global::System.Globalization.CultureInfo.InvariantCulture).ToString("r", global::System.Globalization.CultureInfo.InvariantCulture));
+				builder.Append(Convert.ToDouble(number, CultureInfo.InvariantCulture).ToString("r", CultureInfo.InvariantCulture));
 			}
 			return true;
 		}

@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Animated/AnimVert_wScroll" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" { }
@@ -51,9 +49,6 @@ Shader "Kampai/Animated/AnimVert_wScroll" {
     };
     ENDCG
 
-    // ==========================================
-    // SUBSHADER 1 : LOD 200 (Vertex Anim + Texture Scroll)
-    // ==========================================
     SubShader { 
         LOD 200
         Tags { "CanUseSpriteAtlas"="true" }
@@ -79,11 +74,9 @@ Shader "Kampai/Animated/AnimVert_wScroll" {
             v2f vert_anim (appdata v) {
                 v2f o;
                 
-                // 1. Décodage de la direction de défilement depuis UV1
                 float2 flowDir = frac(v.uv1.xy);
                 float2 decodedFlowDir = (flowDir - 0.5) * 2.0;
                 
-                // 2. Calcul du bruit pour l'animation des sommets
                 float amplitude = (floor(v.uv1.x) / 64.0) * 0.01;
                 float frequency = floor(v.uv1.y) / 255.0;
                 
@@ -91,12 +84,9 @@ Shader "Kampai/Animated/AnimVert_wScroll" {
                 float dotProd = dot(v.normal + _Time.y, magicVector);
                 float3 noise = sin(dotProd * frequency) * amplitude * v.normal;
                 
-                // Application du bruit aux sommets
                 v.vertex.xyz += noise;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 
-                // 3. Calcul des UV de base + Défilement (Scrolling) basé sur le temps
-                // L'utilisation de frac() sur le temps permet d'éviter les erreurs de précision sur de longues durées de jeu
                 float2 baseUV = TRANSFORM_TEX(v.uv0, _MainTex);
                 float2 scrollOffset = frac(decodedFlowDir * _Time.y);
                 o.uv = baseUV + scrollOffset;
@@ -108,10 +98,8 @@ Shader "Kampai/Animated/AnimVert_wScroll" {
             half4 frag (v2f i) : SV_Target {
                 half4 texCol = tex2D(_MainTex, i.uv) * i.color;
                 
-                // Match AnimVert_wOverlay logic: lerp between vertex color and texture color based on vertex alpha
                 half3 finalRGB = lerp(i.color.rgb, texCol.rgb, i.color.aaa);
                 
-                // --- Night Mode Injection ---
                 finalRGB = ApplyKampaiNight(finalRGB, _NightGlow);
                 
                 return half4(finalRGB, i.color.a * _FadeAlpha);
@@ -120,9 +108,6 @@ Shader "Kampai/Animated/AnimVert_wScroll" {
         }
     }
 
-    // ==========================================
-    // SUBSHADER 2 : Fallback (Juste Texture Scroll, pas de Vertex Anim)
-    // ==========================================
     SubShader { 
         Tags { "CanUseSpriteAtlas"="true" }
         
@@ -147,7 +132,6 @@ Shader "Kampai/Animated/AnimVert_wScroll" {
             v2f vert_static (appdata v) {
                 v2f o;
                 
-                // Pas d'animation des sommets ici
                 o.pos = UnityObjectToClipPos(v.vertex);
                 
                 float2 flowDir = frac(v.uv1.xy);
@@ -161,14 +145,12 @@ Shader "Kampai/Animated/AnimVert_wScroll" {
                 return o;
             }
 
-            // Réutilisation du même fragment
             half4 frag (v2f i) : SV_Target {
                 half4 texCol = tex2D(_MainTex, i.uv) * i.color;
                 half4 baseCol = half4(0.5, 0.5, 0.5, 1.0);
                 
                 half3 finalRGB = lerp(baseCol.rgb, texCol.rgb, i.color.aaa);
                 
-                // --- Night Mode Injection ---
                 finalRGB = ApplyKampaiNight(finalRGB, _NightGlow);
                 
                 return half4(finalRGB, i.color.a * _FadeAlpha);

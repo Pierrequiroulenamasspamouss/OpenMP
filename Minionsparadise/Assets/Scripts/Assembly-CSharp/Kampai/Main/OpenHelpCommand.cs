@@ -61,7 +61,7 @@ namespace Kampai.Main
 				global::System.Collections.Generic.Dictionary<string, string> value = preparePlayLoad();
 				string text = global::Newtonsoft.Json.JsonConvert.SerializeObject(value);
 				logger.Info("Tesla tptk payload :" + text);
-				string text2 = global::UnityEngine.WWW.EscapeURL(TeslaActivate.Encrypt(text, global::Kampai.Util.GameConstants.StaticConfig.WWCE_SECRET));
+				string text2 = global::System.Uri.EscapeDataString(TeslaActivate.Encrypt(text, global::Kampai.Util.GameConstants.StaticConfig.WWCE_SECRET));
 				return string.Format(global::Kampai.Util.GameConstants.StaticConfig.WWCE_URL, GetWWCELocaleCode(), global::Kampai.Util.GameConstants.StaticConfig.WWCE_GAME_NAME, global::Kampai.Util.GameConstants.StaticConfig.WWCE_GAME_NAME, helpPlatform, global::Kampai.Util.GameConstants.StaticConfig.WWCE_GAME_NAME, text2);
 			}
 			return string.Format(global::Kampai.Util.GameConstants.StaticConfig.WWCE_CONTACTUS_URL, GetWWCELocaleCode(), global::Kampai.Util.GameConstants.StaticConfig.WWCE_GAME_NAME, global::Kampai.Util.GameConstants.StaticConfig.WWCE_GAME_NAME, helpPlatform);

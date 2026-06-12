@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Animated/AnimVert_wDistort" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" { }
@@ -53,9 +51,6 @@ Shader "Kampai/Animated/AnimVert_wDistort" {
     };
     ENDCG
 
-    // ==========================================
-    // SUBSHADER 1 : LOD 200 (Vertex Anim + Flow Map)
-    // ==========================================
     SubShader { 
         LOD 200
         Tags { "CanUseSpriteAtlas"="true" }
@@ -81,11 +76,9 @@ Shader "Kampai/Animated/AnimVert_wDistort" {
             v2f vert_anim (appdata v) {
                 v2f o;
                 
-                // 1. Décodage de la direction du flux (Flow Map) stockée dans la décimale de UV1
                 float2 flowDir = frac(v.uv1.xy);
                 float2 decodedFlowDir = (flowDir - 0.5) * 2.0;
                 
-                // 2. Calcul du bruit pour le déplacement des sommets
                 float amplitude = (floor(v.uv1.x) / 64.0) * 0.01;
                 float frequency = floor(v.uv1.y) / 255.0;
                 
@@ -96,14 +89,12 @@ Shader "Kampai/Animated/AnimVert_wDistort" {
                 v.vertex.xyz += noise;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 
-                // 3. Calcul des UVs pour le Flow Mapping (décalage infini)
                 float2 baseUV = TRANSFORM_TEX(v.uv0, _MainTex) * -0.1;
                 float timeVar = frac(_Time.y * 0.2);
                 
                 o.phase0 = baseUV - (decodedFlowDir * timeVar);
                 o.phase1 = baseUV - (decodedFlowDir * frac(timeVar + 0.5));
                 
-                // Poids d'interpolation (oscille entre 0 et 1 avec un cosinus)
                 o.blendWeight = (cos(6.283 * timeVar) * 0.5) + 0.5;
                 o.color = v.color;
                 
@@ -111,27 +102,20 @@ Shader "Kampai/Animated/AnimVert_wDistort" {
             }
 
             half4 frag (v2f i) : SV_Target {
-                // Lecture de la distorsion pour la Phase 0 et la Phase 1
                 float2 flow0 = tex2D(_MainTex, i.phase0).xy;
                 float2 flow1 = tex2D(_MainTex, i.phase1).xy;
                 
-                // Mélange parfait des deux phases
                 float2 blendedFlow = lerp(flow0, flow1, i.blendWeight);
                 
-                // On reconvertit les valeurs [0, 1] en directions [-1, 1] et on atténue (* 0.25)
                 float2 distortionUV = ((blendedFlow * 2.0) - 1.0) * 0.25;
                 
-                // On récupère uniquement le canal Bleu (.z/.b) de cette nouvelle lecture
                 half texBlue = tex2D(_MainTex, distortionUV).b;
                 
-                // Définition des couleurs
                 half4 baseColor = half4(0.5, 0.5, 0.5, 0.0);
                 half4 textureColor = texBlue * i.color;
                 
-                // --- Night Mode Injection (Apply only to visible texture before blending) ---
                 textureColor.rgb = ApplyKampaiNight(textureColor.rgb, _NightGlow);
                 
-                // Mélange final avec l'Alpha dynamique
                 half blendAlpha = i.color.a * _FadeAlpha;
                 return lerp(baseColor, textureColor, blendAlpha);
             }
@@ -139,10 +123,7 @@ Shader "Kampai/Animated/AnimVert_wDistort" {
         }
     }
 
-    // ==========================================
-    // SUBSHADER 2 : Fallback sans Vertex Anim
-    // ==========================================
-    SubShader { 
+SubShader { 
         Tags { "CanUseSpriteAtlas"="true" }
         
         Pass {
@@ -169,7 +150,6 @@ Shader "Kampai/Animated/AnimVert_wDistort" {
                 float2 flowDir = frac(v.uv1.xy);
                 float2 decodedFlowDir = (flowDir - 0.5) * 2.0;
                 
-                // Pas de déformation des vertex ici
                 o.pos = UnityObjectToClipPos(v.vertex);
                 
                 float2 baseUV = TRANSFORM_TEX(v.uv0, _MainTex) * -0.1;
@@ -183,7 +163,6 @@ Shader "Kampai/Animated/AnimVert_wDistort" {
                 return o;
             }
 
-            // Réutilisation de la même fonction fragment
             half4 frag (v2f i) : SV_Target {
                 float2 flow0 = tex2D(_MainTex, i.phase0).xy;
                 float2 flow1 = tex2D(_MainTex, i.phase1).xy;
@@ -196,7 +175,6 @@ Shader "Kampai/Animated/AnimVert_wDistort" {
                 half4 baseColor = half4(0.5, 0.5, 0.5, 0.0);
                 half4 textureColor = texBlue * i.color;
                 
-                // --- Night Mode Injection (Apply only to visible texture before blending) ---
                 textureColor.rgb = ApplyKampaiNight(textureColor.rgb, _NightGlow);
                 
                 half blendAlpha = i.color.a * _FadeAlpha;

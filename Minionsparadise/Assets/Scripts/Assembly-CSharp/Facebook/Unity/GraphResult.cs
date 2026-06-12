@@ -6,14 +6,10 @@ namespace Discord.Unity
 
 		public global::UnityEngine.Texture2D Texture { get; private set; }
 
-		internal GraphResult(global::UnityEngine.WWW result)
-			: base(new global::Discord.Unity.ResultContainer(result.text), result.error, false)
+		internal GraphResult(global::UnityEngine.Networking.UnityWebRequest result)
+			: base(new global::Discord.Unity.ResultContainer(result.downloadHandler.text), result.error, false)
 		{
 			Init(RawResult);
-			if (result.error == null)
-			{
-				Texture = result.texture;
-			}
 		}
 
 		private void Init(string rawResult)

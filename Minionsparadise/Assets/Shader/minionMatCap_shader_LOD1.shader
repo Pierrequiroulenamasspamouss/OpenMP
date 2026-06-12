@@ -1,13 +1,8 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-//////////////////////////////////////////
-///////////////////////////////////////////
 Shader "Kampai/Standard/Minion_LOD1" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "gray" {}
         _MatCapBase ("MatCapBase (RGB)", 2D) = "gray" {}
         _LightColor ("Light Color (RGB)", Color) = (0.733,0.706,0.525,1)
-        // ... (Stencils omis pour la lisibilité, tu peux les rajouter)
     }
 
     SubShader { 
@@ -43,7 +38,6 @@ Shader "Kampai/Standard/Minion_LOD1" {
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 
-                // Calcul du Matcap correct
                 float3 viewNormal = mul((float3x3)UNITY_MATRIX_IT_MV, v.normal);
                 o.capCoord = normalize(viewNormal).xy * 0.5 + 0.5;
                 o.color = v.color;
@@ -53,13 +47,11 @@ Shader "Kampai/Standard/Minion_LOD1" {
 
             fixed4 frag (v2f i) : SV_Target {
                 fixed4 tex = tex2D(_MainTex, i.uv);
-                fixed matcapG = tex2D(_MatCapBase, i.capCoord).g; // Canal Vert du matcap
+                fixed matcapG = tex2D(_MatCapBase, i.capCoord).g;
                 
-                // La couleur Bleue du sommet ajoute de l'illumination globale
                 fixed3 lightBase = _LightColor.rgb + (i.color.b * 0.25);
                 lightBase += lightBase * 0.6; 
                 
-                // La couleur Rouge du sommet contrôle l'intensité du reflet MatCap
                 fixed3 spec = (matcapG * i.color.r * 1.75) + pow(abs(tex.rgb), 2.25);
                 
                 return fixed4(spec * lightBase, 1.0);

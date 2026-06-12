@@ -38,7 +38,7 @@ namespace Discord.Unity
 
 		internal global::System.Collections.IEnumerator Start()
 		{
-			global::UnityEngine.WWW www;
+			global::UnityEngine.Networking.UnityWebRequest webRequest;
 			if (method == global::Discord.Unity.HttpMethod.GET)
 			{
 				string urlParams = ((!url.AbsoluteUri.Contains("?")) ? "?" : "&");
@@ -49,36 +49,47 @@ namespace Discord.Unity
 						urlParams += string.Format("{0}={1}&", global::System.Uri.EscapeDataString(pair.Key), global::System.Uri.EscapeDataString(pair.Value));
 					}
 				}
-				global::System.Collections.Generic.Dictionary<string, string> headers = new global::System.Collections.Generic.Dictionary<string, string>();
-				headers["User-Agent"] = global::Discord.Unity.Constants.GraphApiUserAgent;
-				www = new global::UnityEngine.WWW(string.Concat(url, urlParams), null, headers);
+				string fullUrl = string.Concat(url, urlParams);
+				webRequest = global::UnityEngine.Networking.UnityWebRequest.Get(fullUrl);
+				webRequest.SetRequestHeader("User-Agent", global::Discord.Unity.Constants.GraphApiUserAgent);
 			}
 			else
 			{
-				if (query == null)
+				if (query != null)
 				{
-					query = new global::UnityEngine.WWWForm();
-				}
-				if (method == global::Discord.Unity.HttpMethod.DELETE)
-				{
-					query.AddField("method", "delete");
-				}
-				if (formData != null)
-				{
-					foreach (global::System.Collections.Generic.KeyValuePair<string, string> pair2 in formData)
+					byte[] queryData = query.data;
+					if (queryData != null && queryData.Length > 0)
 					{
-						query.AddField(pair2.Key, pair2.Value);
+						webRequest = new global::UnityEngine.Networking.UnityWebRequest(url.AbsoluteUri, "POST");
+						webRequest.uploadHandler = new global::UnityEngine.Networking.UploadHandlerRaw(queryData);
+						webRequest.uploadHandler.contentType = "application/x-www-form-urlencoded";
+					}
+					else
+					{
+						webRequest = global::UnityEngine.Networking.UnityWebRequest.PostWwwForm(url.AbsoluteUri, "");
 					}
 				}
-				query.headers["User-Agent"] = global::Discord.Unity.Constants.GraphApiUserAgent;
-				www = new global::UnityEngine.WWW(url.AbsoluteUri, query);
+				else if (formData != null)
+				{
+					webRequest = global::UnityEngine.Networking.UnityWebRequest.PostWwwForm(url.AbsoluteUri, "");
+					foreach (var kvp in formData)
+					{
+						webRequest.uploadHandler = new global::UnityEngine.Networking.UploadHandlerRaw(global::System.Text.Encoding.UTF8.GetBytes(kvp.Key + "=" + global::System.Uri.EscapeDataString(kvp.Value) + "&"));
+					}
+				}
+				else
+				{
+					webRequest = global::UnityEngine.Networking.UnityWebRequest.PostWwwForm(url.AbsoluteUri, "");
+				}
+				webRequest.SetRequestHeader("User-Agent", global::Discord.Unity.Constants.GraphApiUserAgent);
 			}
-			yield return www;
+			webRequest.downloadHandler = new global::UnityEngine.Networking.DownloadHandlerBuffer();
+			yield return webRequest.SendWebRequest();
 			if (callback != null)
 			{
-				callback(new global::Discord.Unity.GraphResult(www));
+				callback(new global::Discord.Unity.GraphResult(webRequest));
 			}
-			www.Dispose();
+			webRequest.Dispose();
 			global::UnityEngine.Object.Destroy(this);
 		}
 

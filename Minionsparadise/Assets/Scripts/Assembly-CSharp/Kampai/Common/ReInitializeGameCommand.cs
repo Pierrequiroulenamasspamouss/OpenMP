@@ -30,7 +30,7 @@ namespace Kampai.Common
 			downloadService.Shutdown();
 			global::Kampai.Util.KampaiView.ClearContextCache();
 			assetsPreloadService.StopAssetsPreload();
-			global::UnityEngine.Object[] array = global::UnityEngine.Object.FindObjectsOfType(typeof(global::UnityEngine.GameObject));
+		global::UnityEngine.Object[] array = global::UnityEngine.Object.FindObjectsByType(typeof(global::UnityEngine.GameObject), global::UnityEngine.FindObjectsSortMode.None);
 			for (int i = 0; i < array.Length; i++)
 			{
 				global::UnityEngine.GameObject gameObject = (global::UnityEngine.GameObject)array[i];

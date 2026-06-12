@@ -59,7 +59,7 @@ namespace Kampai.Splash
 		[PostConstruct]
 		public void PostConstruct()
 		{
-			deviceTypeUrlEscaped = global::UnityEngine.WWW.EscapeURL(clientVersion.GetClientDeviceType());
+			deviceTypeUrlEscaped = global::System.Uri.EscapeDataString(clientVersion.GetClientDeviceType());
 			timeService = timeServiceInstance as global::Kampai.Game.TimeService;
 			resumeNetworkOperationSignal.AddListener(ProcessQueue);
 		}

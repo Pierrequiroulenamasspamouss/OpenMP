@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Water/Flowing Water" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" { }
@@ -12,7 +10,7 @@ Shader "Kampai/Water/Flowing Water" {
         _WavePower ("Wave Power", Float) = 0.25
         _MaxIntensity ("Max Intensity", Float) = 0.5
         _AlphaScalar ("Alpha Scalar", Float) = 1
-        _LightmapDistort ("Shadow Distortion", Float) = 0.1 // Renommé pour plus de clarté
+        _LightmapDistort ("Shadow Distortion", Float) = 0.1
         _BlendedColor ("Blended Color", Color) = (0,0,0,0)
         [PerRendererData] _FadeAlpha ("Fade Alpha", Range(0,1)) = 1
         _Color ("Color", Color) = (1,1,1,1)
@@ -32,9 +30,6 @@ Shader "Kampai/Water/Flowing Water" {
     SubShader { 
         Tags { "RenderType"="Opaque" }
         
-        // =========================================================
-        // PASSE 1 : Rendu de l'eau et réception des ombres
-        // =========================================================
         Pass {
             Tags { "LIGHTMODE"="ForwardBase" "SHADOWSUPPORT"="true" "RenderType"="Opaque" }
             ZTest [_ZTest]
@@ -47,10 +42,9 @@ Shader "Kampai/Water/Flowing Water" {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            // Compile toutes les variantes de lumière et d'ombres standards de Unity
             #pragma multi_compile_fwdbase 
             #include "UnityCG.cginc"
-            #include "AutoLight.cginc" // Indispensable pour les macros d'ombres
+            #include "AutoLight.cginc"
             #include "KampaiNight.cginc"
 
             sampler2D _MainTex; float4 _MainTex_ST;
@@ -78,7 +72,7 @@ Shader "Kampai/Water/Flowing Water" {
                 float2 uvFlow2 : TEXCOORD2;
                 float flowBlend : TEXCOORD3;
                 float2 uvLookup : TEXCOORD4;
-                SHADOW_COORDS(5) // Gère automatiquement les coordonnées d'ombre
+                SHADOW_COORDS(5)
             };
 
             v2f vert (appdata v) {
@@ -86,7 +80,6 @@ Shader "Kampai/Water/Flowing Water" {
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.color = v.color;
                 
-                // --- Mathématiques du flux d'eau ---
                 float t = frac(_Time.x * _Speed);
                 float t2 = frac(t + 0.5);
                 float2 flowDir = (v.color.xy - 0.5) * _Distance;
@@ -99,7 +92,6 @@ Shader "Kampai/Water/Flowing Water" {
                 o.flowBlend = (cos(6.2831853 * t) * 0.5) + 0.5;
                 o.uvLookup = float2(v.color.z, 0.0);
                 
-                // Macro Unity pour préparer la réception des ombres
                 TRANSFER_SHADOW(o); 
                 return o;
             }
@@ -109,7 +101,6 @@ Shader "Kampai/Water/Flowing Water" {
                 fixed4 w1 = tex2D(_WaterTex, i.uvFlow1);
                 fixed4 w2 = tex2D(_WaterTex, i.uvFlow2);
                 
-                // --- Calcul de la distorsion géométrique ---
                 float validFlow = clamp(1.02 - i.color.z, 0.0, 1.0);
                 float2 blendedNorm = lerp(w1.xy, w2.xy, i.flowBlend);
                 float2 distortionVec = ((blendedNorm * 2.0) - 1.0) * validFlow * _MaxIntensity;
@@ -123,7 +114,6 @@ Shader "Kampai/Water/Flowing Water" {
                 float2 finalDir = i.uvMain - finalDistortion;
                 fixed4 mainTex = tex2D(_MainTex, finalDir);
                 
-                // --- Création de l'écume (Wave Overlay) ---
                 float3 colWave = clamp(lookup.rgb * cap * 2.0, 0.0, 1.0);
                 float3 waveOverlay = clamp(colWave * i.color.w * 4.0, 0.0, 1.0);
                 
@@ -131,18 +121,13 @@ Shader "Kampai/Water/Flowing Water" {
                 float3 mixed = lerp(mainTex.rgb, waveOverlay, validArea);
                 float3 blended = lerp(mixed, _BlendedColor.rgb, _BlendedColor.a);
                 
-                // --- Application des Ombres avec Distorsion ---
                 #if defined(SHADOWS_SCREEN)
-                    // C'est ici qu'intervient la fameuse "LightmapDistort" !
-                    // On fait trembler les coordonnées de la shadow map selon les vagues.
                     i._ShadowCoord.xy -= _LightmapDistort * finalDistortion * 4.0;
                 #endif
                 
-                // Atténuation de la lumière standard Unity
                 UNITY_LIGHT_ATTENUATION(atten, i, i.pos);
-                float3 finalRGB = blended * atten; // Application de l'ombre au pixel
+                float3 finalRGB = blended * atten;
                 
-                // --- Night Mode Injection ---
                 finalRGB = ApplyKampaiNight(finalRGB, _NightGlow);
                 
                 float finalAlpha = tex2D(_AlphaTex, finalDir).r * _Color.a * _FadeAlpha;
@@ -151,9 +136,6 @@ Shader "Kampai/Water/Flowing Water" {
             ENDCG
         }
 
-        // =========================================================
-        // PASSE 2 : L'eau projette des ombres (ShadowCaster)
-        // =========================================================
         Pass {
             Name "SHADOWCASTER"
             Tags { "LIGHTMODE"="SHADOWCASTER" "SHADOWSUPPORT"="true" "RenderType"="Opaque" }
@@ -174,8 +156,6 @@ Shader "Kampai/Water/Flowing Water" {
 
             v2f vert(appdata_base v) {
                 v2f o;
-                // Le ShadowCaster n'a pas besoin de calculer les vagues, 
-                // il utilise le macro standard de Unity.
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
                 return o;
             }

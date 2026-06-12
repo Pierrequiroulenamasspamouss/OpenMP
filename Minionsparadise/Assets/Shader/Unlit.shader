@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Standard/Texture" {
     Properties {
         _Color ("Main Color", Color) = (1,1,1,1)
@@ -37,9 +35,6 @@ Shader "Kampai/Standard/Texture" {
     SubShader { 
         Tags { "CanUseSpriteAtlas"="true" }
         
-        // ==========================================
-        // PASSE 1 : Rendu Forward Base (Couleur)
-        // ==========================================
         Pass {
             Tags { "LIGHTMODE"="ForwardBase" "SHADOWSUPPORT"="true" "CanUseSpriteAtlas"="true" }
             ZTest [_ZTest]
@@ -59,7 +54,6 @@ Shader "Kampai/Standard/Texture" {
             #pragma multi_compile_fwdbase
             #pragma shader_feature TEXTURE_ALPHA ALPHA_MASK ALPHA_CLIP 
 
-            // Les includes sont maintenant DANS la passe ForwardBase
             #include "UnityCG.cginc"
             #include "Lighting.cginc"
             #include "AutoLight.cginc"
@@ -87,7 +81,6 @@ Shader "Kampai/Standard/Texture" {
                 float2 uv : TEXCOORD0;
             };
 
-            // v2f est maintenant uniquement compilé pour cette passe
             struct v2f {
                 float4 pos : SV_POSITION;
                 float2 uv : TEXCOORD0;
@@ -104,7 +97,7 @@ Shader "Kampai/Standard/Texture" {
                 
                 o.color = lerp(half4(1,1,1,1), v.color, _VertexColor);
                 
-                TRANSFER_SHADOW(o); // Prépare la réception des ombres
+                TRANSFER_SHADOW(o);
                 
                 return o;
             }
@@ -134,7 +127,6 @@ Shader "Kampai/Standard/Texture" {
 
                 half3 finalRGB = lerp(baseColor.rgb, _BlendedColor.rgb, _BlendedColor.a) * attenuation;
                 
-                // --- Night Mode Injection ---
                 finalRGB = ApplyKampaiNight(finalRGB, _NightGlow);
 
                 return half4(finalRGB, finalAlpha * _FadeAlpha);
@@ -142,9 +134,6 @@ Shader "Kampai/Standard/Texture" {
             ENDCG
         }
 
-        // ==========================================
-        // PASSE 2 : Projection des Ombres (ShadowCaster)
-        // ==========================================
         Pass {
             Name "SHADOWCASTER"
             Tags { "LIGHTMODE"="SHADOWCASTER" "SHADOWSUPPORT"="true" "CanUseSpriteAtlas"="true" }
@@ -156,7 +145,7 @@ Shader "Kampai/Standard/Texture" {
             #pragma fragment frag_shadow
             #pragma multi_compile_shadowcaster
 
-            #include "UnityCG.cginc" // Inclus uniquement les éléments de base pour l'ombre
+            #include "UnityCG.cginc"
 
             struct v2f_shadow {
                 V2F_SHADOW_CASTER;

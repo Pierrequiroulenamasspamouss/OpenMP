@@ -164,7 +164,7 @@ namespace Kampai.Tools.AnimationToolKit
 
 		private void LoadBuildingToggles()
 		{
-			if (global::UnityEngine.Object.FindObjectsOfType<global::UnityEngine.UI.ToggleGroup>().Length > 0)
+			if (global::UnityEngine.Object.FindObjectsByType<global::UnityEngine.UI.ToggleGroup>(global::UnityEngine.FindObjectsSortMode.None).Length > 0)
 			{
 				return;
 			}

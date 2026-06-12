@@ -233,7 +233,7 @@ namespace Ea.Sharkbite.HttpPlugin.Http.Impl
                 List<string> queryParts = new List<string>();
                 foreach (var param in QueryParams)
                 {
-                    queryParts.Add(string.Format("{0}={1}", WWW.EscapeURL(param.Key), WWW.EscapeURL(param.Value)));
+                    queryParts.Add(string.Format("{0}={1}", System.Uri.EscapeDataString(param.Key), System.Uri.EscapeDataString(param.Value)));
                 }
                 builder.Append(string.Join("&", queryParts.ToArray()));
             }
@@ -292,7 +292,7 @@ namespace Ea.Sharkbite.HttpPlugin.Http.Impl
                     List<string> formParts = new List<string>();
                     foreach (var param in FormParams)
                     {
-                        formParts.Add(string.Format("{0}={1}", WWW.EscapeURL(param.Key), WWW.EscapeURL(param.Value)));
+                        formParts.Add(string.Format("{0}={1}", System.Uri.EscapeDataString(param.Key), System.Uri.EscapeDataString(param.Value)));
                     }
                     Body = Encoding.UTF8.GetBytes(string.Join("&", formParts.ToArray()));
                 }

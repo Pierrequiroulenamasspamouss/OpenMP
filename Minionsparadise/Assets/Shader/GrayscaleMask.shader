@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/UI/GreyScaleMask" {
     Properties {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" { }
@@ -68,10 +66,8 @@ Shader "Kampai/UI/GreyScaleMask" {
 
             fixed4 frag (v2f i) : SV_Target {
                 fixed4 texCol = tex2D(_MainTex, i.texcoord);
-                fixed4 finalCol = texCol * i.color; // Multiplie RGB et Alpha 
+                fixed4 finalCol = texCol * i.color;
                 
-                // C'est ici que se trouve la logique "cachée" du GLSL d'origine :
-                // Si l'alpha est < 0.8, on le force à 0. Sinon, on garde sa valeur.
                 finalCol.a = (finalCol.a >= 0.8) ? finalCol.a : 0.0;
                 
                 return finalCol;

@@ -48,7 +48,11 @@ namespace Kampai.Game
 		{
 			get
 			{
-				return global::UnityEngine.Social.localUser.id;
+				if (global::GooglePlayGames.PlayGamesPlatform.Instance != null && global::GooglePlayGames.PlayGamesPlatform.Instance.IsAuthenticated())
+				{
+					return global::GooglePlayGames.PlayGamesPlatform.Instance.GetUserId();
+				}
+				return string.Empty;
 			}
 		}
 
@@ -56,7 +60,11 @@ namespace Kampai.Game
 		{
 			get
 			{
-				return global::UnityEngine.Social.localUser.userName;
+				if (global::GooglePlayGames.PlayGamesPlatform.Instance != null && global::GooglePlayGames.PlayGamesPlatform.Instance.IsAuthenticated())
+				{
+					return global::GooglePlayGames.PlayGamesPlatform.Instance.GetUserDisplayName();
+				}
+				return string.Empty;
 			}
 		}
 
@@ -64,7 +72,7 @@ namespace Kampai.Game
 		{
 			get
 			{
-				return global::UnityEngine.Social.localUser.authenticated;
+				return global::GooglePlayGames.PlayGamesPlatform.Instance != null && global::GooglePlayGames.PlayGamesPlatform.Instance.IsAuthenticated();
 			}
 		}
 
@@ -114,7 +122,7 @@ namespace Kampai.Game
 
 		public void RequestServerAuthCode()
 		{
-			if (!global::UnityEngine.Social.localUser.authenticated)
+			if (!isLoggedIn)
 			{
 				logger.Error("Server auth code can be requested when player is authenticated");
 				googlePlayServerAuthCodeReceivedSignal.Dispatch(false, this);
@@ -139,7 +147,7 @@ namespace Kampai.Game
 			this.failureSignal = failureSignal;
 			logger.Debug("GOOGLE PLAY INIT START");
 			localPersistence.PutData("SocialInProgress", "False");
-			if (!global::UnityEngine.Social.localUser.authenticated)
+			if (!isLoggedIn)
 			{
 				logger.Debug("GOOGLE PLAY USER NOT SIGNED IN");
 				int dataInt = localPersistence.GetDataInt("GoogleFailCount");
@@ -192,7 +200,7 @@ namespace Kampai.Game
 			serverAuthCode = null;
 			attemptToAuthenticate = true;
 			localPersistence.PutData("SocialInProgress", "True");
-			global::UnityEngine.Social.localUser.Authenticate(OnAuthenticate);
+			global::GooglePlayGames.PlayGamesPlatform.Instance.Authenticate(OnAuthenticate);
 		}
 
 		private void OnAuthenticate(bool success)
@@ -222,9 +230,8 @@ namespace Kampai.Game
 			attemptToAuthenticate = false;
 			localPersistence.PutData("SocialInProgress", "False");
 			logger.Debug("GOOGLE PLAY AUTH SUCCESS");
-			global::UnityEngine.SocialPlatforms.ILocalUser localUser = global::UnityEngine.Social.localUser;
-			logger.Debug("GP PLAYER ID: {0}", localUser.id);
-			logger.Debug("GP NAME: {0}", localUser.userName);
+			logger.Debug("GP PLAYER ID: {0}", userID);
+			logger.Debug("GP NAME: {0}", userName);
 			logger.Debug("GP Server auth code: {0}", serverAuthCode);
 			localPersistence.PutDataInt("GoogleFailCount", 0);
 			successSignal.Dispatch(this);

@@ -293,7 +293,7 @@ public class SwrveSDK
 			global::UnityEngine.PlayerPrefs.Save();
 		}
 		SwrveLog.Log("Your user id is: " + userId);
-		escapedUserId = global::UnityEngine.WWW.EscapeURL(userId);
+		escapedUserId = global::System.Uri.EscapeDataString(userId);
 		if (string.IsNullOrEmpty(Language))
 		{
 			Language = GetDeviceLanguage();
@@ -512,7 +512,7 @@ public class SwrveSDK
 		{
 			abTestUserResourcesDiffConnecting = true;
 			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder(abTestResourcesDiffUrl);
-			stringBuilder.AppendFormat("?user={0}&api_key={1}&app_version={2}&joined={3}", escapedUserId, apiKey, global::UnityEngine.WWW.EscapeURL(GetAppVersion()), installTimeEpoch);
+			stringBuilder.AppendFormat("?user={0}&api_key={1}&app_version={2}&joined={3}", escapedUserId, apiKey, global::System.Uri.EscapeDataString(GetAppVersion()), installTimeEpoch);
 			SwrveLog.Log("AB Test User Resources Diff request: " + stringBuilder.ToString());
 			StartTask("GetUserResourcesDiff_Coroutine", GetUserResourcesDiff_Coroutine(stringBuilder.ToString(), onResult, onError, "rsdfngt2"));
 		}
@@ -1928,32 +1928,34 @@ public class SwrveSDK
 	private global::System.Collections.IEnumerator LoadAsset(string fileName, SwrveSDK.CoroutineReference<global::UnityEngine.Texture2D> texture)
 	{
 		string filePath = swrveTemporaryPath + "/" + fileName;
-		global::UnityEngine.WWW www = new global::UnityEngine.WWW("file://" + filePath);
-		yield return www;
-		if (www != null && www.error == null)
+		using (global::UnityEngine.Networking.UnityWebRequest webRequest = global::UnityEngine.Networking.UnityWebRequestTexture.GetTexture("file://" + filePath))
 		{
-			global::UnityEngine.Texture2D loadedTexture = www.texture;
-			texture.Value(loadedTexture);
-		}
-		else
-		{
-			SwrveLog.LogError("Could not load asset with WWW " + filePath + ": " + www.error);
-			if (global::Swrve.CrossPlatformFile.Exists(filePath))
+			yield return webRequest.SendWebRequest();
+			if (webRequest.result == global::UnityEngine.Networking.UnityWebRequest.Result.Success)
 			{
-				byte[] byteArray = global::Swrve.CrossPlatformFile.ReadAllBytes(filePath);
-				global::UnityEngine.Texture2D loadedTexture2 = new global::UnityEngine.Texture2D(4, 4);
-				if (global::UnityEngine.ImageConversion.LoadImage(loadedTexture2, byteArray))
-				{
-					texture.Value(loadedTexture2);
-				}
-				else
-				{
-					SwrveLog.LogWarning("Could not load asset from I/O" + filePath);
-				}
+				global::UnityEngine.Texture2D loadedTexture = global::UnityEngine.Networking.DownloadHandlerTexture.GetContent(webRequest);
+				texture.Value(loadedTexture);
 			}
 			else
 			{
-				SwrveLog.LogError("The file " + filePath + " does not exist.");
+				SwrveLog.LogError("Could not load asset with UnityWebRequest " + filePath + ": " + webRequest.error);
+				if (global::Swrve.CrossPlatformFile.Exists(filePath))
+				{
+					byte[] byteArray = global::Swrve.CrossPlatformFile.ReadAllBytes(filePath);
+					global::UnityEngine.Texture2D loadedTexture2 = new global::UnityEngine.Texture2D(4, 4);
+					if (global::UnityEngine.ImageConversion.LoadImage(loadedTexture2, byteArray))
+					{
+						texture.Value(loadedTexture2);
+					}
+					else
+					{
+						SwrveLog.LogWarning("Could not load asset from I/O" + filePath);
+					}
+				}
+				else
+				{
+					SwrveLog.LogError("The file " + filePath + " does not exist.");
+				}
 			}
 		}
 		TaskFinished("LoadAsset");
@@ -1972,20 +1974,22 @@ public class SwrveSDK
 	{
 		string url = cdn + fileName;
 		SwrveLog.Log("Downloading asset: " + url);
-		global::UnityEngine.WWW www = new global::UnityEngine.WWW(url);
-		yield return www;
-		global::Swrve.Helpers.WwwDeducedError err = global::Swrve.Helpers.UnityWwwHelper.DeduceWwwError(www);
-		if (www != null && err == global::Swrve.Helpers.WwwDeducedError.NoError && www.isDone)
+		using (global::UnityEngine.Networking.UnityWebRequest webRequest = global::UnityEngine.Networking.UnityWebRequestTexture.GetTexture(url))
 		{
-			global::UnityEngine.Texture2D loadedTexture = www.texture;
-			if (loadedTexture != null)
+			yield return webRequest.SendWebRequest();
+			global::Swrve.Helpers.WwwDeducedError err = global::Swrve.Helpers.UnityWwwHelper.DeduceWebRequestError(webRequest);
+			if (err == global::Swrve.Helpers.WwwDeducedError.NoError && webRequest.isDone)
 			{
-				string filePath = swrveTemporaryPath + "/" + fileName;
-				SwrveLog.Log("Saving to " + filePath);
-				byte[] bytes = global::UnityEngine.ImageConversion.EncodeToPNG(loadedTexture);
-				global::Swrve.CrossPlatformFile.SaveBytes(filePath, bytes);
-				bytes = null;
-				texture.Value(loadedTexture);
+				global::UnityEngine.Texture2D loadedTexture = global::UnityEngine.Networking.DownloadHandlerTexture.GetContent(webRequest);
+				if (loadedTexture != null)
+				{
+					string filePath = swrveTemporaryPath + "/" + fileName;
+					SwrveLog.Log("Saving to " + filePath);
+					byte[] bytes = global::UnityEngine.ImageConversion.EncodeToPNG(loadedTexture);
+					global::Swrve.CrossPlatformFile.SaveBytes(filePath, bytes);
+					bytes = null;
+					texture.Value(loadedTexture);
+				}
 			}
 		}
 		TaskFinished("DownloadAsset");
@@ -2150,10 +2154,10 @@ public class SwrveSDK
 			float num = ((global::UnityEngine.Screen.dpi != 0f) ? global::UnityEngine.Screen.dpi : 160f);
 			string deviceModel = GetDeviceModel();
 			string operatingSystem = global::UnityEngine.SystemInfo.operatingSystem;
-			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder(resourcesAndCampaignsUrl).AppendFormat("?user={0}&api_key={1}&app_version={2}&joined={3}", escapedUserId, ApiKey, global::UnityEngine.WWW.EscapeURL(GetAppVersion()), installTimeEpoch);
+			global::System.Text.StringBuilder stringBuilder = new global::System.Text.StringBuilder(resourcesAndCampaignsUrl).AppendFormat("?user={0}&api_key={1}&app_version={2}&joined={3}", escapedUserId, ApiKey, global::System.Uri.EscapeDataString(GetAppVersion()), installTimeEpoch);
 			if (config.TalkEnabled)
 			{
-				stringBuilder.AppendFormat("&version={0}&orientation={1}&language={2}&app_store={3}&device_width={4}&device_height={5}&device_dpi={6}&os_version={7}&device_name={8}", CampaignEndpointVersion, config.Orientation.ToString().ToLower(), Language, config.AppStore, deviceWidth, deviceHeight, num, global::UnityEngine.WWW.EscapeURL(operatingSystem), global::UnityEngine.WWW.EscapeURL(deviceModel));
+				stringBuilder.AppendFormat("&version={0}&orientation={1}&language={2}&app_store={3}&device_width={4}&device_height={5}&device_dpi={6}&os_version={7}&device_name={8}", CampaignEndpointVersion, config.Orientation.ToString().ToLower(), Language, config.AppStore, deviceWidth, deviceHeight, num, global::System.Uri.EscapeDataString(operatingSystem), global::System.Uri.EscapeDataString(deviceModel));
 			}
 			if (!string.IsNullOrEmpty(lastETag))
 			{

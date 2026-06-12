@@ -26,16 +26,17 @@ public class WaterslideVFXParticleRotation : global::UnityEngine.MonoBehaviour
 
 	private void Update()
 	{
+		var main = particleSys.main;
 		switch (followAxis)
 		{
 		case WaterslideVFXParticleRotation.FollowAxis.X:
-			particleSys.startRotation = base.transform.rotation.eulerAngles.x * ((float)global::System.Math.PI / 180f);
+			main.startRotation = base.transform.rotation.eulerAngles.x * ((float)global::System.Math.PI / 180f);
 			break;
 		case WaterslideVFXParticleRotation.FollowAxis.Y:
-			particleSys.startRotation = base.transform.rotation.eulerAngles.y * ((float)global::System.Math.PI / 180f);
+			main.startRotation = base.transform.rotation.eulerAngles.y * ((float)global::System.Math.PI / 180f);
 			break;
 		case WaterslideVFXParticleRotation.FollowAxis.Z:
-			particleSys.startRotation = base.transform.rotation.eulerAngles.z * ((float)global::System.Math.PI / 180f);
+			main.startRotation = base.transform.rotation.eulerAngles.z * ((float)global::System.Math.PI / 180f);
 			break;
 		}
 	}

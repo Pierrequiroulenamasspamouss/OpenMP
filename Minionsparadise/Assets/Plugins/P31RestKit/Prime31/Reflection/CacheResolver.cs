@@ -1,3 +1,6 @@
+using System;
+using System.Reflection;
+
 namespace Prime31.Reflection
 {
 	public class CacheResolver
@@ -6,15 +9,15 @@ namespace Prime31.Reflection
 
 		public sealed class MemberMap
 		{
-			public readonly global::System.Reflection.MemberInfo MemberInfo;
+			public readonly MemberInfo MemberInfo;
 
-			public readonly global::System.Type Type;
+			public readonly Type Type;
 
-			public readonly global::Prime31.Reflection.GetHandler Getter;
+			public readonly GetHandler Getter;
 
-			public readonly global::Prime31.Reflection.SetHandler Setter;
+			public readonly SetHandler Setter;
 
-			public MemberMap(global::System.Reflection.PropertyInfo propertyInfo)
+			public MemberMap(PropertyInfo propertyInfo)
 			{
 				MemberInfo = propertyInfo;
 				Type = propertyInfo.PropertyType;
@@ -22,7 +25,7 @@ namespace Prime31.Reflection
 				Setter = createSetHandler(propertyInfo);
 			}
 
-			public MemberMap(global::System.Reflection.FieldInfo fieldInfo)
+			public MemberMap(FieldInfo fieldInfo)
 			{
 				MemberInfo = fieldInfo;
 				Type = fieldInfo.FieldType;
@@ -31,53 +34,53 @@ namespace Prime31.Reflection
 			}
 		}
 
-		private readonly global::Prime31.Reflection.MemberMapLoader _memberMapLoader;
+		private readonly MemberMapLoader _memberMapLoader;
 
-		private readonly global::Prime31.Reflection.SafeDictionary<global::System.Type, global::Prime31.Reflection.SafeDictionary<string, global::Prime31.Reflection.CacheResolver.MemberMap>> _memberMapsCache = new global::Prime31.Reflection.SafeDictionary<global::System.Type, global::Prime31.Reflection.SafeDictionary<string, global::Prime31.Reflection.CacheResolver.MemberMap>>();
+		private readonly SafeDictionary<Type, SafeDictionary<string, MemberMap>> _memberMapsCache = new SafeDictionary<Type, SafeDictionary<string, MemberMap>>();
 
-		private static readonly global::Prime31.Reflection.SafeDictionary<global::System.Type, global::Prime31.Reflection.CacheResolver.CtorDelegate> constructorCache = new global::Prime31.Reflection.SafeDictionary<global::System.Type, global::Prime31.Reflection.CacheResolver.CtorDelegate>();
+		private static readonly SafeDictionary<Type, CtorDelegate> constructorCache = new SafeDictionary<Type, CtorDelegate>();
 
-		public CacheResolver(global::Prime31.Reflection.MemberMapLoader memberMapLoader)
+		public CacheResolver(MemberMapLoader memberMapLoader)
 		{
 			_memberMapLoader = memberMapLoader;
 		}
 
-		public static object getNewInstance(global::System.Type type)
+		public static object getNewInstance(Type type)
 		{
-			global::Prime31.Reflection.CacheResolver.CtorDelegate value;
+			CtorDelegate value;
 			if (constructorCache.tryGetValue(type, out value))
 			{
 				return value();
 			}
-			global::System.Reflection.ConstructorInfo constructorInfo = type.GetConstructor(global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic, null, global::System.Type.EmptyTypes, null);
-			value = () => constructorInfo.Invoke(null);
+			ConstructorInfo constructorInfo = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
+			value = (() => constructorInfo.Invoke(null));
 			constructorCache.add(type, value);
 			return value();
 		}
 
-		public global::Prime31.Reflection.SafeDictionary<string, global::Prime31.Reflection.CacheResolver.MemberMap> loadMaps(global::System.Type type)
+		public SafeDictionary<string, MemberMap> loadMaps(Type type)
 		{
 			if (type == null || type == typeof(object))
 			{
 				return null;
 			}
-			global::Prime31.Reflection.SafeDictionary<string, global::Prime31.Reflection.CacheResolver.MemberMap> value;
+			SafeDictionary<string, MemberMap> value;
 			if (_memberMapsCache.tryGetValue(type, out value))
 			{
 				return value;
 			}
-			value = new global::Prime31.Reflection.SafeDictionary<string, global::Prime31.Reflection.CacheResolver.MemberMap>();
+			value = new SafeDictionary<string, MemberMap>();
 			_memberMapLoader(type, value);
 			_memberMapsCache.add(type, value);
 			return value;
 		}
 
-		private static global::Prime31.Reflection.GetHandler createGetHandler(global::System.Reflection.FieldInfo fieldInfo)
+		private static GetHandler createGetHandler(FieldInfo fieldInfo)
 		{
 			return (object instance) => fieldInfo.GetValue(instance);
 		}
 
-		private static global::Prime31.Reflection.SetHandler createSetHandler(global::System.Reflection.FieldInfo fieldInfo)
+		private static SetHandler createSetHandler(FieldInfo fieldInfo)
 		{
 			if (fieldInfo.IsInitOnly || fieldInfo.IsLiteral)
 			{
@@ -89,26 +92,29 @@ namespace Prime31.Reflection
 			};
 		}
 
-		private static global::Prime31.Reflection.GetHandler createGetHandler(global::System.Reflection.PropertyInfo propertyInfo)
+		private static GetHandler createGetHandler(PropertyInfo propertyInfo)
 		{
-			global::System.Reflection.MethodInfo getMethodInfo = propertyInfo.GetGetMethod(true);
+			MethodInfo getMethodInfo = propertyInfo.GetGetMethod(true);
 			if (getMethodInfo == null)
 			{
 				return null;
 			}
-			return (object instance) => getMethodInfo.Invoke(instance, global::System.Type.EmptyTypes);
+			return (object instance) => getMethodInfo.Invoke(instance, Type.EmptyTypes);
 		}
 
-		private static global::Prime31.Reflection.SetHandler createSetHandler(global::System.Reflection.PropertyInfo propertyInfo)
+		private static SetHandler createSetHandler(PropertyInfo propertyInfo)
 		{
-			global::System.Reflection.MethodInfo setMethodInfo = propertyInfo.GetSetMethod(true);
+			MethodInfo setMethodInfo = propertyInfo.GetSetMethod(true);
 			if (setMethodInfo == null)
 			{
 				return null;
 			}
 			return delegate(object instance, object value)
 			{
-				setMethodInfo.Invoke(instance, new object[1] { value });
+				setMethodInfo.Invoke(instance, new object[1]
+				{
+					value
+				});
 			};
 		}
 	}

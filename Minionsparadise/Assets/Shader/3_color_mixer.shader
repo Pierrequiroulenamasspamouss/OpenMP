@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Transparent/3 Color Blend"
 {
 Properties
@@ -12,9 +10,6 @@ Properties
     _NightGlow ("Night Glow", Range(0,1)) = 0
 }
 
-//////////////////////////////////////////////////////////////////
-// ANDROID GLES SHADER
-//////////////////////////////////////////////////////////////////
 
 SubShader
 {
@@ -25,7 +20,6 @@ SubShader
         ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
 
-        // #pragma only_renderers gles gles3
 
         GLSLPROGRAM
         #version 100
@@ -72,7 +66,6 @@ SubShader
             lowp vec4 finalColor;
             finalColor.xyz = colRGB * _color_boost;
             
-            // --- Manual Night Mode Injection for GLSL ---
             lowp vec3 nightColor = finalColor.xyz * _GlobalNightTint;
             finalColor.xyz = mix(finalColor.xyz, nightColor, _GlobalNightFactor);
             finalColor.xyz = mix(finalColor.xyz, colRGB * _color_boost, _NightGlow * _GlobalNightFactor);
@@ -88,9 +81,6 @@ SubShader
     }
 }
 
-//////////////////////////////////////////////////////////////////
-// WEBPLAYER / DX SHADER
-//////////////////////////////////////////////////////////////////
 
 SubShader
 {
@@ -149,7 +139,6 @@ SubShader
             fixed4 finalColor;
             finalColor.rgb = colRGB * _color_boost;
             
-            // --- Night Mode Injection ---
             finalColor.rgb = ApplyKampaiNight(finalColor.rgb, _NightGlow);
             
             finalColor.a = mask.a * step(0.5, mask.a);

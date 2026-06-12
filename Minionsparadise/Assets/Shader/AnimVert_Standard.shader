@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "Kampai/Animated/AnimVert_Standard" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" { }
@@ -41,7 +39,7 @@ Shader "Kampai/Animated/AnimVert_Standard" {
         float4 color : COLOR;
         float3 normal : NORMAL;
         float2 uv0 : TEXCOORD0;
-        float2 uv1 : TEXCOORD1; // Utilisé pour stocker les paramètres d'animation
+        float2 uv1 : TEXCOORD1;
     };
 
     struct v2f {
@@ -51,9 +49,6 @@ Shader "Kampai/Animated/AnimVert_Standard" {
     };
     ENDCG
 
-    // ==========================================
-    // SUBSHADER 1 : Version avec Animation (LOD 200)
-    // ==========================================
     SubShader { 
         LOD 200
         Tags { "CanUseSpriteAtlas"="true" }
@@ -79,21 +74,15 @@ Shader "Kampai/Animated/AnimVert_Standard" {
             v2f vert_anim (appdata_anim v) {
                 v2f o;
                 
-                // --- Décompilation de la logique d'animation GLES ---
-                // "x - fract(x)" est la façon mathématique d'écrire "floor(x)" (l'arrondi inférieur)
                 float amplitude = (floor(v.uv1.x) / 64.0) * 0.01;
                 float frequency = floor(v.uv1.y) / 255.0;
                 
-                // Création du bruit (noise) basé sur le temps, la normale et une constante magique
                 float3 magicVector = float3(12.9898, 78.233, 0.0);
                 float dotProd = dot(v.normal + _Time.y, magicVector);
                 float noise = sin(dotProd * frequency) * amplitude;
                 
-                // Déplacement du sommet le long de sa normale
                 v.vertex.xyz += noise * v.normal;
-                // ----------------------------------------------------
 
-                // Compatible Unity 5.3
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv0, _MainTex);
                 o.color = v.color;
@@ -103,9 +92,8 @@ Shader "Kampai/Animated/AnimVert_Standard" {
 
             fixed4 frag (v2f i) : SV_Target {
                 fixed4 col = tex2D(_MainTex, i.uv) * i.color;
-                col.a = i.color.a * _FadeAlpha; // Applique la transparence globale
+                col.a = i.color.a * _FadeAlpha;
                 
-                // --- Night Mode Injection ---
                 col.rgb = ApplyKampaiNight(col.rgb, _NightGlow);
                 
                 return col;
@@ -114,9 +102,6 @@ Shader "Kampai/Animated/AnimVert_Standard" {
         }
     }
 
-    // ==========================================
-    // SUBSHADER 2 : Fallback sans animation
-    // ==========================================
     SubShader { 
         Tags { "CanUseSpriteAtlas"="true" }
         
@@ -140,7 +125,6 @@ Shader "Kampai/Animated/AnimVert_Standard" {
 
             v2f vert_static (appdata_anim v) {
                 v2f o;
-                // Version statique : on ignore complètement l'animation uv1 et le temps
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv0, _MainTex);
                 o.color = v.color;
@@ -150,8 +134,6 @@ Shader "Kampai/Animated/AnimVert_Standard" {
             fixed4 frag (v2f i) : SV_Target {
                 fixed4 col = tex2D(_MainTex, i.uv) * i.color;
                 col.a = i.color.a * _FadeAlpha;
-                
-                // --- Night Mode Injection ---
                 col.rgb = ApplyKampaiNight(col.rgb, _NightGlow);
                 
                 return col;

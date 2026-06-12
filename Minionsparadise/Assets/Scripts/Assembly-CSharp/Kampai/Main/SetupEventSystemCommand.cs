@@ -17,7 +17,7 @@ namespace Kampai.Main
 		{
 			logger.EventStart("SetupEventSystemCommand.Execute");
 
-			var existing = Object.FindObjectOfType<EventSystem>();
+			var existing = Object.FindFirstObjectByType<EventSystem>();
 			if (existing != null)
 			{
 				eventSystem = existing.gameObject;

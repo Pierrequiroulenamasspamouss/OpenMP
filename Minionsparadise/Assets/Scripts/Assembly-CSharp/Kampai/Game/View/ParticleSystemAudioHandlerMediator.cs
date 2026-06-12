@@ -40,7 +40,7 @@ namespace Kampai.Game.View
 
 		private global::System.Collections.IEnumerator PlayAudioWithDelay()
 		{
-			yield return new global::UnityEngine.WaitForSeconds(view.system.startDelay);
+			yield return new global::UnityEngine.WaitForSeconds(view.system.main.startDelay.constant);
 			PlayAudio(view.audioEventName);
 		}
 

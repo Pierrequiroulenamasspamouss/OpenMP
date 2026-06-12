@@ -251,7 +251,16 @@ public class HockeyAppAndroid : global::UnityEngine.MonoBehaviour
 #endif
 			string lContent = postForm.headers["Content-Type"].ToString();
 			lContent = lContent.Replace("\"", string.Empty);
-			yield return new global::UnityEngine.WWW(headers: new global::System.Collections.Generic.Dictionary<string, string> { { "Content-Type", lContent } }, url: url, postData: postForm.data);
+			
+			using (global::UnityEngine.Networking.UnityWebRequest webRequest = new global::UnityEngine.Networking.UnityWebRequest(url, "POST"))
+			{
+				webRequest.uploadHandler = new global::UnityEngine.Networking.UploadHandlerRaw(postForm.data);
+				webRequest.uploadHandler.contentType = lContent;
+				webRequest.downloadHandler = new global::UnityEngine.Networking.DownloadHandlerBuffer();
+				webRequest.SetRequestHeader("Content-Type", lContent);
+				yield return webRequest.SendWebRequest();
+			}
+			
 			if (crashReportCallback != null)
 			{
 				crashReportCallback();

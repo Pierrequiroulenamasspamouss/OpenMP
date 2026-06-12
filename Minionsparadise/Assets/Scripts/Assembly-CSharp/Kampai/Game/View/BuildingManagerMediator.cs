@@ -1414,9 +1414,9 @@ namespace Kampai.Game.View
 			foreach (global::UnityEngine.Transform item in transform)
 			{
 				global::UnityEngine.ParticleSystem component = item.GetComponent<global::UnityEngine.ParticleSystem>();
-				if (component != null && component.duration > num)
+				if (component != null && component.main.duration > num)
 				{
-					num = component.duration;
+					num = component.main.duration;
 				}
 				component.Play();
 			}

@@ -63,11 +63,13 @@ public class GoSpline
         if (global::UnityEngine.Application.platform == global::UnityEngine.RuntimePlatform.Android)
         {
             empty = global::System.IO.Path.Combine("jar:file://" + global::UnityEngine.Application.dataPath + "!/assets/", pathAssetName);
-            global::UnityEngine.WWW wWW = new global::UnityEngine.WWW(empty);
-
-            while (!wWW.isDone) { }
-
-            return bytesToVector3List(wWW.bytes);
+            using (global::UnityEngine.Networking.UnityWebRequest webRequest = global::UnityEngine.Networking.UnityWebRequest.Get(empty))
+            {
+                webRequest.downloadHandler = new global::UnityEngine.Networking.DownloadHandlerBuffer();
+                webRequest.SendWebRequest();
+                while (!webRequest.isDone) { }
+                return bytesToVector3List(webRequest.downloadHandler.data);
+            }
         }
 
         empty = ((global::UnityEngine.Application.platform != global::UnityEngine.RuntimePlatform.IPhonePlayer)

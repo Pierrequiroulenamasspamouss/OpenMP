@@ -14,9 +14,9 @@ public class FixMissingNormals
         {
             string path = AssetDatabase.GUIDToAssetPath(guid);
             ModelImporter importer = AssetImporter.GetAtPath(path) as ModelImporter;
-            if (importer != null && importer.normalImportMode == ModelImporterTangentSpaceMode.None)
+            if (importer != null && importer.importNormals == ModelImporterNormals.None)
             {
-                importer.normalImportMode = ModelImporterTangentSpaceMode.Calculate;
+                importer.importNormals = ModelImporterNormals.Calculate;
                 AssetDatabase.ImportAsset(path);
                 count++;
             }

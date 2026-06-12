@@ -1,38 +1,44 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
+
 namespace Prime31.Reflection
 {
 	public class ReflectionUtils
 	{
-		public static global::System.Attribute getAttribute(global::System.Reflection.MemberInfo info, global::System.Type type)
+		public static Attribute getAttribute(MemberInfo info, Type type)
 		{
-			if (info == null || type == null || !global::System.Attribute.IsDefined(info, type))
+			if (info == null || type == null || !Attribute.IsDefined(info, type))
 			{
 				return null;
 			}
-			return global::System.Attribute.GetCustomAttribute(info, type);
+			return Attribute.GetCustomAttribute(info, type);
 		}
 
-		public static global::System.Attribute getAttribute(global::System.Type objectType, global::System.Type attributeType)
+		public static Attribute getAttribute(Type objectType, Type attributeType)
 		{
-			if (objectType == null || attributeType == null || !global::System.Attribute.IsDefined(objectType, attributeType))
+			if (objectType == null || attributeType == null || !Attribute.IsDefined(objectType, attributeType))
 			{
 				return null;
 			}
-			return global::System.Attribute.GetCustomAttribute(objectType, attributeType);
+			return Attribute.GetCustomAttribute(objectType, attributeType);
 		}
 
-		public static bool isTypeGenericeCollectionInterface(global::System.Type type)
+		public static bool isTypeGenericeCollectionInterface(Type type)
 		{
 			if (!type.IsGenericType)
 			{
 				return false;
 			}
-			global::System.Type genericTypeDefinition = type.GetGenericTypeDefinition();
-			return genericTypeDefinition == typeof(global::System.Collections.Generic.IList<>) || genericTypeDefinition == typeof(global::System.Collections.Generic.ICollection<>) || genericTypeDefinition == typeof(global::System.Collections.Generic.IEnumerable<>);
+			Type genericTypeDefinition = type.GetGenericTypeDefinition();
+			return genericTypeDefinition == typeof(IList<>) || genericTypeDefinition == typeof(ICollection<>) || genericTypeDefinition == typeof(IEnumerable<>);
 		}
 
-		public static bool isTypeDictionary(global::System.Type type)
+		public static bool isTypeDictionary(Type type)
 		{
-			if (typeof(global::System.Collections.IDictionary).IsAssignableFrom(type))
+			if (typeof(IDictionary).IsAssignableFrom(type))
 			{
 				return true;
 			}
@@ -40,18 +46,18 @@ namespace Prime31.Reflection
 			{
 				return false;
 			}
-			global::System.Type genericTypeDefinition = type.GetGenericTypeDefinition();
-			return genericTypeDefinition == typeof(global::System.Collections.Generic.IDictionary<, >);
+			Type genericTypeDefinition = type.GetGenericTypeDefinition();
+			return genericTypeDefinition == typeof(IDictionary<, >);
 		}
 
-		public static bool isNullableType(global::System.Type type)
+		public static bool isNullableType(Type type)
 		{
-			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(global::System.Nullable<>);
+			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 		}
 
-		public static object toNullableType(object obj, global::System.Type nullableType)
+		public static object toNullableType(object obj, Type nullableType)
 		{
-			return (obj != null) ? global::System.Convert.ChangeType(obj, global::System.Nullable.GetUnderlyingType(nullableType), global::System.Globalization.CultureInfo.InvariantCulture) : null;
+			return (obj != null) ? Convert.ChangeType(obj, Nullable.GetUnderlyingType(nullableType), CultureInfo.InvariantCulture) : null;
 		}
 	}
 }
