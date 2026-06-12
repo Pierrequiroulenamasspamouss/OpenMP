@@ -5,3 +5,5 @@ Minionsparadise/Temp
 Minionsparadise/AuxiliaryFiles
 Minionsparadise-old
 *.pyc
+.vs
+__pycache__
