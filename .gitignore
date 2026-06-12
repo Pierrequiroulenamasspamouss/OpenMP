@@ -3,9 +3,8 @@ Minionsparadise/obj
 archive
 Minionsparadise/Temp
 Minionsparadise/AuxiliaryFiles
-SERVER/player_data
 .vs
-SERVER/update-latest.sh
 .env
 Minionsparadise-old
 *.pyc
+__pycache__

@@ -1,9 +1,0 @@
-{
-  "active_packs": {
-    "9131": { "min_level": 0, "max_purchases": 1, "start_utc": 0, "end_utc": 2000000000 },
-    "9129": { "min_level": 0, "max_purchases": 1, "start_utc": 0, "end_utc": 2000000000 }
-  },
-  "default_min_level": 0,
-  "default_max_purchases": 1,
-  "global_end_utc": 2000000000
-}

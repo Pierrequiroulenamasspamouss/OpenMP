@@ -27,6 +27,9 @@ namespace Kampai.UI.View
 		[Inject]
 		public global::Kampai.UI.View.HideFluxWayfinder hideWayfinder { get; set; }
 
+		[Inject]
+		public global::Kampai.Game.VillainLairModel villainLairModel { get; set; }
+
 		public override global::Kampai.UI.View.IWayFinderView View
 		{
 			get
@@ -46,6 +49,10 @@ namespace Kampai.UI.View
 			setCompleteIconSignal.AddListener(view.SetBuildReadyIcon);
 			planService.SetWayfinderState();
 			view.SetOffset();
+			if (villainLairModel.currentActiveLair == null)
+			{
+				view.SetForceHide(true);
+			}
 		}
 
 		public override void OnRemove()
@@ -72,7 +79,14 @@ namespace Kampai.UI.View
 		{
 			if (playerService.GetFirstInstanceByDefinitionId<global::Kampai.Game.VillainLair>(3137).hasVisited)
 			{
-				view.SetForceHide(enabled);
+				if (villainLairModel.currentActiveLair == null)
+				{
+					view.SetForceHide(true);
+				}
+				else
+				{
+					view.SetForceHide(enabled);
+				}
 			}
 		}
 	}

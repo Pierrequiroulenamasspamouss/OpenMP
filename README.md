@@ -23,12 +23,7 @@ The core Unity 5.3 project.
 - **Scripts**: Extensive C# modifications to support local I/O and custom server communication.
 - **FMOD**: Integrated audio project for game sounds and music.
 
-### 🖥️ [SERVER]
-A Flask-based private server implementations.
-- **routes/**: API endpoints for game state, user profiles, sales/marketplace, and TSE events.
-- **utils/**: Database handlers (SQLite), profile generation, and logging utilities.
-- **marketplace/**: Definitions for in-game shop items and promotional offers.
-- **nopromousers.txt**: A list of UIDs for which promotional offers are restricted.
+
 
 ### 📚 [DOC]
 Technical documentation and guides.
@@ -46,13 +41,6 @@ Technical documentation and guides.
 
 ### High Priority
 
-- [ ] **Script for Unity 6 porting creation.** I need you to see the changes made in the Unity 5 version and port them in the Unity 6 port in C:\Unity\UNITY6, see if the changes in the fork 
-I always update the Unity 5 version first, and I know there are significant differences between the Unity 5 and Unity 6 versions in terms of assets. However It has to focus on the code only when it comes to syncs between Unity versions. 
-    I would need a tool/or you to do the work to see the changes since the last commit inside the Unity 6 version, ignoring all sorts of assets, of course. Basically sync everything that can be synced without too many issues between Unity versions. 
-
-Also I need you to clone the development branch into main, since I tried to pull request development into main but it says : 
-"There isn’t anything to compare.
-main and Development are entirely different commit histories.". Please fix this issue. I need a development branch, and a main branch, main containing only stable changes, that I put development inside once the changes are stable. 
 
     
 
