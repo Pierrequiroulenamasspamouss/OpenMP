@@ -63,7 +63,7 @@ namespace Kampai.UI
 				int num2 = 0;
 				foreach (global::System.Collections.Generic.KeyValuePair<int, bool> item in uncheckedInventoryItemOnTab.Value)
 				{
-					if (!item.Value)
+					if (!item.Value && playerService.GetUnlockedQuantityOfID(item.Key) > 0)
 					{
 						num2++;
 					}
@@ -322,7 +322,15 @@ namespace Kampai.UI
 				localState.UncheckedInventoryItemOnTabs[type] = new global::System.Collections.Generic.Dictionary<int, bool>();
 				localState.UncheckedInventoryItemOnTabs[type][buildingDefinitionID] = false;
 			}
-			setBadgeForTabSignal.Dispatch(type, localState.UncheckedInventoryItemOnTabs[type].Count);
+			int count = 0;
+			foreach (global::System.Collections.Generic.KeyValuePair<int, bool> item in localState.UncheckedInventoryItemOnTabs[type])
+			{
+				if (!item.Value && playerService.GetUnlockedQuantityOfID(item.Key) > 0)
+				{
+					count++;
+				}
+			}
+			setBadgeForTabSignal.Dispatch(type, count);
 			PersistLocalState();
 		}
 
@@ -333,15 +341,36 @@ namespace Kampai.UI
 				if (localState.UncheckedInventoryItemOnTabs[type].ContainsKey(buildingDefinitionID))
 				{
 					localState.UncheckedInventoryItemOnTabs[type].Remove(buildingDefinitionID);
+					int count = 0;
+					foreach (global::System.Collections.Generic.KeyValuePair<int, bool> item in localState.UncheckedInventoryItemOnTabs[type])
+					{
+						if (!item.Value && playerService.GetUnlockedQuantityOfID(item.Key) > 0)
+						{
+							count++;
+						}
+					}
 					if (localState.UncheckedInventoryItemOnTabs[type].Count == 0)
 					{
 						localState.UncheckedInventoryItemOnTabs.Remove(type);
 					}
+					setBadgeForTabSignal.Dispatch(type, count);
 				}
 				else
 				{
 					logger.Warning("Unchecked list doesn't contain this item {0}", buildingDefinitionID);
 				}
+				int num = 0;
+				foreach (global::System.Collections.Generic.KeyValuePair<global::Kampai.Game.StoreItemType, global::System.Collections.Generic.IDictionary<int, bool>> uncheckedInventoryItemOnTab in localState.UncheckedInventoryItemOnTabs)
+				{
+					foreach (global::System.Collections.Generic.KeyValuePair<int, bool> item in uncheckedInventoryItemOnTab.Value)
+					{
+						if (!item.Value && playerService.GetUnlockedQuantityOfID(item.Key) > 0)
+						{
+							num++;
+						}
+					}
+				}
+				setInventoryCountForBuildMenuSignal.Dispatch(num);
 				PersistLocalState();
 			}
 			else

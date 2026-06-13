@@ -34,7 +34,6 @@
   "CabanaAnimationButton": "Assets/Resources/CabanaAnimationButton.prefab",
   "CharacterModeButton": "Assets/Resources/CharacterModeButton.prefab",
   "config": "Assets/Resources/config.json",
-  "config.json": "Assets/Resources/config.json.local",
   "configurations": "Assets/Resources/configurations.json",
   "config_server": "Assets/Resources/config_server.json",
   "definitions": "Assets/Resources/definitions.json",

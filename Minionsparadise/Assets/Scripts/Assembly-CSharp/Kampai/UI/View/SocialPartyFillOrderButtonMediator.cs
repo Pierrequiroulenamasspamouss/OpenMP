@@ -308,7 +308,7 @@ namespace Kampai.UI.View
 			}
 			setPremiumCurrencySignal.Dispatch();
 			setStorageCapacitySignal.Dispatch();
-			if (!response.UserEvent.RewardClaimed && response.Team.OrderProgress.Count == timedSocialEventService.GetCurrentSocialEvent().Orders.Count)
+			if (response.UserEvent != null && !response.UserEvent.RewardClaimed && response.Team != null && response.Team.OrderProgress != null && timedSocialEventService.GetCurrentSocialEvent() != null && response.Team.OrderProgress.Count == timedSocialEventService.GetCurrentSocialEvent().Orders.Count)
 			{
 				hideSignal.Dispatch("SocialSkrim");
 				guiService.Execute(global::Kampai.UI.View.GUIOperation.Unload, "SocialPartyFillOrderScreen");

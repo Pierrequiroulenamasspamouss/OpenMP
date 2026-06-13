@@ -263,16 +263,30 @@ namespace Kampai.UI.View
 			{
 				buildMenuService.RemoveUncheckedInventoryItem(type, iD);
 			}
+			int storeItemID = buildMenuService.GetStoreItemDefinitionIDFromBuildingID(iD);
+			global::Kampai.UI.View.StoreButtonView storeButtonViewByID = base.view.GetStoreButtonViewByID(storeItemID);
+			if (storeButtonViewByID != null)
+			{
+				storeButtonViewByID.SetNewUnlockState(false);
+			}
 		}
 
 		private void BuildingDraggedFromInventory(global::Kampai.Game.Building building, global::Kampai.Game.Location location)
 		{
 			int iD = building.Definition.ID;
 			global::Kampai.Game.StoreItemType type = base.view.UpdateStoreButtonState(iD, true);
-			if (buildMenuService.RemoveNewUnlockedItem(type, iD))
+			buildMenuService.RemoveNewUnlockedItem(type, iD);
+			int storeItemID = buildMenuService.GetStoreItemDefinitionIDFromBuildingID(iD);
+			global::Kampai.UI.View.StoreButtonView storeButtonViewByID = base.view.GetStoreButtonViewByID(storeItemID);
+			if (storeButtonViewByID != null)
+			{
+				storeButtonViewByID.SetNewUnlockState(false);
+			}
+			if (playerService.GetInventoryCountByDefinitionID(iD) == 0)
 			{
 				buildMenuService.RemoveUncheckedInventoryItem(type, iD);
 			}
+			SetBadgeCountForStoreItemType(type);
 			global::System.Collections.Generic.List<global::Kampai.UI.View.StoreButtonView> storeButtonViews = base.view.GetStoreButtonViews(type);
 			if (storeButtonViews != null)
 			{
