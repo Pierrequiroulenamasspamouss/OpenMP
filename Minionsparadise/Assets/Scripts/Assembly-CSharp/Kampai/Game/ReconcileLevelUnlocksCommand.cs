@@ -32,6 +32,36 @@ namespace Kampai.Game
 			transactionDefinition.Inputs = new global::System.Collections.Generic.List<global::Kampai.Util.QuantityItem>();
 			transactionDefinition.Outputs = new global::System.Collections.Generic.List<global::Kampai.Util.QuantityItem>();
 			int quantity = (int)playerService.GetQuantity(global::Kampai.Game.StaticItem.LEVEL_ID);
+			
+			// Active check: lock buildings that are for levels higher than the player's current level
+			global::Kampai.Game.PlayerService ps = playerService as global::Kampai.Game.PlayerService;
+			if (ps != null && ps.player != null)
+			{
+				var playerUnlocks = ps.player.GetUnlockedItems();
+				if (playerUnlocks != null)
+				{
+					for (int i = quantity + 1; i < levelUpDefinition.transactionList.Count; i++)
+					{
+						global::Kampai.Game.Transaction.TransactionDefinition transactionDefinition3 = definitionService.Get<global::Kampai.Game.Transaction.TransactionDefinition>(levelUpDefinition.transactionList[i]);
+						if (transactionDefinition3 != null && transactionDefinition3.Outputs != null)
+						{
+							foreach (global::Kampai.Util.QuantityItem output in transactionDefinition3.Outputs)
+							{
+								global::Kampai.Game.UnlockDefinition unlockDef = null;
+								if (definitionService.TryGet<global::Kampai.Game.UnlockDefinition>(output.ID, out unlockDef))
+								{
+									if (playerUnlocks.ContainsKey(unlockDef.ReferencedDefinitionID))
+									{
+										playerUnlocks.Remove(unlockDef.ReferencedDefinitionID);
+										global::UnityEngine.Debug.Log(string.Format("[LevelUnlocks] Locking building {0} because player level {1} is lower than required level {2}", unlockDef.ReferencedDefinitionID, quantity, i));
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
 			for (int i = 0; i <= quantity; i++)
 			{
 				if (i >= levelUpDefinition.transactionList.Count)

@@ -125,6 +125,13 @@ namespace Kampai.UI.View
 			socialPartyFillOrderSetupUISignal.AddListener(RefreshUI);
 			loginSuccess.AddListener(OnLoginSuccess);
 			base.view.messageAlertButton.gameObject.SetActive(false);
+			// Pre-initialize finishTime from the event definition so UpdateTime() does not
+			// falsely trigger the "event ended" popup during the async team-load HTTP call.
+			global::Kampai.Game.TimedSocialEventDefinition def = timedSocialEventService.GetCurrentSocialEvent();
+			if (def != null)
+			{
+				finishTime = new global::System.DateTime(1970, 1, 1, 0, 0, 0, 0, global::System.DateTimeKind.Utc).AddSeconds(def.FinishTime).ToLocalTime();
+			}
 			LoadTeam();
 			hideHUDSignal.Dispatch(false);
 		}
@@ -283,7 +290,18 @@ namespace Kampai.UI.View
 
 		private global::Kampai.UI.View.SocialPartyFillOrderButtonMediator.SocialPartyFillOrderButtonMediatorData GetData(global::Kampai.Game.SocialEventOrderDefinition orderDefinition, int index)
 		{
-			global::Kampai.Game.SocialOrderProgress progress = (team.OrderProgress as global::System.Collections.Generic.List<global::Kampai.Game.SocialOrderProgress>).Find((global::Kampai.Game.SocialOrderProgress p) => p.OrderId == orderDefinition.OrderID);
+			global::Kampai.Game.SocialOrderProgress progress = null;
+			if (team.OrderProgress != null)
+			{
+				foreach (global::Kampai.Game.SocialOrderProgress p in team.OrderProgress)
+				{
+					if (p.OrderId == orderDefinition.OrderID)
+					{
+						progress = p;
+						break;
+					}
+				}
+			}
 			global::Kampai.UI.View.SocialPartyFillOrderButtonMediator.SocialPartyFillOrderButtonMediatorData socialPartyFillOrderButtonMediatorData = new global::Kampai.UI.View.SocialPartyFillOrderButtonMediator.SocialPartyFillOrderButtonMediatorData();
 			socialPartyFillOrderButtonMediatorData.team = team;
 			socialPartyFillOrderButtonMediatorData.progress = progress;

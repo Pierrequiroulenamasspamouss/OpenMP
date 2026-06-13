@@ -63,7 +63,7 @@ namespace Kampai.UI
 				int num2 = 0;
 				foreach (global::System.Collections.Generic.KeyValuePair<int, bool> item in uncheckedInventoryItemOnTab.Value)
 				{
-					if (!item.Value)
+					if (!item.Value && playerService.GetUnlockedQuantityOfID(item.Key) > 0)
 					{
 						num2++;
 					}
@@ -322,7 +322,15 @@ namespace Kampai.UI
 				localState.UncheckedInventoryItemOnTabs[type] = new global::System.Collections.Generic.Dictionary<int, bool>();
 				localState.UncheckedInventoryItemOnTabs[type][buildingDefinitionID] = false;
 			}
-			setBadgeForTabSignal.Dispatch(type, localState.UncheckedInventoryItemOnTabs[type].Count);
+			int count = 0;
+			foreach (global::System.Collections.Generic.KeyValuePair<int, bool> item in localState.UncheckedInventoryItemOnTabs[type])
+			{
+				if (!item.Value && playerService.GetUnlockedQuantityOfID(item.Key) > 0)
+				{
+					count++;
+				}
+			}
+			setBadgeForTabSignal.Dispatch(type, count);
 			PersistLocalState();
 		}
 
@@ -333,8 +341,15 @@ namespace Kampai.UI
 				if (localState.UncheckedInventoryItemOnTabs[type].ContainsKey(buildingDefinitionID))
 				{
 					localState.UncheckedInventoryItemOnTabs[type].Remove(buildingDefinitionID);
-					int count = localState.UncheckedInventoryItemOnTabs[type].Count;
-					if (count == 0)
+					int count = 0;
+					foreach (global::System.Collections.Generic.KeyValuePair<int, bool> item in localState.UncheckedInventoryItemOnTabs[type])
+					{
+						if (!item.Value && playerService.GetUnlockedQuantityOfID(item.Key) > 0)
+						{
+							count++;
+						}
+					}
+					if (localState.UncheckedInventoryItemOnTabs[type].Count == 0)
 					{
 						localState.UncheckedInventoryItemOnTabs.Remove(type);
 					}
@@ -349,7 +364,7 @@ namespace Kampai.UI
 				{
 					foreach (global::System.Collections.Generic.KeyValuePair<int, bool> item in uncheckedInventoryItemOnTab.Value)
 					{
-						if (!item.Value)
+						if (!item.Value && playerService.GetUnlockedQuantityOfID(item.Key) > 0)
 						{
 							num++;
 						}
