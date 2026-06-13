@@ -36,6 +36,20 @@ namespace Kampai.UI.View
 			retryButtonViews.Clear();
 			playOfflineButtonViews.Clear();
 
+			global::UnityEngine.Transform[] transforms = view.GetComponentsInChildren<global::UnityEngine.Transform>(true);
+			global::UnityEngine.GameObject cta1 = null;
+			global::UnityEngine.GameObject cta2 = null;
+			foreach (global::UnityEngine.Transform t in transforms)
+			{
+				if (t.name == "panel_CTA_1up") cta1 = t.gameObject;
+				else if (t.name == "panel_CTA_2up") cta2 = t.gameObject;
+			}
+			if (cta1 != null && cta2 != null)
+			{
+				cta1.SetActive(false);
+				cta2.SetActive(true);
+			}
+
 			foreach (global::Kampai.UI.View.ButtonView b in view.GetComponentsInChildren<global::Kampai.UI.View.ButtonView>(true))
 			{
 				bool isRetry = false;

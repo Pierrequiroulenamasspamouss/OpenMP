@@ -106,17 +106,11 @@ namespace Kampai.UI.View
 		private T AddMarketplacePanel<T>(string prefabName) where T : global::UnityEngine.MonoBehaviour, global::strange.extensions.mediation.api.IView
 		{
 			global::UnityEngine.GameObject original = global::Kampai.Util.KampaiResources.Load(prefabName) as global::UnityEngine.GameObject;
-			global::UnityEngine.GameObject gameObject = global::UnityEngine.Object.Instantiate(original);
+			global::UnityEngine.GameObject gameObject = global::UnityEngine.Object.Instantiate(original, ItemsPanel, false);
 			if (gameObject == null)
 			{
 				return (T)null;
 			}
-			global::UnityEngine.RectTransform rectTransform = gameObject.transform as global::UnityEngine.RectTransform;
-			if (rectTransform == null)
-			{
-				return gameObject.GetComponent<T>();
-			}
-			rectTransform.SetParent(ItemsPanel, false);
 			return gameObject.GetComponent<T>();
 		}
 
