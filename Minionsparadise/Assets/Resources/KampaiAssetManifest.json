@@ -51,6 +51,8 @@
   "MarketPrices": "Assets/Resources/MarketPrices.json",
   "MinionModeButton": "Assets/Resources/MinionModeButton.prefab",
   "PackagedAssetBundlesManifest": "Assets/Resources/PackagedAssetBundlesManifest.json",
+  "PerformanceTestRunInfo": "Assets/Resources/PerformanceTestRunInfo.json",
+  "PerformanceTestRunSettings": "Assets/Resources/PerformanceTestRunSettings.json",
   "PreinstalledBundles": "Assets/Resources/PreinstalledBundles.json",
   "RemoveCharacterButton": "Assets/Resources/RemoveCharacterButton.prefab",
   "RemoveMinionButton": "Assets/Resources/RemoveMinionButton.prefab",

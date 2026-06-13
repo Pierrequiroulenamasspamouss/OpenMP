@@ -1882,7 +1882,7 @@ MonoBehaviour:
   description: {fileID: 114792575313526482}
   retryButton: {fileID: 114000010929450754}
   retryButtonText: {fileID: 114000010282951670}
-  playOfflineButton: {fileID: 114000010929450754}
+  playOfflineButton: {fileID: 114000012731898960}
   playOfflineButtonText: {fileID: 114968491137286826}
 --- !u!222 &222644383623190622
 CanvasRenderer:
