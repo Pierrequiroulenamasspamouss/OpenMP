@@ -62,7 +62,7 @@ namespace Kampai.Util
         private static IKampaiLogger _logger;
         private static readonly AssetsCache _cachedObjects = new AssetsCache();
 
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_ANDROID || UNITY_IOS
         private static Dictionary<string, string> _editorAssetPathMap;
         private static readonly object _initLock = new object();
         private static volatile bool _isInitialized = false;
@@ -244,7 +244,7 @@ namespace Kampai.Util
 
         public static bool FileExists(string path)
         {
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_ANDROID
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_ANDROID || UNITY_IOS
             EnsureAssetMapInitialized();
             if (_editorAssetPathMap != null && _editorAssetPathMap.ContainsKey(Path.GetFileNameWithoutExtension(path)))
             {
