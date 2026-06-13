@@ -1,2 +1,0 @@
-- "Play offline" button is overlaying the "retry" button in ConnectivityLost panel
-- Storage building has the buy/sell window that are all messed up. More exactly, the panel spawns outside of where it should be. This issue doesn't occur in the UNITY5 version of the project. 
