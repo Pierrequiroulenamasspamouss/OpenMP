@@ -13,13 +13,16 @@ namespace Kampai.Main.View
 		[Inject]
 		public global::Kampai.Common.NetworkTypeChangedSignal typeChangedSignal { get; set; }
 
+		[Inject]
+		public global::Kampai.Game.IUserSessionService userSessionService { get; set; }
+
 		private global::System.Collections.IEnumerator Start()
 		{
 			model.reachability = global::Kampai.Util.NetworkUtil.GetNetworkReachability();
 			logger.Info("Initial network connection type: {0}.", model.reachability);
 			while (true)
 			{
-				if (!model.isConnectionLost && model.reachability == global::UnityEngine.NetworkReachability.NotReachable)
+				if (!model.isConnectionLost && model.reachability == global::UnityEngine.NetworkReachability.NotReachable && !userSessionService.IsOffline)
 				{
 					connectionLostSignal.Dispatch();
 				}

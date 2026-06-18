@@ -148,9 +148,16 @@ namespace Kampai.Game.View
 			view.SetPartyLocation(new global::Kampai.Util.Boxed<global::UnityEngine.Vector3>((global::UnityEngine.Vector3)minionPartyDefinition.Center), minionPartyDefinition.PartyRadius);
 		}
 
+		[Inject]
+		public global::Kampai.Main.IAssetsPreloadService assetsPreloadService { get; set; }
+
 		private global::System.Collections.IEnumerator CacheAnimations()
 		{
 			yield return null;
+			while (assetsPreloadService != null && assetsPreloadService.IsPreloading)
+			{
+				yield return null;
+			}
 			global::System.Collections.Generic.List<global::Kampai.Game.Transaction.WeightedDefinition> weights = definitionService.GetAllGachaDefinitions();
 			for (int i = 0; i < weights.Count; i++)
 			{

@@ -10,8 +10,15 @@ namespace Kampai.Common
 		[Inject]
 		public global::Kampai.UI.View.ShowOfflinePopupSignal showOfflinePopupSignal { get; set; }
 
+		[Inject]
+		public global::Kampai.Game.IUserSessionService userSessionService { get; set; }
+
 		public override void Execute()
 		{
+			if (userSessionService != null && userSessionService.IsOffline)
+			{
+				return;
+			}
 			logger.Info("NetworkConnectionLostCommand");
 			networkModel.isConnectionLost = true;
 			showOfflinePopupSignal.Dispatch(true);

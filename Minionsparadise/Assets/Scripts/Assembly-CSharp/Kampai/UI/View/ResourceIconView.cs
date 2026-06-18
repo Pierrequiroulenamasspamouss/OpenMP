@@ -166,6 +166,10 @@ namespace Kampai.UI.View
 
 		internal void HighlightHarvest(bool isHighlighted)
 		{
+			if (m_image == null)
+			{
+				return;
+			}
 			if (isHighlighted)
 			{
 				global::Kampai.Util.TweenUtil.Throb(m_image.transform, 0.85f, 0.5f, out localScale);

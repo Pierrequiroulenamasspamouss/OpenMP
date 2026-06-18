@@ -29,10 +29,22 @@ namespace Kampai.UI.Controller
         [Inject]
         public ICoppaService coppaService { get; set; }
 
+        [Inject]
+        public NetworkModel networkModel { get; set; }
+
         public override void Execute()
         {
+            if (userSessionService.IsOffline)
+            {
+                UnityEngine.Debug.Log("[OfflineMode] Already in offline mode. Skipping duplicate transition.");
+                return;
+            }
             
             userSessionService.IsOffline = true;
+
+            // In offline mode, we are deliberately disconnected — this is not a "connection lost" scenario.
+            // Clear the flag so gameplay systems (minigames, etc.) don't pause.
+            networkModel.isConnectionLost = false;
 
             // Close the popup
             showOfflinePopupSignal.Dispatch(false);

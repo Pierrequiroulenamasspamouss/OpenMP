@@ -18,6 +18,10 @@ namespace Kampai.UI.View
 
 		private global::Kampai.UI.View.SetNewUnlockForBuildMenuSignal setNewUnlockForBuildMenuSignal;
 
+		private float savedButtonHeight = 100f;
+
+		private float savedPadding = 5f;
+
 		public void Init(global::Kampai.UI.View.SetNewUnlockForBuildMenuSignal setNewUnlockForBuildMenuSignal, global::Kampai.UI.View.RemoveUnlockForBuildMenuSignal removeUnlockForBuildMenuSignal)
 		{
 			this.removeUnlockForBuildMenuSignal = removeUnlockForBuildMenuSignal;
@@ -85,28 +89,94 @@ namespace Kampai.UI.View
 		internal void AddStoreTab(global::Kampai.UI.View.StoreTabView tabView, float buttonHeight, float padding)
 		{
 			tabViews.Add(tabView);
-			count = tabViews.Count;
-			
-			float h = (buttonHeight > 0f) ? buttonHeight : 100f; // Sane default height for menu tabs
-			float p = (padding >= 0f) ? padding : 5f;
-			
-			ScrollViewParent.offsetMin = new global::UnityEngine.Vector2(0f, (float)(-count) * h + ScrollViewParent.offsetMax.y);
-			ScrollViewParent.offsetMax = global::UnityEngine.Vector2.zero;
-			global::UnityEngine.RectTransform rectTransform = tabViews[count - 1].transform as global::UnityEngine.RectTransform;
-			rectTransform.offsetMin = new global::UnityEngine.Vector2(p, (0f - h - p) * (float)count);
-			rectTransform.offsetMax = new global::UnityEngine.Vector2(0f - p, (0f - h - p) * (float)(count - 1) - p);
-			tabViews[count - 1].gameObject.SetActive(true);
+			tabView.gameObject.SetActive(true);
+			if (buttonHeight > 0f)
+			{
+				savedButtonHeight = buttonHeight;
+			}
+			if (padding >= 0f)
+			{
+				savedPadding = padding;
+			}
+			LayoutTabs();
+		}
+
+		private void LayoutTabs()
+		{
+			if (tabViews == null)
+			{
+				return;
+			}
+			int num = 0;
+			foreach (global::Kampai.UI.View.StoreTabView tabView in tabViews)
+			{
+				if (tabView != null && tabView.gameObject.activeSelf)
+				{
+					num++;
+				}
+			}
+			if (num == 0)
+			{
+				return;
+			}
+			float num2 = ((savedButtonHeight > 0f) ? savedButtonHeight : 100f);
+			float num3 = ((savedPadding >= 0f) ? savedPadding : 5f);
+			float num4 = 600f;
+			if (ScrollViewParent != null && ScrollViewParent.parent != null)
+			{
+				global::UnityEngine.RectTransform rectTransform = ScrollViewParent.parent as global::UnityEngine.RectTransform;
+				if (rectTransform != null && rectTransform.rect.height > 100f)
+				{
+					num4 = rectTransform.rect.height;
+				}
+			}
+			else if (base.transform != null)
+			{
+				global::UnityEngine.RectTransform rectTransform2 = base.transform as global::UnityEngine.RectTransform;
+				if (rectTransform2 != null && rectTransform2.rect.height > 100f)
+				{
+					num4 = rectTransform2.rect.height;
+				}
+			}
+			float num5 = (float)num * num2 + (float)(num + 1) * num3;
+			float num6 = 1f;
+			if (num5 > num4)
+			{
+				num6 = num4 / num5;
+			}
+			float num7 = num2 * num6;
+			float num8 = num3 * num6;
+			float num9 = (float)num * num7 + (float)(num + 1) * num8;
+			if (ScrollViewParent != null)
+			{
+				ScrollViewParent.offsetMin = new global::UnityEngine.Vector2(0f, 0f - num9);
+				ScrollViewParent.offsetMax = global::UnityEngine.Vector2.zero;
+			}
+			int num10 = 0;
+			foreach (global::Kampai.UI.View.StoreTabView tabView2 in tabViews)
+			{
+				if (tabView2 != null && tabView2.gameObject.activeSelf)
+				{
+					global::UnityEngine.RectTransform rectTransform3 = tabView2.transform as global::UnityEngine.RectTransform;
+					if (rectTransform3 != null)
+					{
+						num10++;
+						rectTransform3.offsetMin = new global::UnityEngine.Vector2(num8, (0f - num7 - num8) * (float)num10);
+						rectTransform3.offsetMax = new global::UnityEngine.Vector2(0f - num8, (0f - num7 - num8) * (float)(num10 - 1) - num8);
+					}
+				}
+			}
 		}
 
 		internal void ClearTabs()
 		{
 			if (tabViews != null)
 			{
-				foreach (var tab in tabViews)
+				foreach (global::Kampai.UI.View.StoreTabView tabView in tabViews)
 				{
-					if (tab != null && tab.gameObject != null)
+					if (tabView != null && tabView.gameObject != null)
 					{
-						global::UnityEngine.Object.Destroy(tab.gameObject);
+						global::UnityEngine.Object.Destroy(tabView.gameObject);
 					}
 				}
 				tabViews.Clear();
@@ -129,6 +199,7 @@ namespace Kampai.UI.View
 					break;
 				}
 			}
+			LayoutTabs();
 		}
 
 		internal void HideBadge(global::Kampai.Game.StoreItemType type)

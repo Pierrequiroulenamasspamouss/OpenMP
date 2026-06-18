@@ -1,0 +1,1 @@
+- Black screen when running the game for some users that try to run the game, likely because the armeabi-v7a version is half broken. This is something to investigate, why those versions are broken. 

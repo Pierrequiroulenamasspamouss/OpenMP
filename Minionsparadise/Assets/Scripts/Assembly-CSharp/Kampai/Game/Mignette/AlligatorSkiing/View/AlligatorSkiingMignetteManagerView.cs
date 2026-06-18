@@ -68,6 +68,8 @@ namespace Kampai.Game.Mignette.AlligatorSkiing.View
 
 		private bool firstCheckpointPassed;
 
+		private bool cameraUpdateDebugLog;
+
 		[Inject]
 		public global::Kampai.Game.Mignette.AlligatorSkiing.AlligatorMignettePathCompletedSignal pathCompleteSignal { get; set; }
 
@@ -127,6 +129,7 @@ namespace Kampai.Game.Mignette.AlligatorSkiing.View
 
 		private void InitializeCamera()
 		{
+			global::UnityEngine.Debug.Log("[AlligatorMignette] InitializeCamera() called");
 			cameraMarker = waypointsController.FollowCameraMarker;
 			cameraMarker.SetParent(base.gameObject.transform, false);
 			cameraTransform = base.mignetteCamera.transform;
@@ -192,10 +195,15 @@ namespace Kampai.Game.Mignette.AlligatorSkiing.View
 
 		private global::System.Collections.IEnumerator DelayAlligatorIntro()
 		{
+			global::UnityEngine.Debug.Log("[AlligatorMignette] DelayAlligatorIntro() started - waiting 1s");
 			yield return new global::UnityEngine.WaitForSeconds(1f);
+			global::UnityEngine.Debug.Log(string.Format("[AlligatorMignette] DelayAlligatorIntro() - playing Casting anim. MinionAnimator={0}, FishingPoleAnimator={1}, FishingPoleAnimator.enabled={2}",
+				minion != null, alligatorAgent.FishingPoleAnimator != null, alligatorAgent.FishingPoleAnimator != null ? alligatorAgent.FishingPoleAnimator.enabled.ToString() : "N/A"));
 			minion.PlayAnimation(global::UnityEngine.Animator.StringToHash("Casting"), 0, 0f);
 			alligatorAgent.FishingPoleAnimator.Play(global::UnityEngine.Animator.StringToHash("Casting"), 0, 0f);
+			global::UnityEngine.Debug.Log("[AlligatorMignette] DelayAlligatorIntro() - waiting 2s before SwimToHam");
 			yield return new global::UnityEngine.WaitForSeconds(2f);
+			global::UnityEngine.Debug.Log("[AlligatorMignette] DelayAlligatorIntro() - calling SwimToHam()");
 			alligatorAgent.SwimToHam();
 		}
 
@@ -335,6 +343,7 @@ namespace Kampai.Game.Mignette.AlligatorSkiing.View
 
 		private void MoveCameraToStartPosition()
 		{
+			global::UnityEngine.Debug.Log("[AlligatorMignette] MoveCameraToStartPosition() called");
 			GoTweenConfig goTweenConfig = new GoTweenConfig();
 			PositionTweenProperty tweenProp = new PositionTweenProperty(buildingViewReference.IntroCamera.position);
 			goTweenConfig.addTweenProperty(tweenProp);
@@ -353,6 +362,11 @@ namespace Kampai.Game.Mignette.AlligatorSkiing.View
 		{
 			if (!isGameOver)
 			{
+				if (!cameraUpdateDebugLog)
+				{
+					global::UnityEngine.Debug.Log("[AlligatorMignette] UpdateGameCamera() first-run");
+					cameraUpdateDebugLog = true;
+				}
 				global::UnityEngine.Vector3 position = cameraMarker.position;
 				global::UnityEngine.Vector3 position2 = alligatorTransform.position;
 				position2.y = position.y;
@@ -366,6 +380,7 @@ namespace Kampai.Game.Mignette.AlligatorSkiing.View
 
 		public void OnStartGame()
 		{
+			global::UnityEngine.Debug.Log("[AlligatorMignette] OnStartGame() called - setting isGameStarted=true, attaching minion");
 			isGameStarted = true;
 			alligatorAgent.AttachMinionAndGo();
 			waterEmitter.Play();

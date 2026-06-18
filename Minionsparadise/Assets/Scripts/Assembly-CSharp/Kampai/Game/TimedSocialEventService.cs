@@ -79,8 +79,8 @@ namespace Kampai.Game
 			int maxFinish = int.MinValue;
 			foreach (var item in all)
 			{
-				if (item.StartTime < minStart) minStart = item.StartTime;
-				if (item.FinishTime > maxFinish) maxFinish = item.FinishTime;
+				if (item.OriginalStartTime < minStart) minStart = item.OriginalStartTime;
+				if (item.OriginalFinishTime > maxFinish) maxFinish = item.OriginalFinishTime;
 			}
 			
 			if (num > maxFinish && maxFinish > minStart)
@@ -90,12 +90,10 @@ namespace Kampai.Game
 				
 				foreach (var item in all)
 				{
-					if (item.StartTime + offset <= num && item.FinishTime + offset >= num)
+					if (item.OriginalStartTime + offset <= num && item.OriginalFinishTime + offset >= num)
 					{
-						// We found a looped event! 
-						// Note: We don't modify the definition itself to avoid persistence issues, 
-						// but we return it as the "current" one.
-						// The server might reject it, but at least the UI will show it.
+						item.StartTime = item.OriginalStartTime + offset;
+						item.FinishTime = item.OriginalFinishTime + offset;
 						return item;
 					}
 				}
@@ -132,8 +130,8 @@ namespace Kampai.Game
 			int maxFinish = int.MinValue;
 			foreach (var item in all)
 			{
-				if (item.StartTime < minStart) minStart = item.StartTime;
-				if (item.FinishTime > maxFinish) maxFinish = item.FinishTime;
+				if (item.OriginalStartTime < minStart) minStart = item.OriginalStartTime;
+				if (item.OriginalFinishTime > maxFinish) maxFinish = item.OriginalFinishTime;
 			}
 
 			if (maxFinish > minStart)
@@ -144,12 +142,14 @@ namespace Kampai.Game
 				num = int.MaxValue;
 				foreach (var item in all)
 				{
-					int shiftedStart = item.StartTime + offset;
+					int shiftedStart = item.OriginalStartTime + offset;
 					int timeUntilStart = shiftedStart - currentTime;
 					if (shiftedStart > currentTime && timeUntilStart < num)
 					{
 						num = timeUntilStart;
 						result = item;
+						result.StartTime = shiftedStart;
+						result.FinishTime = item.OriginalFinishTime + offset;
 					}
 				}
 			}

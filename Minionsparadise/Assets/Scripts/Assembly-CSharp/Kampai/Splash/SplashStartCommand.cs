@@ -10,6 +10,8 @@ namespace Kampai.Splash
 
 		public override void Execute()
 		{
+			global::Kampai.Util.StartupTimer.Start();
+			global::Kampai.Util.StartupTimer.LogCheckpoint("SplashStartCommand.Execute");
 			global::Elevation.Logging.LogManager.RegisterLogger(global::Kampai.Util.KampaiLoggerV2.BuildingKampaiLogger);
 			global::Kampai.Util.IKampaiLogger kampaiLogger = global::Elevation.Logging.LogManager.GetClassLogger("SplashStartCommand") as global::Kampai.Util.IKampaiLogger;
 			global::Kampai.Util.TimeProfiler.InitializeLogger(kampaiLogger);

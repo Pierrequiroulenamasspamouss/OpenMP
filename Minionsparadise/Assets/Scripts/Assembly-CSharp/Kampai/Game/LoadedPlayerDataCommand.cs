@@ -36,6 +36,7 @@ namespace Kampai.Game
 
 		public override void Execute()
 		{
+			global::Kampai.Util.StartupTimer.LogCheckpoint("LoadedPlayerDataCommand.Execute");
 			string text = localPersistService.GetData("LoadMode");
 			if (text == "remote")
 			{

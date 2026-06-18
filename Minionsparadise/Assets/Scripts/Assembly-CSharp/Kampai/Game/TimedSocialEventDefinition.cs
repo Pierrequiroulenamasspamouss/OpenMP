@@ -14,6 +14,20 @@ namespace Kampai.Game
 
 		public int FinishTime { get; set; }
 
+		private int _originalStartTime;
+		public int OriginalStartTime
+		{
+			get { return _originalStartTime == 0 ? StartTime : _originalStartTime; }
+			set { _originalStartTime = value; }
+		}
+
+		private int _originalFinishTime;
+		public int OriginalFinishTime
+		{
+			get { return _originalFinishTime == 0 ? FinishTime : _originalFinishTime; }
+			set { _originalFinishTime = value; }
+		}
+
 		public int MaxTeamSize { get; set; }
 
 		public global::System.Collections.Generic.IList<global::Kampai.Game.SocialEventOrderDefinition> Orders { get; set; }

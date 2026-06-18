@@ -17,14 +17,14 @@ Material:
     m_TexEnvs:
       data:
         first:
-          name: _AlphaTex
+          name: _MainTex
         second:
           m_Texture: {fileID: 2800000, guid: 91fa985b0e668cd419f72360b259f955, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _MainTex
+          name: _AlphaTex
         second:
           m_Texture: {fileID: 2800000, guid: 91fa985b0e668cd419f72360b259f955, type: 3}
           m_Scale: {x: 1, y: 1}
@@ -39,6 +39,26 @@ Material:
     m_Floats:
       data:
         first:
+          name: _SrcBlend
+        second: 5
+      data:
+        first:
+          name: _DstBlend
+        second: 10
+      data:
+        first:
+          name: _Cutoff
+        second: 0.5
+      data:
+        first:
+          name: _ColorMask
+        second: 15
+      data:
+        first:
+          name: _FadeAlpha
+        second: 1
+      data:
+        first:
           name: _Alpha
         second: 0
       data:
@@ -47,116 +67,28 @@ Material:
         second: 0.23214287
       data:
         first:
-          name: _AlphaScalar
-        second: 1
-      data:
-        first:
           name: _Boost
         second: 9
-      data:
-        first:
-          name: _ColorMask
-        second: 15
-      data:
-        first:
-          name: _Cols
-        second: 8
       data:
         first:
           name: _Cull
         second: 2
       data:
         first:
-          name: _Cutoff
-        second: 0.5
-      data:
-        first:
-          name: _Distance
-        second: 10
-      data:
-        first:
-          name: _Distortion
-        second: 0.1
-      data:
-        first:
-          name: _DstBlend
-        second: 10
-      data:
-        first:
-          name: _FadeAlpha
-        second: 1
-      data:
-        first:
-          name: _Gloss
-        second: 1
-      data:
-        first:
-          name: _InvFade
-        second: 1
-      data:
-        first:
           name: _LayerIndex
         second: 1000
-      data:
-        first:
-          name: _LightmapDistort
-        second: 0.1
-      data:
-        first:
-          name: _MaxIntensity
-        second: 0.5
       data:
         first:
           name: _Mode
         second: 2
       data:
         first:
-          name: _Noise
-        second: 1
-      data:
-        first:
-          name: _OffsetFactor
-        second: 0
-      data:
-        first:
-          name: _OffsetUnits
-        second: 0
-      data:
-        first:
-          name: _Reflectivity
-        second: 0.5
-      data:
-        first:
-          name: _Rows
-        second: 8
-      data:
-        first:
           name: _Saturation
-        second: 1
-      data:
-        first:
-          name: _Spec
-        second: 1
-      data:
-        first:
-          name: _Speed
-        second: 1
-      data:
-        first:
-          name: _SrcBlend
-        second: 5
-      data:
-        first:
-          name: _UVScale
         second: 1
       data:
         first:
           name: _VertexColor
         second: 1
-      data:
-        first:
-          name: _WavePower
-        second: 0.25
       data:
         first:
           name: _ZTest
@@ -195,9 +127,101 @@ Material:
         second: 0
       data:
         first:
+          name: _NightGlow
+        second: 0
+      data:
+        first:
+          name: _OffsetFactor
+        second: 0
+      data:
+        first:
+          name: _OffsetUnits
+        second: 0
+      data:
+        first:
           name: _boost
         second: 0
+      data:
+        first:
+          name: _Cols
+        second: 8
+      data:
+        first:
+          name: _InvFade
+        second: 1
+      data:
+        first:
+          name: _Rows
+        second: 8
+      data:
+        first:
+          name: _Speed
+        second: 1
+      data:
+        first:
+          name: _AlphaScalar
+        second: 1
+      data:
+        first:
+          name: _Distance
+        second: 10
+      data:
+        first:
+          name: _Distortion
+        second: 0.1
+      data:
+        first:
+          name: _Gloss
+        second: 1
+      data:
+        first:
+          name: _LightmapDistort
+        second: 0.1
+      data:
+        first:
+          name: _MaxIntensity
+        second: 0.5
+      data:
+        first:
+          name: _Noise
+        second: 1
+      data:
+        first:
+          name: _Reflectivity
+        second: 0.5
+      data:
+        first:
+          name: _Spec
+        second: 1
+      data:
+        first:
+          name: _UVScale
+        second: 1
+      data:
+        first:
+          name: _WavePower
+        second: 0.25
     m_Colors:
+      data:
+        first:
+          name: _LightColor
+        second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _BlendedColor
+        second: {r: 0, g: 0, b: 0, a: 0}
+      data:
+        first:
+          name: _UVScroll
+        second: {r: 0, g: -4, b: 0, a: 0}
+      data:
+        first:
+          name: _TintColor
+        second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
       data:
         first:
           name: _Base_Tint
@@ -208,14 +232,6 @@ Material:
         second: {r: 1, g: 1, b: 1, a: 0}
       data:
         first:
-          name: _BlendedColor
-        second: {r: 0, g: 0, b: 0, a: 0}
-      data:
-        first:
-          name: _Color
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
           name: _Color_Overlay
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
@@ -224,17 +240,5 @@ Material:
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
-          name: _LightColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
           name: _MedColor
         second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _TintColor
-        second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-      data:
-        first:
-          name: _UVScroll
-        second: {r: 0, g: -4, b: 0, a: 0}

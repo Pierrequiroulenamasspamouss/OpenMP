@@ -46,6 +46,7 @@ namespace Kampai.Game
 
 		public override void Execute()
 		{
+			global::Kampai.Util.StartupTimer.LogCheckpoint("LoadPlayerCommand.Execute");
 			logger.EventStart("LoadPlayerCommand.Execute");
 			global::Kampai.Util.TimeProfiler.StartSection("load player");
 			string text = localPersistService.GetData("LoadMode");
@@ -207,6 +208,16 @@ namespace Kampai.Game
 				{
 					logger.Fatal(global::Kampai.Util.FatalCode.PS_EMPTY_SERVER_JSON);
 					return;
+				}
+				if (global::Kampai.Util.OfflineModeUtility.HasLocalSave())
+				{
+					string localData = global::Kampai.Util.OfflineModeUtility.LoadLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath);
+					string latestData = global::Kampai.Util.OfflineModeUtility.GetLatestSave(empty, localData);
+					if (latestData != empty)
+					{
+						logger.Info("[OfflineMode] Local save is newer than server save. Using local save instead.");
+						empty = latestData;
+					}
 				}
 			}
 			loadedPlayerDataSignal.Dispatch(empty, playerMetaData);

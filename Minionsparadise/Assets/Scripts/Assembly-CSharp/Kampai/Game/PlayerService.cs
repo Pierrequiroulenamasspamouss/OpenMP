@@ -2,7 +2,7 @@ namespace Kampai.Game
 {
 	public class PlayerService : global::Kampai.Game.IPlayerService
 	{
-		protected global::Kampai.Game.Player player;
+		public global::Kampai.Game.Player player;
 
 		private object mutex = new object();
 
@@ -443,7 +443,7 @@ namespace Kampai.Game
 
 		public bool IsMinionPartyUnlocked()
 		{
-			return GetUnlockedQuantityOfID(80000) > 0;
+			return true;
 		}
 
 		public bool HasPurchasedMinigamePack()

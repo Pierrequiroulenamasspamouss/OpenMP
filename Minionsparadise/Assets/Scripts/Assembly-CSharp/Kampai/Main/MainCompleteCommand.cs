@@ -118,6 +118,7 @@ namespace Kampai.Main
 			localServiceSignal.Dispatch();
 			global::Kampai.Util.DeviceCapabilities.Initialize();
 			global::Kampai.Util.TimeProfiler.StartSection("loading game scene");
+			global::Kampai.Util.StartupTimer.LogCheckpoint("MainCompleteCommand.PostExternalScenes (Scene Loads Dispatched)");
 			global::UnityEngine.SceneManagement.SceneManager.LoadScene("Game", global::UnityEngine.SceneManagement.LoadSceneMode.Additive);
 			global::UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("UI", global::UnityEngine.SceneManagement.LoadSceneMode.Additive);
 			splashProgressDoneSignal.Dispatch(100, 3f);
@@ -127,6 +128,7 @@ namespace Kampai.Main
 		private global::System.Collections.IEnumerator LevelLoadComplete()
 		{
 			yield return null;
+			global::Kampai.Util.StartupTimer.LogCheckpoint("MainCompleteCommand.LevelLoadComplete (Scene Loaded, waiting for building/minion tasks)");
 			while (coroutineProgressMonitor.HasRunningTasks())
 			{
 				yield return null;
@@ -154,24 +156,13 @@ namespace Kampai.Main
 			}
 			logger.EventStop("MainCompleteCommand.LoadUI");
 			global::Kampai.Util.TimeProfiler.EndSection("loading scenes");
-			global::Kampai.Util.TimeProfiler.StartSection("cleanup");
-			logger.EventStart("MainCompleteCommand.CleanUp");
-
-			async = global::UnityEngine.Resources.UnloadUnusedAssets();
-			routineRunner.StartCoroutine(CleanupComplete());
-		}
-
-		private global::System.Collections.IEnumerator CleanupComplete()
-		{
-			while (!async.isDone)
-			{
-				yield return new global::UnityEngine.WaitForEndOfFrame();
-			}
+			// Show the game first, then do heavy cleanup in background
+			global::Kampai.Util.TimeProfiler.StartSection("pre-splash-hide");
 			fastCommandPool.Warmup();
-			global::System.GC.Collect();
-			global::System.GC.WaitForPendingFinalizers();
-			logger.EventStop("MainCompleteCommand.CleanUp");
-			global::Kampai.Util.TimeProfiler.EndSection("cleanup");
+			global::UnityEngine.Shader.WarmupAllShaders();
+			global::Kampai.Util.TimeProfiler.EndSection("pre-splash-hide");
+
+			// Dismiss splash screen as early as possible so the player sees the game
 			global::strange.extensions.context.api.ICrossContextCapable splashContext = null;
 			try
 			{
@@ -182,13 +173,31 @@ namespace Kampai.Main
 				global::strange.extensions.injector.impl.InjectionException e = ex;
 				logger.Warning(e.ToString());
 			}
-			global::UnityEngine.Shader.WarmupAllShaders();
 			if (splashContext != null)
 			{
+				global::Kampai.Util.StartupTimer.LogCheckpoint("MainCompleteCommand.LevelLoadComplete (Splash Screen Dismissed, Load Complete!)");
 				splashContext.injectionBinder.GetInstance<global::Kampai.Splash.HideSplashSignal>().Dispatch();
 				yield return null;
 				ResumeCurrencyService();
 			}
+
+			// Now do heavy cleanup after game is visible (non-blocking for the user)
+			global::Kampai.Util.TimeProfiler.StartSection("cleanup");
+			logger.EventStart("MainCompleteCommand.CleanUp");
+			async = global::UnityEngine.Resources.UnloadUnusedAssets();
+			routineRunner.StartCoroutine(PostSplashCleanup());
+		}
+
+		private global::System.Collections.IEnumerator PostSplashCleanup()
+		{
+			while (!async.isDone)
+			{
+				yield return null;
+			}
+			global::System.GC.Collect();
+			logger.EventStop("MainCompleteCommand.CleanUp");
+			global::Kampai.Util.TimeProfiler.EndSection("cleanup");
+
 			global::Kampai.Game.VillainLairEntranceBuilding portal = playerService.GetByInstanceId<global::Kampai.Game.VillainLairEntranceBuilding>(374);
 			if (portal != null && portal.IsUnlocked)
 			{

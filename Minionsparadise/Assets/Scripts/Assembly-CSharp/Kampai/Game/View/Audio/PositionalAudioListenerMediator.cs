@@ -57,11 +57,11 @@ namespace Kampai.Game.View.Audio
 			global::UnityEngine.Vector3 vector = cameraUtils.CameraCenterRaycast(cameraAnchor);
 			if (characteAudioEnabled)
 			{
-				view.UpdatePosition(new global::UnityEngine.Vector3(vector.x, y, vector.z));
+				view.UpdatePosition(new global::UnityEngine.Vector3(vector.x, y, vector.z), cameraAnchor.transform.rotation);
 			}
 			else if (newParent != null)
 			{
-				view.UpdatePosition(newParent.position);
+				view.UpdatePosition(newParent.position, newParent.rotation);
 			}
 		}
 	}

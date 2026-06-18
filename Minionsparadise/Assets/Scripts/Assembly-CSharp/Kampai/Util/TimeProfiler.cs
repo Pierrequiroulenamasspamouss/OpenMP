@@ -322,8 +322,8 @@ namespace Kampai.Util
 		{
 			if (currentInstance != null)
 			{
-				global::Kampai.Util.TimeProfiler.Section item = new global::Kampai.Util.TimeProfiler.Section(new string('\t', currentInstance.sections.Count) + "asset " + name);
-				currentInstance.sections.Add(item);
+				global::Kampai.Util.TimeProfiler.Section section = new global::Kampai.Util.TimeProfiler.Section(name);
+				currentInstance.sections.Add(section);
 			}
 		}
 
@@ -332,14 +332,15 @@ namespace Kampai.Util
 			if (currentInstance != null)
 			{
 				global::Kampai.Util.TimeProfiler.Section lastSection = currentInstance.GetLastSection(true);
-				global::System.TimeSpan sectionTime = lastSection.GetSectionTime();
-				currentInstance.totalAssetsLoadTime += sectionTime;
-				if (currentInstance.sections.Count > 0)
+				if (lastSection != null)
 				{
-					currentInstance.GetLastSection(false).mergeSubSection(sectionTime);
+					global::System.TimeSpan sectionTime = lastSection.GetSectionTime();
+					currentInstance.totalAssetsLoadTime += sectionTime;
+					if (currentInstance.sections.Count > 0)
+					{
+						currentInstance.GetLastSection(false).mergeSubSection(sectionTime);
+					}
 				}
-				string message = string.Format("{0}<{1} in {2}. total {3} (frame {4})\n", GetTimeStamp(), lastSection.GetSectionName(), sectionTime.ToString(), currentInstance.totalAssetsLoadTime.ToString(), currentInstance.frameCounter.Frame);
-				currentInstance.Write(message);
 			}
 		}
 
