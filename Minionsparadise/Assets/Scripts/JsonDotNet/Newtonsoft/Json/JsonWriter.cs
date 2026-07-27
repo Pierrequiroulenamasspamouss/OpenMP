@@ -753,61 +753,66 @@ namespace Newtonsoft.Json
 
 		public virtual void WriteValue(short? value)
 		{
-			if (!((int?)value).HasValue)
+			object obj = value;
+			if (obj == null)
 			{
 				WriteNull();
 			}
 			else
 			{
-				WriteValue(value.Value);
+				WriteValue((short)obj);
 			}
 		}
 
 		public virtual void WriteValue(ushort? value)
 		{
-			if (!((int?)value).HasValue)
+			object obj = value;
+			if (obj == null)
 			{
 				WriteNull();
 			}
 			else
 			{
-				WriteValue(value.Value);
+				WriteValue((ushort)obj);
 			}
 		}
 
 		public virtual void WriteValue(char? value)
 		{
-			if (!((int?)value).HasValue)
+			object obj = value;
+			if (obj == null)
 			{
 				WriteNull();
 			}
 			else
 			{
-				WriteValue(value.Value);
+				WriteValue((char)obj);
 			}
 		}
 
 		public virtual void WriteValue(byte? value)
 		{
-			if (!((int?)value).HasValue)
+			object obj = value;
+			if (obj == null)
 			{
 				WriteNull();
 			}
 			else
 			{
-				WriteValue(value.Value);
+				WriteValue((byte)obj);
 			}
 		}
 
 		public virtual void WriteValue(sbyte? value)
 		{
-			if (!((int?)value).HasValue)
+			object obj = value;
+			if (obj == null)
 			{
 				WriteNull();
 			}
 			else
 			{
-				WriteValue(value.Value);
+				WriteValue((sbyte)obj);
 			}
 		}
 
