@@ -119,17 +119,8 @@ namespace Kampai.Game
 
 		private void RemoteLoadPlayerData()
 		{
-			if (!localPersistService.HasKeyPlayer("COPPA_Age_Year") && !localPersistService.HasKey("RelinkingAccount"))
-			{
-				logger.Debug("New User");
-				if (global::UnityEngine.PlayerPrefs.GetInt("intro_video_played", 0) == 0)
-				{
-					videoService.playIntro(false, true);
-				}
-				string initialPlayer = defService.GetInitialPlayer();
-				loadedPlayerDataSignal.Dispatch(initialPlayer, new PlayerMetaData());
-				return;
-			}
+			localPersistService.PutDataIntPlayer("COPPA_Age_Year", 2000);
+			localPersistService.PutDataIntPlayer("COPPA_Age_Month", 1);
 			global::Kampai.Game.UserSession userSession = userSessionService.UserSession;
 			logger.Debug("Existing User");
 			if (userSession != null)
@@ -213,11 +204,17 @@ namespace Kampai.Game
 				{
 					string localData = global::Kampai.Util.OfflineModeUtility.LoadLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath);
 					string latestData = global::Kampai.Util.OfflineModeUtility.GetLatestSave(empty, localData);
-					if (latestData != empty)
-					{
-						logger.Info("[OfflineMode] Local save is newer than server save. Using local save instead.");
-						empty = latestData;
-					}
+					empty = latestData;
+				}
+				// DEBUG: log what HasEnded value is in the final JSON before deserialization
+				{
+					int idx = empty.IndexOf("\"HasEnded\"", global::System.StringComparison.OrdinalIgnoreCase);
+					string snippet = idx >= 0 ? empty.Substring(idx, global::System.Math.Min(30, empty.Length - idx)) : "(not found)";
+					global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] LoadPlayerCommand: JSON HasEnded snippet before dispatch: {0}", snippet);
+				}
+				if (!string.IsNullOrEmpty(empty))
+				{
+					global::Kampai.Util.OfflineModeUtility.SaveLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath, empty);
 				}
 			}
 			loadedPlayerDataSignal.Dispatch(empty, playerMetaData);

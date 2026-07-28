@@ -64,25 +64,24 @@ namespace Kampai.Game.View
 			int iD = building.ID;
 			global::Kampai.Game.Location location = building.Location;
 			string prefab = building.GetPrefab(prefabIndex);
-			if (isSpecialEventActive && !string.IsNullOrEmpty(prefab))
+			if (!string.IsNullOrEmpty(prefab))
 			{
-				if (prefab.Contains("Unique_JobBoard_Prefab"))
+				if (isSpecialEventActive)
 				{
-					prefab = "WNTR_15_Unique_JobBoard_Prefab";
+					if (prefab.Contains("Unique_JobBoard_Prefab")) prefab = "WNTR_15_Unique_JobBoard_Prefab";
+					else if (prefab.Contains("Unique_Stage_Prefab")) prefab = "WNTR_15_Unique_Stage_Prefab";
+					else if (prefab.Contains("Unique_TikiBar_Prefab")) prefab = "WNTR_15_Unique_TikiBar_Prefab";
+					else if (prefab.Contains("Unique_TownSquareFountain_Prefab")) prefab = "WNTR_15_Unique_TownSquareFountain_Prefab";
+					global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] CreateBuilding for def {0}: Swapped prefab to WINTER variant '{1}'", building.Definition.ID, prefab);
 				}
-				else if (prefab.Contains("Unique_Stage_Prefab"))
+				else
 				{
-					prefab = "WNTR_15_Unique_Stage_Prefab";
+					if (prefab.Contains("WNTR_15_Unique_JobBoard_Prefab")) prefab = "Unique_JobBoard_Prefab";
+					else if (prefab.Contains("WNTR_15_Unique_Stage_Prefab")) prefab = "Unique_Stage_Prefab";
+					else if (prefab.Contains("WNTR_15_Unique_TikiBar_Prefab")) prefab = "Unique_TikiBar_Prefab";
+					else if (prefab.Contains("WNTR_15_Unique_TownSquareFountain_Prefab")) prefab = "Unique_TownSquareFountain_Prefab";
+					global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] CreateBuilding for def {0}: Using SUMMER base prefab '{1}'", building.Definition.ID, prefab);
 				}
-				else if (prefab.Contains("Unique_TikiBar_Prefab"))
-				{
-					prefab = "WNTR_15_Unique_TikiBar_Prefab";
-				}
-				else if (prefab.Contains("Unique_TownSquareFountain_Prefab"))
-				{
-					prefab = "WNTR_15_Unique_TownSquareFountain_Prefab";
-				}
-				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] CreateBuilding for def {0}: Swapped prefab to '{1}'", building.Definition.ID, prefab);
 			}
 			global::UnityEngine.GameObject gameObject;
 			if (string.IsNullOrEmpty(prefab))
@@ -440,12 +439,22 @@ namespace Kampai.Game.View
 				index = connectableBuildingDefinition.GetDefaultPrefabIndex();
 			}
 			string prefabName = buildingDefinition.GetPrefab(index);
-			if (isSpecialEventActive && !string.IsNullOrEmpty(prefabName))
+			if (!string.IsNullOrEmpty(prefabName))
 			{
-				if (prefabName.Contains("Unique_JobBoard_Prefab")) prefabName = "WNTR_15_Unique_JobBoard_Prefab";
-				else if (prefabName.Contains("Unique_Stage_Prefab")) prefabName = "WNTR_15_Unique_Stage_Prefab";
-				else if (prefabName.Contains("Unique_TikiBar_Prefab")) prefabName = "WNTR_15_Unique_TikiBar_Prefab";
-				else if (prefabName.Contains("Unique_TownSquareFountain_Prefab")) prefabName = "WNTR_15_Unique_TownSquareFountain_Prefab";
+				if (isSpecialEventActive)
+				{
+					if (prefabName.Contains("Unique_JobBoard_Prefab")) prefabName = "WNTR_15_Unique_JobBoard_Prefab";
+					else if (prefabName.Contains("Unique_Stage_Prefab")) prefabName = "WNTR_15_Unique_Stage_Prefab";
+					else if (prefabName.Contains("Unique_TikiBar_Prefab")) prefabName = "WNTR_15_Unique_TikiBar_Prefab";
+					else if (prefabName.Contains("Unique_TownSquareFountain_Prefab")) prefabName = "WNTR_15_Unique_TownSquareFountain_Prefab";
+				}
+				else
+				{
+					if (prefabName.Contains("WNTR_15_Unique_JobBoard_Prefab")) prefabName = "Unique_JobBoard_Prefab";
+					else if (prefabName.Contains("WNTR_15_Unique_Stage_Prefab")) prefabName = "Unique_Stage_Prefab";
+					else if (prefabName.Contains("WNTR_15_Unique_TikiBar_Prefab")) prefabName = "Unique_TikiBar_Prefab";
+					else if (prefabName.Contains("WNTR_15_Unique_TownSquareFountain_Prefab")) prefabName = "Unique_TownSquareFountain_Prefab";
+				}
 			}
 			global::UnityEngine.GameObject original = global::Kampai.Util.KampaiResources.Load<global::UnityEngine.GameObject>(prefabName);
 			global::UnityEngine.GameObject gameObject = global::UnityEngine.Object.Instantiate(original);

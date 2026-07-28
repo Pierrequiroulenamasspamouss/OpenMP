@@ -17,13 +17,16 @@ public class InitializeSpecialEventCommand : global::strange.extensions.command.
 	[Inject]
 	public global::Kampai.Game.EndSpecialEventSignal endSpecialEventSignal { get; set; }
 
+	[Inject(global::Kampai.Game.GameElement.SPECIAL_EVENT_PARENT)]
+	public global::UnityEngine.GameObject specialEventParent { get; set; }
+
 	public override void Execute()
 	{
 		global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] InitializeSpecialEventCommand.Execute started. Event defs count = {0}", definitionService.GetAll<global::Kampai.Game.SpecialEventItemDefinition>().Count);
 		foreach (global::Kampai.Game.SpecialEventItemDefinition item in definitionService.GetAll<global::Kampai.Game.SpecialEventItemDefinition>())
 		{
 			bool isValid = ValidateEvent(item);
-			global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] Processing Event ID={0}, LocalizedKey={1}, IsActive={2}, IsValid={3}", item.ID, item.LocalizedKey, item.IsActive, isValid);
+			global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] Catalog Def ID={0} ({1}): DefExists=True", item.ID, item.LocalizedKey);
 			if (!isValid)
 			{
 				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] Event ID={0} failed validation!", item.ID);
@@ -31,14 +34,23 @@ public class InitializeSpecialEventCommand : global::strange.extensions.command.
 			}
 			global::Kampai.Game.SpecialEventItem firstInstanceByDefinitionId = playerService.GetFirstInstanceByDefinitionId<global::Kampai.Game.SpecialEventItem>(item.ID);
 			bool hasEnded = (firstInstanceByDefinitionId != null) ? firstInstanceByDefinitionId.HasEnded : false;
-			global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] Event ID={0} Instance={1}, HasEnded={2}", item.ID, (firstInstanceByDefinitionId != null) ? "EXISTS" : "NULL", hasEnded);
+			bool playerActive = (firstInstanceByDefinitionId != null) && !firstInstanceByDefinitionId.HasEnded;
+			global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] Player Profile Event Status: ID={0}, PlayerActive={1}, HasEnded={2}", item.ID, playerActive, hasEnded);
 			if (item.IsActive)
 			{
 				if (firstInstanceByDefinitionId != null)
 				{
 					if (firstInstanceByDefinitionId.HasEnded)
 					{
-						global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] Event {0} slated to start, but has already ended! HasEnded=true", item.ID);
+						global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] EVENT IS DISABLED FOR PLAYER! Event ID={0} HasEnded=True -> Disabling Special_Event parent object.", item.ID);
+						if (specialEventParent != null)
+						{
+							foreach (global::UnityEngine.Transform child in specialEventParent.transform)
+							{
+								global::UnityEngine.Object.Destroy(child.gameObject);
+							}
+							specialEventParent.SetActive(false);
+						}
 						logger.Error("Event {0} slated to start, but has already ended!", item.ID);
 						break;
 					}

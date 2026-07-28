@@ -19,6 +19,8 @@ namespace Kampai.Common
 			}
 			int dataIntPlayer = localPersistanceService.GetDataIntPlayer("COPPA_Age_Year");
 			int dataIntPlayer2 = localPersistanceService.GetDataIntPlayer("COPPA_Age_Month");
+			if (dataIntPlayer < 1900 || dataIntPlayer > 2100) dataIntPlayer = 2000;
+			if (dataIntPlayer2 < 1 || dataIntPlayer2 > 12) dataIntPlayer2 = 1;
 			birthdate = new global::System.DateTime(dataIntPlayer, dataIntPlayer2, 1);
 			return true;
 		}

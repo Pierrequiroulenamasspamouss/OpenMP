@@ -183,12 +183,8 @@ public class LoadDefinitionsCommand : global::strange.extensions.command.impl.Co
 	{
 		global::Kampai.Util.StartupTimer.LogCheckpoint("LoadDefinitionsCommand.OnDeserializationSuccess (Definitions Loaded)");
 		global::Kampai.Game.SpecialEventItemDefinition def110000 = definitionService.Get<global::Kampai.Game.SpecialEventItemDefinition>(110000);
-		if (def110000 != null)
-		{
-			def110000.IsActive = true;
-		}
-		bool isActive110000 = (def110000 != null) ? def110000.IsActive : false;
-		global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] Definitions Loaded! Def 110000 exists={0}, IsActive FORCED={1}", def110000 != null, isActive110000);
+		bool isActive110000 = (def110000 != null) && def110000.IsActive;
+		global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] Definitions Catalog Loaded! Event Def 110000 catalog entry exists={0}", def110000 != null);
 		this.telemetryService.Send_Telemetry_EVT_USER_GAME_LOAD_FUNNEL("80 - Loaded Definitions", playerService.SWRVEGroup, dlcService.GetDownloadQualityLevel());
 		logger.Debug("LoadDefinitions: Deserialized successfully");
 		global::Kampai.Common.TelemetryService telemetryService = this.telemetryService as global::Kampai.Common.TelemetryService;

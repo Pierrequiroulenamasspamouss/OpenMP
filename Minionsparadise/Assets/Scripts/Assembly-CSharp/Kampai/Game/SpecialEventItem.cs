@@ -11,15 +11,17 @@ namespace Kampai.Game
 
 		protected override bool DeserializeProperty(string propertyName, global::Newtonsoft.Json.JsonReader reader, JsonConverters converters)
 		{
-			switch (propertyName)
+			if (string.Equals(propertyName, "HasEnded", global::System.StringComparison.OrdinalIgnoreCase))
 			{
-			case "HASENDED":
-				reader.Read();
+				if (reader.TokenType == global::Newtonsoft.Json.JsonToken.PropertyName)
+				{
+					reader.Read();
+				}
 				HasEnded = global::System.Convert.ToBoolean(reader.Value);
+				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] SpecialEventItem.DeserializeProperty: TokenType={0}, Value={1}, Deserialized HasEnded={2}", reader.TokenType, reader.Value, HasEnded);
 				return true;
-			default:
-				return base.DeserializeProperty(propertyName, reader, converters);
 			}
+			return base.DeserializeProperty(propertyName, reader, converters);
 		}
 
 		public override void Serialize(global::Newtonsoft.Json.JsonWriter writer)
