@@ -20498,7 +20498,7 @@
       "unlockedQuantity": 1
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "id": 1000011653,
       "localizedKey": "Unlock Single Leisure DunkAMinion Building",
       "referencedDefinitionID": 1000011652,
@@ -20527,7 +20527,7 @@
       "unlockedQuantity": 1
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "id": 1000011707,
       "localizedKey": "Unlock Single Decor LightFestiveLanternPalm Building",
       "referencedDefinitionID": 1000011706,
@@ -42183,7 +42183,7 @@
   ],
   "storeItemDefinitions": [
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 3113,
       "TransactionID": 3115,
       "id": 3116,
@@ -43000,21 +43000,21 @@
       "type": "BaseResource"
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000010729,
       "TransactionID": 1000010731,
       "id": 1000010732,
       "type": "Leisure"
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000010970,
       "TransactionID": 1000010972,
       "id": 1000010973,
       "type": "Decoration"
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000011021,
       "TransactionID": 1000011023,
       "id": 1000011024,
@@ -43033,7 +43033,7 @@
       "type": "Decoration"
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000011117,
       "TransactionID": 1000011119,
       "id": 1000011120,
@@ -43052,7 +43052,7 @@
       "type": "Decoration"
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000011349,
       "TransactionID": 1000011351,
       "id": 1000011352,
@@ -43065,7 +43065,7 @@
       "type": "BaseResource"
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000011652,
       "TransactionID": 1000011654,
       "id": 1000011655,
@@ -43084,14 +43084,14 @@
       "type": "Decoration"
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000011700,
       "TransactionID": 1000011702,
       "id": 1000011703,
       "type": "Decoration"
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000011706,
       "TransactionID": 1000011708,
       "id": 1000011709,
@@ -43123,72 +43123,72 @@
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4201,
       "TransactionID": 154,
       "id": 1000012363,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4202,
       "TransactionID": 156,
       "id": 1000012364,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4203,
       "TransactionID": 157,
       "id": 1000012365,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4204,
       "TransactionID": 158,
       "id": 1000012366,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4205,
       "TransactionID": 159,
       "id": 1000012367,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4206,
       "TransactionID": 164,
       "id": 1000012369,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4207,
       "TransactionID": 165,
       "id": 1000012374,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
@@ -43198,7 +43198,7 @@
       "TransactionID": 167,
       "id": 1000012375,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
@@ -43208,7 +43208,7 @@
       "TransactionID": 170,
       "id": 1000012376,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
@@ -43218,57 +43218,57 @@
       "TransactionID": 171,
       "id": 1000012377,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4101,
       "TransactionID": 155,
       "id": 1000012400,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4102,
       "TransactionID": 160,
       "id": 1000012401,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4103,
       "TransactionID": 169,
       "id": 1000012402,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4104,
       "TransactionID": 166,
       "id": 1000012403,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4105,
       "TransactionID": 172,
       "id": 1000012404,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
@@ -43278,57 +43278,57 @@
       "TransactionID": 168,
       "id": 1000012405,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4212,
       "TransactionID": 174,
       "id": 1000012408,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4213,
       "TransactionID": 175,
       "id": 1000012409,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4214,
       "TransactionID": 176,
       "id": 1000012410,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4215,
       "TransactionID": 177,
       "id": 1000012411,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 4216,
       "TransactionID": 178,
       "id": 1000012412,
       "isFeatured": false,
-      "specialEventID": 110000,
+      "specialEventID": 0,
       "type": "SpecialEvent"
     },
     {
@@ -43362,7 +43362,7 @@
       "type": "Crafting"
     },
     {
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000012546,
       "TransactionID": 1000012548,
       "id": 1000012549,
@@ -43474,7 +43474,7 @@
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000012942,
       "TransactionID": 1000012944,
       "id": 1000012945,
@@ -43482,7 +43482,7 @@
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000012966,
       "TransactionID": 1000012968,
       "id": 1000012969,
@@ -43490,7 +43490,7 @@
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000012972,
       "TransactionID": 1000012974,
       "id": 1000012975,
@@ -43498,7 +43498,7 @@
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000012978,
       "TransactionID": 1000012980,
       "id": 1000012981,
@@ -43506,7 +43506,7 @@
     },
     {
       "EnableBadging": true,
-      "OnlyShowIfOwned": true,
+      "OnlyShowIfOwned": false,
       "ReferencedDefID": 1000012984,
       "TransactionID": 1000012986,
       "id": 1000012987,

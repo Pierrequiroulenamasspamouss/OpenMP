@@ -84,7 +84,7 @@ namespace Kampai.Game
 		{
 			if (def == null)
 			{
-				throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("InventoryFastConverter.Create(): null definition id={0} defId={1}", id, defId));
+				logger.Error("InventoryFastConverter.Create(): null definition id={0} defId={1}, creating fallback item def.", id, defId); def = new global::Kampai.Game.ItemDefinition { ID = (defId > 0 ? defId : 999999) };
 			}
 			global::Kampai.Util.IBuilder<global::Kampai.Game.Instance> builder = def as global::Kampai.Util.IBuilder<global::Kampai.Game.Instance>;
 			if (builder != null)
@@ -124,7 +124,7 @@ namespace Kampai.Game
 				return new global::Kampai.Game.Sale(salePackDefinition);
 			}
 			logger.Error("Unable to map inventory type of {0}", type);
-			throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("InventoryFastConverter.Create: Unable to map inventory type of {0}", type));
+			logger.Error("InventoryFastConverter.Create: Unable to map inventory type of {0}, using fallback Item.", type); return new global::Kampai.Game.Item(new global::Kampai.Game.ItemDefinition { ID = (def != null ? def.ID : 0) });
 		}
 	}
 }

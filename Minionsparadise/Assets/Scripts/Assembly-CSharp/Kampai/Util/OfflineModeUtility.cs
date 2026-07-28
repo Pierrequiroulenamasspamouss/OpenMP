@@ -108,6 +108,10 @@ namespace Kampai.Util
             if (index == -1) return 0;
             
             int start = index + search.Length;
+            while (start < json.Length && char.IsWhiteSpace(json[start]))
+            {
+                start++;
+            }
             int end = json.IndexOfAny(new char[] { ',', '}', ' ' }, start);
             if (end == -1) end = json.Length;
             

@@ -15,7 +15,7 @@ namespace Kampai.Game
 			if (jProperty != null)
 			{
 				string value = jProperty.Value.ToString();
-				buildingType = (BuildingType.BuildingTypeIdentifier)(int)global::System.Enum.Parse(typeof(BuildingType.BuildingTypeIdentifier), value);
+				try { buildingType = (BuildingType.BuildingTypeIdentifier)(int)global::System.Enum.Parse(typeof(BuildingType.BuildingTypeIdentifier), value, true); } catch { buildingType = BuildingType.BuildingTypeIdentifier.DECORATION; }
 			}
 			reader = jObject.CreateReader();
 			return base.ReadJson(reader, converters);
@@ -76,7 +76,7 @@ namespace Kampai.Game
 			case BuildingType.BuildingTypeIdentifier.CONNECTABLE:
 				return new global::Kampai.Game.ConnectableBuildingDefinition();
 			default:
-				throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected BuildingDefinition type: {0}", buildingType));
+				return new global::Kampai.Game.DecorationBuildingDefinition();
 			}
 		}
 	}

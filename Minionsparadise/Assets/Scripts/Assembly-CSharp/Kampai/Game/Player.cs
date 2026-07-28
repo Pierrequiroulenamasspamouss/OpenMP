@@ -876,12 +876,12 @@ namespace Kampai.Game
 
 		public void AddUnlock(int id, int quantity)
 		{
-			unlocks.Add(id, quantity);
+			unlocks[id] = quantity;
 		}
 
 		public void AddPurchasedUpsell(int id, int quantity)
 		{
-			purchasedUpsells.Add(id, quantity);
+			purchasedUpsells[id] = quantity;
 		}
 
 		public void AddVillainQueue(int characterDefinitionId)

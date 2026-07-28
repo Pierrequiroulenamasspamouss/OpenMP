@@ -32,12 +32,13 @@ namespace Kampai.Game
 				case global::Newtonsoft.Json.JsonToken.EndObject:
 					return this;
 				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, global::Kampai.Util.ReaderUtil.GetPositionInSource(reader)));
+					reader.Skip();
+					break;
 				case global::Newtonsoft.Json.JsonToken.Comment:
 					break;
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			return this;
 		}
 
 		protected virtual bool DeserializeProperty(string propertyName, global::Newtonsoft.Json.JsonReader reader, JsonConverters converters)
@@ -58,7 +59,7 @@ namespace Kampai.Game
 			global::Kampai.Game.Player player = CurrentSerializer.Deserialize(json, definitionService, localPersistanceService, partyService, logger);
 			if (player.Version != 15)
 			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.PS_UPGRADE_FAILED, "Upgrade failed");
+				player.Version = 15;
 			}
 			return player;
 		}

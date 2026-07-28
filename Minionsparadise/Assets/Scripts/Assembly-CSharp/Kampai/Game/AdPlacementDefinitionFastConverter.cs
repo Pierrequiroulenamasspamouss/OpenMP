@@ -40,7 +40,7 @@ namespace Kampai.Game
 			case global::Kampai.Game.RewardedAdType.Quest2xReward:
 				return new global::Kampai.Game.Quest2xRewardDefinition();
 			default:
-				throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected advertisement type: {0}", rewardType));
+				return new global::Kampai.Game.AdPlacementDefinition();
 			}
 		}
 	}

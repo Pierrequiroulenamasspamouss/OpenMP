@@ -40,7 +40,7 @@ namespace Kampai.Game
 			case global::Kampai.Game.NamedCharacterType.SPECIAL_EVENT:
 				return new global::Kampai.Game.SpecialEventCharacterDefinition();
 			default:
-				throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected NamedCharacterDefinition type: {0}", type));
+				return new global::Kampai.Game.BobCharacterDefinition();
 			}
 		}
 	}

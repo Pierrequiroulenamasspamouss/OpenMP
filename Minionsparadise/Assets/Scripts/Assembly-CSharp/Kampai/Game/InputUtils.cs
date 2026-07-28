@@ -212,7 +212,7 @@ namespace Kampai.Game
 
 		private static bool IsTouchCorrupted(int fingerId)
 		{
-			return fingerId >= 256 || touchCorruptedBySamsung[fingerId];
+			return fingerId < 256 && touchCorruptedBySamsung[fingerId];
 		}
 
 		private static void CorruptTouch(int fingerId, bool isCorrupted)

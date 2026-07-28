@@ -42,7 +42,7 @@ namespace Kampai.Game
 			case global::Kampai.Game.QuestType.DynamicQuest:
 				return new global::Kampai.Game.DynamicQuestDefinition();
 			default:
-				throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected QuestDefinition type: {0}", questType));
+				return new global::Kampai.Game.QuestDefinition();
 			}
 		}
 	}

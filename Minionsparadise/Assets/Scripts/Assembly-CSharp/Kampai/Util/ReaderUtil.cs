@@ -2,2868 +2,985 @@ namespace Kampai.Util
 {
 	public static class ReaderUtil
 	{
-		public static global::Kampai.Game.LegalDocumentURL ReadLegalDocumentURL(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		public static int SafeInt(object val)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
-			{
-				reader.Read();
-			}
-			global::Kampai.Game.LegalDocumentURL result = default(global::Kampai.Game.LegalDocumentURL);
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
-				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "LANGUAGE":
-						reader.Read();
-						result.language = ReadString(reader, converters);
-						break;
-					case "URL":
-						reader.Read();
-						result.url = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return result;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
-				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			if (val == null) return 0;
+			try { return global::System.Convert.ToInt32(val); } catch { return 0; }
 		}
 
-		public static global::Kampai.Game.NotificationReminder ReadNotificationReminder(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		public static uint SafeUInt(object val)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
-			{
-				reader.Read();
-			}
-			global::Kampai.Game.NotificationReminder result = default(global::Kampai.Game.NotificationReminder);
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
-				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "LEVEL":
-						reader.Read();
-						result.level = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "MESSAGELOCALIZEDKEY":
-						reader.Read();
-						result.messageLocalizedKey = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return result;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
-				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			if (val == null) return 0u;
+			try { return global::System.Convert.ToUInt32(val); } catch { return 0u; }
 		}
 
-		public static global::Kampai.Game.CharacterPrestigeLevelDefinition ReadCharacterPrestigeLevelDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		public static float SafeFloat(object val)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
-			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.CharacterPrestigeLevelDefinition characterPrestigeLevelDefinition = new global::Kampai.Game.CharacterPrestigeLevelDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
-				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "UNLOCKLEVEL":
-						reader.Read();
-						characterPrestigeLevelDefinition.UnlockLevel = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					case "UNLOCKQUESTID":
-						reader.Read();
-						characterPrestigeLevelDefinition.UnlockQuestID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "POINTSNEEDED":
-						reader.Read();
-						characterPrestigeLevelDefinition.PointsNeeded = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					case "ATTACHEDQUESTID":
-						reader.Read();
-						characterPrestigeLevelDefinition.AttachedQuestID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "WELCOMEPANELMESSAGELOCALIZEDKEY":
-						reader.Read();
-						characterPrestigeLevelDefinition.WelcomePanelMessageLocalizedKey = ReadString(reader, converters);
-						break;
-					case "FAREWELLPANELMESSAGELOCALIZEDKEY":
-						reader.Read();
-						characterPrestigeLevelDefinition.FarewellPanelMessageLocalizedKey = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return characterPrestigeLevelDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
-				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			if (val == null) return 0f;
+			try { return global::System.Convert.ToSingle(val); } catch { return 0f; }
 		}
 
-		public static global::Kampai.Game.AchievementID ReadAchievementID(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		public static bool SafeBool(object val)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
-			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.AchievementID achievementID = new global::Kampai.Game.AchievementID();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
-				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "GAMECENTERID":
-						reader.Read();
-						achievementID.GameCenterID = ReadString(reader, converters);
-						break;
-					case "GOOGLEPLAYID":
-						reader.Read();
-						achievementID.GooglePlayID = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return achievementID;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
-				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			if (val == null) return false;
+			try { return global::System.Convert.ToBoolean(val); } catch { return false; }
 		}
 
-		public static global::Kampai.Game.ScreenPosition ReadScreenPosition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		public static string SafeString(object val)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
-			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.ScreenPosition screenPosition = new global::Kampai.Game.ScreenPosition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
-				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "X":
-						reader.Read();
-						screenPosition.x = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "Z":
-						reader.Read();
-						screenPosition.z = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "ZOOM":
-						reader.Read();
-						screenPosition.zoom = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return screenPosition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
-				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			if (val == null) return null;
+			return val.ToString();
 		}
 
-		public static global::UnityEngine.Vector3 ReadVector3(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		public static T ReadObject<T>(global::Newtonsoft.Json.JsonReader reader, global::System.Func<T, string, T> parseProp)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			if (reader == null) return default(T);
+			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None) { try { reader.Read(); } catch { return default(T); } }
+			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null) return default(T);
+			T result = default(T);
+			try
 			{
-				reader.Read();
-			}
-			global::UnityEngine.Vector3 result = default(global::UnityEngine.Vector3);
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				try { result = global::System.Activator.CreateInstance<T>(); }
+				catch
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
+					try { result = (T)global::System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(T)); } catch { }
+				}
+				while (reader.Read())
+				{
+					if (reader.TokenType == global::Newtonsoft.Json.JsonToken.PropertyName)
 					{
-					case "X":
+						string valStr = reader.Value as string;
+						string prop = (valStr != null) ? valStr.ToUpper() : null;
 						reader.Read();
-						result.x = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "Y":
-						reader.Read();
-						result.y = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "Z":
-						reader.Read();
-						result.z = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
+						if (prop != null) { try { result = parseProp(result, prop); } catch { reader.Skip(); } }
+						else { reader.Skip(); }
 					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return result;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+					else if (reader.TokenType == global::Newtonsoft.Json.JsonToken.EndObject)
+					{
+						return result;
+					}
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			catch { }
+			return result;
 		}
 
-		public static global::Kampai.Game.ConnectablePiecePrefabDefinition ReadConnectablePiecePrefabDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.LegalDocumentURL ReadLegalDocumentURL(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.LegalDocumentURL>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.ConnectablePiecePrefabDefinition connectablePiecePrefabDefinition = new global::Kampai.Game.ConnectablePiecePrefabDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "STRAIGHT":
-						reader.Read();
-						connectablePiecePrefabDefinition.straight = ReadString(reader, converters);
-						break;
-					case "CROSS":
-						reader.Read();
-						connectablePiecePrefabDefinition.cross = ReadString(reader, converters);
-						break;
-					case "POST":
-						reader.Read();
-						connectablePiecePrefabDefinition.post = ReadString(reader, converters);
-						break;
-					case "TSHAPE":
-						reader.Read();
-						connectablePiecePrefabDefinition.tshape = ReadString(reader, converters);
-						break;
-					case "ENDCAP":
-						reader.Read();
-						connectablePiecePrefabDefinition.endcap = ReadString(reader, converters);
-						break;
-					case "CORNER":
-						reader.Read();
-						connectablePiecePrefabDefinition.corner = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return connectablePiecePrefabDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "LANGUAGE": res.language = ReadString(reader, converters); break;
+				case "URL": res.url = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.SlotUnlock ReadSlotUnlock(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.NotificationReminder ReadNotificationReminder(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.NotificationReminder>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.SlotUnlock slotUnlock = new global::Kampai.Game.SlotUnlock();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "SLOTUNLOCKLEVELS":
-						reader.Read();
-						slotUnlock.SlotUnlockLevels = PopulateListInt32(reader, slotUnlock.SlotUnlockLevels);
-						break;
-					case "SLOTUNLOCKCOSTS":
-						reader.Read();
-						slotUnlock.SlotUnlockCosts = PopulateListInt32(reader, slotUnlock.SlotUnlockCosts);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return slotUnlock;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "LEVEL": res.level = SafeInt(reader.Value); break;
+				case "MESSAGELOCALIZEDKEY": res.messageLocalizedKey = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.UserSegment ReadUserSegment(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.CharacterPrestigeLevelDefinition ReadCharacterPrestigeLevelDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.CharacterPrestigeLevelDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.UserSegment userSegment = new global::Kampai.Game.UserSegment();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "LEVELGREATERTHANOREQUALTO":
-						reader.Read();
-						userSegment.LevelGreaterThanOrEqualTo = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "FIRSTXRETURNREWARDSWEIGHTEDDEFINITIONID":
-						reader.Read();
-						userSegment.FirstXReturnRewardsWeightedDefinitionId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "SECONDXRETURNREWARDSWEIGHTEDDEFINITIONID":
-						reader.Read();
-						userSegment.SecondXReturnRewardsWeightedDefinitionId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "AFTERXRETURNREWARDS":
-						reader.Read();
-						userSegment.AfterXReturnRewards = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return userSegment;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "UNLOCKLEVEL": res.UnlockLevel = SafeUInt(reader.Value); break;
+				case "UNLOCKQUESTID": res.UnlockQuestID = SafeInt(reader.Value); break;
+				case "POINTSNEEDED": res.PointsNeeded = SafeUInt(reader.Value); break;
+				case "ATTACHEDQUESTID": res.AttachedQuestID = SafeInt(reader.Value); break;
+				case "WELCOMEPANELMESSAGELOCALIZEDKEY": res.WelcomePanelMessageLocalizedKey = ReadString(reader, converters); break;
+				case "FAREWELLPANELMESSAGELOCALIZEDKEY": res.FarewellPanelMessageLocalizedKey = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.Location ReadLocation(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.AchievementID ReadAchievementID(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.AchievementID>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.Location location = new global::Kampai.Game.Location();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "X":
-						reader.Read();
-						location.x = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "Y":
-						reader.Read();
-						location.y = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return location;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "GAMECENTERID": res.GameCenterID = ReadString(reader, converters); break;
+				case "GOOGLEPLAYID": res.GooglePlayID = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static MignetteRuleDefinition ReadMignetteRuleDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.ScreenPosition ReadScreenPosition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.ScreenPosition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			MignetteRuleDefinition mignetteRuleDefinition = new MignetteRuleDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "CAUSEIMAGE":
-						reader.Read();
-						mignetteRuleDefinition.CauseImage = ReadString(reader, converters);
-						break;
-					case "CAUSEIMAGEMASK":
-						reader.Read();
-						mignetteRuleDefinition.CauseImageMask = ReadString(reader, converters);
-						break;
-					case "EFFECTIMAGE":
-						reader.Read();
-						mignetteRuleDefinition.EffectImage = ReadString(reader, converters);
-						break;
-					case "EFFECTIMAGEMASK":
-						reader.Read();
-						mignetteRuleDefinition.EffectImageMask = ReadString(reader, converters);
-						break;
-					case "EFFECTAMOUNT":
-						reader.Read();
-						mignetteRuleDefinition.EffectAmount = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return mignetteRuleDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "X": res.x = SafeFloat(reader.Value); break;
+				case "Z": res.z = SafeFloat(reader.Value); break;
+				case "ZOOM": res.zoom = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MignetteChildObjectDefinition ReadMignetteChildObjectDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::UnityEngine.Vector3 ReadVector3(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::UnityEngine.Vector3>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MignetteChildObjectDefinition mignetteChildObjectDefinition = new global::Kampai.Game.MignetteChildObjectDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "PREFAB":
-						reader.Read();
-						mignetteChildObjectDefinition.Prefab = ReadString(reader, converters);
-						break;
-					case "POSITION":
-						reader.Read();
-						mignetteChildObjectDefinition.Position = ReadVector3(reader, converters);
-						break;
-					case "ISLOCAL":
-						reader.Read();
-						mignetteChildObjectDefinition.IsLocal = global::System.Convert.ToBoolean(reader.Value);
-						break;
-					case "ROTATION":
-						reader.Read();
-						mignetteChildObjectDefinition.Rotation = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return mignetteChildObjectDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "X": res.x = SafeFloat(reader.Value); break;
+				case "Y": res.y = SafeFloat(reader.Value); break;
+				case "Z": res.z = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MinionPartyPrefabDefinition ReadMinionPartyPrefabDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.ConnectablePiecePrefabDefinition ReadConnectablePiecePrefabDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.ConnectablePiecePrefabDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MinionPartyPrefabDefinition minionPartyPrefabDefinition = new global::Kampai.Game.MinionPartyPrefabDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "EVENTTYPE":
-						reader.Read();
-						minionPartyPrefabDefinition.EventType = ReadString(reader, converters);
-						break;
-					case "PREFAB":
-						reader.Read();
-						minionPartyPrefabDefinition.Prefab = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return minionPartyPrefabDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "STRAIGHT": res.straight = ReadString(reader, converters); break;
+				case "CROSS": res.cross = ReadString(reader, converters); break;
+				case "POST": res.post = ReadString(reader, converters); break;
+				case "TSHAPE": res.tshape = ReadString(reader, converters); break;
+				case "ENDCAP": res.endcap = ReadString(reader, converters); break;
+				case "CORNER": res.corner = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.Area ReadArea(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.SlotUnlock ReadSlotUnlock(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.SlotUnlock>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.Area area = new global::Kampai.Game.Area();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "A":
-						reader.Read();
-						area.a = ReadLocation(reader, converters);
-						break;
-					case "B":
-						reader.Read();
-						area.b = ReadLocation(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return area;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "SLOTUNLOCKLEVELS": res.SlotUnlockLevels = PopulateListInt32(reader, res.SlotUnlockLevels); break;
+				case "SLOTUNLOCKCOSTS": res.SlotUnlockCosts = PopulateListInt32(reader, res.SlotUnlockCosts); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.StorageUpgradeDefinition ReadStorageUpgradeDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.UserSegment ReadUserSegment(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.UserSegment>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.StorageUpgradeDefinition storageUpgradeDefinition = new global::Kampai.Game.StorageUpgradeDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "LEVEL":
-						reader.Read();
-						storageUpgradeDefinition.Level = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "STORAGECAPACITY":
-						reader.Read();
-						storageUpgradeDefinition.StorageCapacity = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					case "TRANSACTIONID":
-						reader.Read();
-						storageUpgradeDefinition.TransactionId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return storageUpgradeDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "LEVELGREATERTHANOREQUALTO": res.LevelGreaterThanOrEqualTo = SafeInt(reader.Value); break;
+				case "FIRSTXRETURNREWARDSWEIGHTEDDEFINITIONID": res.FirstXReturnRewardsWeightedDefinitionId = SafeInt(reader.Value); break;
+				case "SECONDXRETURNREWARDSWEIGHTEDDEFINITIONID": res.SecondXReturnRewardsWeightedDefinitionId = SafeInt(reader.Value); break;
+				case "AFTERXRETURNREWARDS": res.AfterXReturnRewards = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.PlatformDefinition ReadPlatformDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.Location ReadLocation(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.Location>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.PlatformDefinition platformDefinition = new global::Kampai.Game.PlatformDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "BUILDINGREMOVALANIMCONTROLLER":
-						reader.Read();
-						platformDefinition.buildingRemovalAnimController = ReadString(reader, converters);
-						break;
-					case "CUSTOMCAMERAPOSID":
-						reader.Read();
-						platformDefinition.customCameraPosID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "DESCRIPTION":
-						reader.Read();
-						platformDefinition.description = ReadString(reader, converters);
-						break;
-					case "OFFSET":
-						reader.Read();
-						platformDefinition.offset = ReadVector3(reader, converters);
-						break;
-					case "PLACEMENTLOCATION":
-						reader.Read();
-						platformDefinition.placementLocation = ReadLocation(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return platformDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "X": res.x = SafeInt(reader.Value); break;
+				case "Y": res.y = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.ResourcePlotDefinition ReadResourcePlotDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static MignetteRuleDefinition ReadMignetteRuleDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<MignetteRuleDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.ResourcePlotDefinition resourcePlotDefinition = new global::Kampai.Game.ResourcePlotDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "DESCRIPTIONKEY":
-						reader.Read();
-						resourcePlotDefinition.descriptionKey = ReadString(reader, converters);
-						break;
-					case "ISAUTOMATICALLYUNLOCKED":
-						reader.Read();
-						resourcePlotDefinition.isAutomaticallyUnlocked = global::System.Convert.ToBoolean(reader.Value);
-						break;
-					case "LOCATION":
-						reader.Read();
-						resourcePlotDefinition.location = ReadLocation(reader, converters);
-						break;
-					case "UNLOCKTRANSACTIONID":
-						reader.Read();
-						resourcePlotDefinition.unlockTransactionID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "ROTATION":
-						reader.Read();
-						resourcePlotDefinition.rotation = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return resourcePlotDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "CAUSEIMAGE": res.CauseImage = ReadString(reader, converters); break;
+				case "CAUSEIMAGEMASK": res.CauseImageMask = ReadString(reader, converters); break;
+				case "EFFECTIMAGE": res.EffectImage = ReadString(reader, converters); break;
+				case "EFFECTIMAGEMASK": res.EffectImageMask = ReadString(reader, converters); break;
+				case "EFFECTAMOUNT": res.EffectAmount = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.CharacterUIAnimationDefinition ReadCharacterUIAnimationDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.MignetteChildObjectDefinition ReadMignetteChildObjectDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.MignetteChildObjectDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.CharacterUIAnimationDefinition characterUIAnimationDefinition = new global::Kampai.Game.CharacterUIAnimationDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "STATEMACHINE":
-						reader.Read();
-						characterUIAnimationDefinition.StateMachine = ReadString(reader, converters);
-						break;
-					case "IDLEWEIGHTEDANIMATIONID":
-						reader.Read();
-						characterUIAnimationDefinition.IdleWeightedAnimationID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "IDLECOUNT":
-						reader.Read();
-						characterUIAnimationDefinition.IdleCount = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "HAPPYWEIGHTEDANIMATIONID":
-						reader.Read();
-						characterUIAnimationDefinition.HappyWeightedAnimationID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "HAPPYCOUNT":
-						reader.Read();
-						characterUIAnimationDefinition.HappyCount = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "SELECTEDWEIGHTEDANIMATIONID":
-						reader.Read();
-						characterUIAnimationDefinition.SelectedWeightedAnimationID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "SELECTEDCOUNT":
-						reader.Read();
-						characterUIAnimationDefinition.SelectedCount = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "USELEGACY":
-						reader.Read();
-						characterUIAnimationDefinition.UseLegacy = global::System.Convert.ToBoolean(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return characterUIAnimationDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "PREFAB": res.Prefab = ReadString(reader, converters); break;
+				case "POSITION": res.Position = ReadVector3(reader, converters); break;
+				case "ISLOCAL": res.IsLocal = SafeBool(reader.Value); break;
+				case "ROTATION": res.Rotation = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.FloatLocation ReadFloatLocation(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.MinionPartyPrefabDefinition ReadMinionPartyPrefabDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.MinionPartyPrefabDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.FloatLocation floatLocation = new global::Kampai.Game.FloatLocation();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "X":
-						reader.Read();
-						floatLocation.x = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "Y":
-						reader.Read();
-						floatLocation.y = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return floatLocation;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "EVENTTYPE": res.EventType = ReadString(reader, converters); break;
+				case "PREFAB": res.Prefab = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.Angle ReadAngle(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.Area ReadArea(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.Area>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.Angle angle = new global::Kampai.Game.Angle();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "DEGREES":
-						reader.Read();
-						angle.Degrees = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return angle;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "A": res.a = ReadLocation(reader, converters); break;
+				case "B": res.b = ReadLocation(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.CollectionReward ReadCollectionReward(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.StorageUpgradeDefinition ReadStorageUpgradeDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.StorageUpgradeDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.CollectionReward collectionReward = new global::Kampai.Game.CollectionReward();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "REQUIREDPOINTS":
-						reader.Read();
-						collectionReward.RequiredPoints = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "TRANSACTIONID":
-						reader.Read();
-						collectionReward.TransactionID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return collectionReward;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "LEVEL": res.Level = SafeInt(reader.Value); break;
+				case "STORAGECAPACITY": res.StorageCapacity = SafeUInt(reader.Value); break;
+				case "TRANSACTIONID": res.TransactionId = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.FlyOverNode ReadFlyOverNode(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.PlatformDefinition ReadPlatformDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.PlatformDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.FlyOverNode flyOverNode = new global::Kampai.Game.FlyOverNode();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "X":
-						reader.Read();
-						flyOverNode.x = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "Y":
-						reader.Read();
-						flyOverNode.y = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "Z":
-						reader.Read();
-						flyOverNode.z = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return flyOverNode;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "BUILDINGREMOVALANIMCONTROLLER": res.buildingRemovalAnimController = ReadString(reader, converters); break;
+				case "CUSTOMCAMERAPOSID": res.customCameraPosID = SafeInt(reader.Value); break;
+				case "DESCRIPTION": res.description = ReadString(reader, converters); break;
+				case "OFFSET": res.offset = ReadVector3(reader, converters); break;
+				case "PLACEMENTLOCATION": res.placementLocation = ReadLocation(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.BridgeScreenPosition ReadBridgeScreenPosition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.ResourcePlotDefinition ReadResourcePlotDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.ResourcePlotDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.BridgeScreenPosition bridgeScreenPosition = new global::Kampai.Game.BridgeScreenPosition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "X":
-						reader.Read();
-						bridgeScreenPosition.x = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "Y":
-						reader.Read();
-						bridgeScreenPosition.y = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "Z":
-						reader.Read();
-						bridgeScreenPosition.z = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "ZOOM":
-						reader.Read();
-						bridgeScreenPosition.zoom = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return bridgeScreenPosition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "DESCRIPTIONKEY": res.descriptionKey = ReadString(reader, converters); break;
+				case "ISAUTOMATICALLYUNLOCKED": res.isAutomaticallyUnlocked = SafeBool(reader.Value); break;
+				case "LOCATION": res.location = ReadLocation(reader, converters); break;
+				case "UNLOCKTRANSACTIONID": res.unlockTransactionID = SafeInt(reader.Value); break;
+				case "ROTATION": res.rotation = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Util.KampaiColor ReadKampaiColor(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.CharacterUIAnimationDefinition ReadCharacterUIAnimationDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.CharacterUIAnimationDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			global::Kampai.Util.KampaiColor result = default(global::Kampai.Util.KampaiColor);
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "R":
-						reader.Read();
-						result.r = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "G":
-						reader.Read();
-						result.g = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "B":
-						reader.Read();
-						result.b = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "A":
-						reader.Read();
-						result.a = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return result;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "STATEMACHINE": res.StateMachine = ReadString(reader, converters); break;
+				case "IDLEWEIGHTEDANIMATIONID": res.IdleWeightedAnimationID = SafeInt(reader.Value); break;
+				case "IDLECOUNT": res.IdleCount = SafeInt(reader.Value); break;
+				case "HAPPYWEIGHTEDANIMATIONID": res.HappyWeightedAnimationID = SafeInt(reader.Value); break;
+				case "HAPPYCOUNT": res.HappyCount = SafeInt(reader.Value); break;
+				case "SELECTEDWEIGHTEDANIMATIONID": res.SelectedWeightedAnimationID = SafeInt(reader.Value); break;
+				case "SELECTEDCOUNT": res.SelectedCount = SafeInt(reader.Value); break;
+				case "USELEGACY": res.UseLegacy = SafeBool(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.Reward ReadReward(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.FloatLocation ReadFloatLocation(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.FloatLocation>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.Reward reward = new global::Kampai.Game.Reward();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "REQUIREDQUANTITY":
-						reader.Read();
-						reward.requiredQuantity = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					case "PREMIUMREWARD":
-						reader.Read();
-						reward.premiumReward = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return reward;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "X": res.x = SafeFloat(reader.Value); break;
+				case "Y": res.y = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MiniGameScoreReward ReadMiniGameScoreReward(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.Angle ReadAngle(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.Angle>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MiniGameScoreReward miniGameScoreReward = new global::Kampai.Game.MiniGameScoreReward();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "MINIGAMEID":
-						reader.Read();
-						miniGameScoreReward.MiniGameId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "REWARDTABLE":
-						reader.Read();
-						miniGameScoreReward.rewardTable = PopulateList<global::Kampai.Game.Reward>(reader, converters, ReadReward, miniGameScoreReward.rewardTable);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return miniGameScoreReward;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "DEGREES": res.Degrees = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MiniGameScoreRange ReadMiniGameScoreRange(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.CollectionReward ReadCollectionReward(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.CollectionReward>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MiniGameScoreRange miniGameScoreRange = new global::Kampai.Game.MiniGameScoreRange();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "MINIGAMEID":
-						reader.Read();
-						miniGameScoreRange.MiniGameId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "SCORERANGEMAX":
-						reader.Read();
-						miniGameScoreRange.ScoreRangeMax = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "SCORERANGEMIN":
-						reader.Read();
-						miniGameScoreRange.ScoreRangeMin = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return miniGameScoreRange;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "REQUIREDPOINTS": res.RequiredPoints = SafeInt(reader.Value); break;
+				case "TRANSACTIONID": res.TransactionID = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MasterPlanComponentRewardDefinition ReadMasterPlanComponentRewardDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.FlyOverNode ReadFlyOverNode(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.FlyOverNode>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MasterPlanComponentRewardDefinition masterPlanComponentRewardDefinition = new global::Kampai.Game.MasterPlanComponentRewardDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "REWARDITEMID":
-						reader.Read();
-						masterPlanComponentRewardDefinition.rewardItemId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "REWARDQUANTITY":
-						reader.Read();
-						masterPlanComponentRewardDefinition.rewardQuantity = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					case "GRINDREWARD":
-						reader.Read();
-						masterPlanComponentRewardDefinition.grindReward = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					case "PREMIUMREWARD":
-						reader.Read();
-						masterPlanComponentRewardDefinition.premiumReward = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return masterPlanComponentRewardDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "X": res.x = SafeFloat(reader.Value); break;
+				case "Y": res.y = SafeFloat(reader.Value); break;
+				case "Z": res.z = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MasterPlanComponentTaskDefinition ReadMasterPlanComponentTaskDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.BridgeScreenPosition ReadBridgeScreenPosition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.BridgeScreenPosition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MasterPlanComponentTaskDefinition masterPlanComponentTaskDefinition = new global::Kampai.Game.MasterPlanComponentTaskDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "REQUIREDITEMID":
-						reader.Read();
-						masterPlanComponentTaskDefinition.requiredItemId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "REQUIREDQUANTITY":
-						reader.Read();
-						masterPlanComponentTaskDefinition.requiredQuantity = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					case "SHOWWAYFINDER":
-						reader.Read();
-						masterPlanComponentTaskDefinition.ShowWayfinder = global::System.Convert.ToBoolean(reader.Value);
-						break;
-					case "TYPE":
-						reader.Read();
-						masterPlanComponentTaskDefinition.Type = ReadEnum<global::Kampai.Game.MasterPlanComponentTaskType>(reader);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return masterPlanComponentTaskDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "X": res.x = SafeFloat(reader.Value); break;
+				case "Y": res.y = SafeFloat(reader.Value); break;
+				case "Z": res.z = SafeFloat(reader.Value); break;
+				case "ZOOM": res.zoom = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.GhostFunctionDefinition ReadGhostFunctionDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Util.KampaiColor ReadKampaiColor(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Util.KampaiColor>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.GhostFunctionDefinition ghostFunctionDefinition = new global::Kampai.Game.GhostFunctionDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "STARTTYPE":
-						reader.Read();
-						ghostFunctionDefinition.startType = ReadEnum<global::Kampai.UI.GhostComponentFunctionType>(reader);
-						break;
-					case "CLOSETYPE":
-						reader.Read();
-						ghostFunctionDefinition.closeType = ReadEnum<global::Kampai.UI.GhostFunctionCloseType>(reader);
-						break;
-					case "COMPONENTBUILDINGDEFID":
-						reader.Read();
-						ghostFunctionDefinition.componentBuildingDefID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return ghostFunctionDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "R": res.r = SafeFloat(reader.Value); break;
+				case "G": res.g = SafeFloat(reader.Value); break;
+				case "B": res.b = SafeFloat(reader.Value); break;
+				case "A": res.a = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.KnuckleheadednessInfo ReadKnuckleheadednessInfo(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.Reward ReadReward(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.Reward>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.KnuckleheadednessInfo knuckleheadednessInfo = new global::Kampai.Game.KnuckleheadednessInfo();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "KNUCKLEHEADDEDNESSMIN":
-						reader.Read();
-						knuckleheadednessInfo.KnuckleheaddednessMin = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "KNUCKLEHEADDEDNESSMAX":
-						reader.Read();
-						knuckleheadednessInfo.KnuckleheaddednessMax = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "KNUCKLEHEADDEDNESSSCALE":
-						reader.Read();
-						knuckleheadednessInfo.KnuckleheaddednessScale = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return knuckleheadednessInfo;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "REQUIREDQUANTITY": res.requiredQuantity = SafeUInt(reader.Value); break;
+				case "PREMIUMREWARD": res.premiumReward = SafeUInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.AnimationAlternate ReadAnimationAlternate(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.MiniGameScoreReward ReadMiniGameScoreReward(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.MiniGameScoreReward>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.AnimationAlternate animationAlternate = new global::Kampai.Game.AnimationAlternate();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "GROUPID":
-						reader.Read();
-						animationAlternate.GroupID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "PERCENTCHANCE":
-						reader.Read();
-						animationAlternate.PercentChance = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return animationAlternate;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "MINIGAMEID": res.MiniGameId = SafeInt(reader.Value); break;
+				case "REWARDTABLE": res.rewardTable = PopulateList<global::Kampai.Game.Reward>(reader, converters, ReadReward, res.rewardTable); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.CameraControlSettings ReadCameraControlSettings(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.MiniGameScoreRange ReadMiniGameScoreRange(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.MiniGameScoreRange>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.CameraControlSettings cameraControlSettings = new global::Kampai.Game.CameraControlSettings();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "CUSTOMCAMERAPOSTIKI":
-						reader.Read();
-						cameraControlSettings.customCameraPosTiki = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "CUSTOMCAMERAPOSSTAGE":
-						reader.Read();
-						cameraControlSettings.customCameraPosStage = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "CUSTOMCAMERAPOSTOWNHALL":
-						reader.Read();
-						cameraControlSettings.customCameraPosTownHall = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "CUSTOMCAMERAPOSPARTYDEFAULT":
-						reader.Read();
-						cameraControlSettings.customCameraPosPartyDefault = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return cameraControlSettings;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "MINIGAMEID": res.MiniGameId = SafeInt(reader.Value); break;
+				case "SCORERANGEMAX": res.ScoreRangeMax = SafeInt(reader.Value); break;
+				case "SCORERANGEMIN": res.ScoreRangeMin = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.VFXAssetDefinition ReadVFXAssetDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.MasterPlanComponentRewardDefinition ReadMasterPlanComponentRewardDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.MasterPlanComponentRewardDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.VFXAssetDefinition vFXAssetDefinition = new global::Kampai.Game.VFXAssetDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "LOCATION":
-						reader.Read();
-						vFXAssetDefinition.location = ReadLocation(reader, converters);
-						break;
-					case "PREFAB":
-						reader.Read();
-						vFXAssetDefinition.Prefab = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return vFXAssetDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "REWARDITEMID": res.rewardItemId = SafeInt(reader.Value); break;
+				case "REWARDQUANTITY": res.rewardQuantity = SafeUInt(reader.Value); break;
+				case "GRINDREWARD": res.grindReward = SafeUInt(reader.Value); break;
+				case "PREMIUMREWARD": res.premiumReward = SafeUInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MinionBenefit ReadMinionBenefit(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.MasterPlanComponentTaskDefinition ReadMasterPlanComponentTaskDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.MasterPlanComponentTaskDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MinionBenefit minionBenefit = new global::Kampai.Game.MinionBenefit();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "LOCALIZEDKEY":
-						reader.Read();
-						minionBenefit.localizedKey = ReadString(reader, converters);
-						break;
-					case "ITEMICONID":
-						reader.Read();
-						minionBenefit.itemIconId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "TYPE":
-						reader.Read();
-						minionBenefit.type = ReadEnum<global::Kampai.UI.View.Benefit>(reader);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return minionBenefit;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "REQUIREDITEMID": res.requiredItemId = SafeInt(reader.Value); break;
+				case "REQUIREDQUANTITY": res.requiredQuantity = SafeUInt(reader.Value); break;
+				case "SHOWWAYFINDER": res.ShowWayfinder = SafeBool(reader.Value); break;
+				case "TYPE": res.Type = ReadEnum<global::Kampai.Game.MasterPlanComponentTaskType>(reader); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MinionBenefitLevel ReadMinionBenefitLevel(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.GhostFunctionDefinition ReadGhostFunctionDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.GhostFunctionDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MinionBenefitLevel minionBenefitLevel = new global::Kampai.Game.MinionBenefitLevel();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "DOUBLEDROPPERCENTAGE":
-						reader.Read();
-						minionBenefitLevel.doubleDropPercentage = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "DOUBLEDROPLEVEL":
-						reader.Read();
-						minionBenefitLevel.doubleDropLevel = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "PREMIUMDROPPERCENTAGE":
-						reader.Read();
-						minionBenefitLevel.premiumDropPercentage = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "PREMIUMDROPLEVEL":
-						reader.Read();
-						minionBenefitLevel.premiumDropLevel = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "RAREDROPPERCENTAGE":
-						reader.Read();
-						minionBenefitLevel.rareDropPercentage = global::System.Convert.ToSingle(reader.Value);
-						break;
-					case "RAREDROPLEVEL":
-						reader.Read();
-						minionBenefitLevel.rareDropLevel = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "TOKENSTOLEVEL":
-						reader.Read();
-						minionBenefitLevel.tokensToLevel = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "COSTUMEID":
-						reader.Read();
-						minionBenefitLevel.costumeId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "IMAGE":
-						reader.Read();
-						minionBenefitLevel.image = ReadString(reader, converters);
-						break;
-					case "MASK":
-						reader.Read();
-						minionBenefitLevel.mask = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return minionBenefitLevel;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "STARTTYPE": res.startType = ReadEnum<global::Kampai.UI.GhostComponentFunctionType>(reader); break;
+				case "CLOSETYPE": res.closeType = ReadEnum<global::Kampai.UI.GhostFunctionCloseType>(reader); break;
+				case "COMPONENTBUILDINGDEFID": res.componentBuildingDefID = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.ImageMaskCombo ReadImageMaskCombo(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.KnuckleheadednessInfo ReadKnuckleheadednessInfo(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.KnuckleheadednessInfo>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			global::Kampai.Game.ImageMaskCombo result = default(global::Kampai.Game.ImageMaskCombo);
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "IMAGE":
-						reader.Read();
-						result.image = ReadString(reader, converters);
-						break;
-					case "MASK":
-						reader.Read();
-						result.mask = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return result;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "KNUCKLEHEADDEDNESSMIN": res.KnuckleheaddednessMin = SafeFloat(reader.Value); break;
+				case "KNUCKLEHEADDEDNESSMAX": res.KnuckleheaddednessMax = SafeFloat(reader.Value); break;
+				case "KNUCKLEHEADDEDNESSSCALE": res.KnuckleheaddednessScale = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.Transaction.TransactionInstance ReadTransactionInstance(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.AnimationAlternate ReadAnimationAlternate(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.AnimationAlternate>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.Transaction.TransactionInstance transactionInstance = new global::Kampai.Game.Transaction.TransactionInstance();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "ID":
-						reader.Read();
-						transactionInstance.ID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "INPUTS":
-						reader.Read();
-						transactionInstance.Inputs = PopulateList<global::Kampai.Util.QuantityItem>(reader, converters, transactionInstance.Inputs);
-						break;
-					case "OUTPUTS":
-						reader.Read();
-						transactionInstance.Outputs = PopulateList<global::Kampai.Util.QuantityItem>(reader, converters, transactionInstance.Outputs);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return transactionInstance;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "GROUPID": res.GroupID = SafeInt(reader.Value); break;
+				case "PERCENTCHANCE": res.PercentChance = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.QuestStepDefinition ReadQuestStepDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.CameraControlSettings ReadCameraControlSettings(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.CameraControlSettings>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.QuestStepDefinition questStepDefinition = new global::Kampai.Game.QuestStepDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "TYPE":
-						reader.Read();
-						questStepDefinition.Type = ReadEnum<global::Kampai.Game.QuestStepType>(reader);
-						break;
-					case "ITEMAMOUNT":
-						reader.Read();
-						questStepDefinition.ItemAmount = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "ITEMDEFINITIONID":
-						reader.Read();
-						questStepDefinition.ItemDefinitionID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "COSTUMEDEFINITIONID":
-						reader.Read();
-						questStepDefinition.CostumeDefinitionID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "SHOWWAYFINDER":
-						reader.Read();
-						questStepDefinition.ShowWayfinder = global::System.Convert.ToBoolean(reader.Value);
-						break;
-					case "QUESTSTEPCOMPLETEPLAYERTRAININGCATEGORYITEMID":
-						reader.Read();
-						questStepDefinition.QuestStepCompletePlayerTrainingCategoryItemId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "UPGRADELEVEL":
-						reader.Read();
-						questStepDefinition.UpgradeLevel = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return questStepDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "CUSTOMCAMERAPOSTIKI": res.customCameraPosTiki = SafeInt(reader.Value); break;
+				case "CUSTOMCAMERAPOSSTAGE": res.customCameraPosStage = SafeInt(reader.Value); break;
+				case "CUSTOMCAMERAPOSTOWNHALL": res.customCameraPosTownHall = SafeInt(reader.Value); break;
+				case "CUSTOMCAMERAPOSPARTYDEFAULT": res.customCameraPosPartyDefault = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.QuestChainStepDefinition ReadQuestChainStepDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.VFXAssetDefinition ReadVFXAssetDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.VFXAssetDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.QuestChainStepDefinition questChainStepDefinition = new global::Kampai.Game.QuestChainStepDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "INTRO":
-						reader.Read();
-						questChainStepDefinition.Intro = ReadString(reader, converters);
-						break;
-					case "VOICE":
-						reader.Read();
-						questChainStepDefinition.Voice = ReadString(reader, converters);
-						break;
-					case "OUTRO":
-						reader.Read();
-						questChainStepDefinition.Outro = ReadString(reader, converters);
-						break;
-					case "XP":
-						reader.Read();
-						questChainStepDefinition.XP = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "GRIND":
-						reader.Read();
-						questChainStepDefinition.Grind = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "PREMIUM":
-						reader.Read();
-						questChainStepDefinition.Premium = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "TASKS":
-						reader.Read();
-						questChainStepDefinition.Tasks = PopulateList<global::Kampai.Game.QuestChainTask>(reader, converters, ReadQuestChainTask, questChainStepDefinition.Tasks);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return questChainStepDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "LOCATION": res.location = ReadLocation(reader, converters); break;
+				case "PREFAB": res.Prefab = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.QuestChainTask ReadQuestChainTask(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.MinionBenefit ReadMinionBenefit(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.MinionBenefit>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.QuestChainTask questChainTask = new global::Kampai.Game.QuestChainTask();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "TYPE":
-						reader.Read();
-						questChainTask.Type = ReadEnum<global::Kampai.Game.QuestChainTaskType>(reader);
-						break;
-					case "ITEM":
-						reader.Read();
-						questChainTask.Item = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "COUNT":
-						reader.Read();
-						questChainTask.Count = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return questChainTask;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "LOCALIZEDKEY": res.localizedKey = ReadString(reader, converters); break;
+				case "ITEMICONID": res.itemIconId = SafeInt(reader.Value); break;
+				case "TYPE": res.type = ReadEnum<global::Kampai.UI.View.Benefit>(reader); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.PlatformStoreSkuDefinition ReadPlatformStoreSkuDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.MinionBenefitLevel ReadMinionBenefitLevel(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.MinionBenefitLevel>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.PlatformStoreSkuDefinition platformStoreSkuDefinition = new global::Kampai.Game.PlatformStoreSkuDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "APPLEAPPSTORE":
-						reader.Read();
-						platformStoreSkuDefinition.appleAppstore = ReadString(reader, converters);
-						break;
-					case "GOOGLEPLAY":
-						reader.Read();
-						platformStoreSkuDefinition.googlePlay = ReadString(reader, converters);
-						break;
-					case "DEFAULTSTORE":
-						reader.Read();
-						platformStoreSkuDefinition.defaultStore = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return platformStoreSkuDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "DOUBLEDROPPERCENTAGE": res.doubleDropPercentage = SafeFloat(reader.Value); break;
+				case "DOUBLEDROPLEVEL": res.doubleDropLevel = SafeInt(reader.Value); break;
+				case "PREMIUMDROPPERCENTAGE": res.premiumDropPercentage = SafeFloat(reader.Value); break;
+				case "PREMIUMDROPLEVEL": res.premiumDropLevel = SafeInt(reader.Value); break;
+				case "RAREDROPPERCENTAGE": res.rareDropPercentage = SafeFloat(reader.Value); break;
+				case "RAREDROPLEVEL": res.rareDropLevel = SafeInt(reader.Value); break;
+				case "TOKENSTOLEVEL": res.tokensToLevel = SafeInt(reader.Value); break;
+				case "COSTUMEID": res.costumeId = SafeInt(reader.Value); break;
+				case "IMAGE": res.image = ReadString(reader, converters); break;
+				case "MASK": res.mask = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Util.Vector3Serialize ReadVector3Serialize(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.ImageMaskCombo ReadImageMaskCombo(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.ImageMaskCombo>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Util.Vector3Serialize vector3Serialize = new global::Kampai.Util.Vector3Serialize();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "X":
-						reader.Read();
-						vector3Serialize.x = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "Y":
-						reader.Read();
-						vector3Serialize.y = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "Z":
-						reader.Read();
-						vector3Serialize.z = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return vector3Serialize;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "IMAGE": res.image = ReadString(reader, converters); break;
+				case "MASK": res.mask = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.SocialEventOrderDefinition ReadSocialEventOrderDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.Transaction.TransactionInstance ReadTransactionInstance(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.Transaction.TransactionInstance>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.SocialEventOrderDefinition socialEventOrderDefinition = new global::Kampai.Game.SocialEventOrderDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "ORDERID":
-						reader.Read();
-						socialEventOrderDefinition.OrderID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "TRANSACTION":
-						reader.Read();
-						socialEventOrderDefinition.Transaction = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return socialEventOrderDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "ID": res.ID = SafeInt(reader.Value); break;
+				case "INPUTS": res.Inputs = PopulateList<global::Kampai.Util.QuantityItem>(reader, converters, res.Inputs); break;
+				case "OUTPUTS": res.Outputs = PopulateList<global::Kampai.Util.QuantityItem>(reader, converters, res.Outputs); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.Trigger.TriggerRewardLayout ReadTriggerRewardLayout(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.QuestStepDefinition ReadQuestStepDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.QuestStepDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.Trigger.TriggerRewardLayout triggerRewardLayout = new global::Kampai.Game.Trigger.TriggerRewardLayout();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "INDEX":
-						reader.Read();
-						triggerRewardLayout.index = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "ITEMIDS":
-						reader.Read();
-						triggerRewardLayout.itemIds = PopulateListInt32(reader, triggerRewardLayout.itemIds);
-						break;
-					case "LAYOUT":
-						reader.Read();
-						triggerRewardLayout.layout = ReadEnum<global::Kampai.Game.Trigger.TriggerRewardLayout.Layout>(reader);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return triggerRewardLayout;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "TYPE": res.Type = ReadEnum<global::Kampai.Game.QuestStepType>(reader); break;
+				case "ITEMAMOUNT": res.ItemAmount = SafeInt(reader.Value); break;
+				case "ITEMDEFINITIONID": res.ItemDefinitionID = SafeInt(reader.Value); break;
+				case "COSTUMEDEFINITIONID": res.CostumeDefinitionID = SafeInt(reader.Value); break;
+				case "SHOWWAYFINDER": res.ShowWayfinder = SafeBool(reader.Value); break;
+				case "QUESTSTEPCOMPLETEPLAYERTRAININGCATEGORYITEMID": res.QuestStepCompletePlayerTrainingCategoryItemId = SafeInt(reader.Value); break;
+				case "UPGRADELEVEL": res.UpgradeLevel = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.KampaiPendingTransaction ReadKampaiPendingTransaction(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.QuestChainStepDefinition ReadQuestChainStepDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.QuestChainStepDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.KampaiPendingTransaction kampaiPendingTransaction = new global::Kampai.Game.KampaiPendingTransaction();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "EXTERNALIDENTIFIER":
-						reader.Read();
-						kampaiPendingTransaction.ExternalIdentifier = ReadString(reader, converters);
-						break;
-					case "TRANSACTION":
-						reader.Read();
-						kampaiPendingTransaction.Transaction = ((converters.transactionDefinitionConverter == null) ? global::Kampai.Util.FastJSONDeserializer.Deserialize<global::Kampai.Game.Transaction.TransactionDefinition>(reader, converters) : converters.transactionDefinitionConverter.ReadJson(reader, converters));
-						break;
-					case "TRANSACTIONINSTANCE":
-						reader.Read();
-						kampaiPendingTransaction.TransactionInstance = ReadTransactionInstance(reader, converters);
-						break;
-					case "STOREITEMDEFINITIONID":
-						reader.Read();
-						kampaiPendingTransaction.StoreItemDefinitionId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "UTCTIMECREATED":
-						reader.Read();
-						kampaiPendingTransaction.UTCTimeCreated = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return kampaiPendingTransaction;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "INTRO": res.Intro = ReadString(reader, converters); break;
+				case "VOICE": res.Voice = ReadString(reader, converters); break;
+				case "OUTRO": res.Outro = ReadString(reader, converters); break;
+				case "XP": res.XP = SafeInt(reader.Value); break;
+				case "GRIND": res.Grind = SafeInt(reader.Value); break;
+				case "PREMIUM": res.Premium = SafeInt(reader.Value); break;
+				case "TASKS": res.Tasks = PopulateList<global::Kampai.Game.QuestChainTask>(reader, converters, ReadQuestChainTask, res.Tasks); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.UnlockedItem ReadUnlockedItem(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.QuestChainTask ReadQuestChainTask(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.QuestChainTask>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.UnlockedItem unlockedItem = new global::Kampai.Game.UnlockedItem();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "DEFID":
-						reader.Read();
-						unlockedItem.defID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "QUANTITY":
-						reader.Read();
-						unlockedItem.quantity = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return unlockedItem;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "TYPE": res.Type = ReadEnum<global::Kampai.Game.QuestChainTaskType>(reader); break;
+				case "ITEM": res.Item = SafeInt(reader.Value); break;
+				case "COUNT": res.Count = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.TrackedSale ReadTrackedSale(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.PlatformStoreSkuDefinition ReadPlatformStoreSkuDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.PlatformStoreSkuDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.TrackedSale trackedSale = new global::Kampai.Game.TrackedSale();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "DEFID":
-						reader.Read();
-						trackedSale.defID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "NUMBERPURCHASED":
-						reader.Read();
-						trackedSale.numberPurchased = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return trackedSale;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "APPLEAPPSTORE": res.appleAppstore = ReadString(reader, converters); break;
+				case "GOOGLEPLAY": res.googlePlay = ReadString(reader, converters); break;
+				case "DEFAULTSTORE": res.defaultStore = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.SocialClaimRewardItem ReadSocialClaimRewardItem(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Util.Vector3Serialize ReadVector3Serialize(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Util.Vector3Serialize>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.SocialClaimRewardItem socialClaimRewardItem = new global::Kampai.Game.SocialClaimRewardItem();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "EVENTID":
-						reader.Read();
-						socialClaimRewardItem.eventID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "CLAIMSTATE":
-						reader.Read();
-						socialClaimRewardItem.claimState = ReadEnum<global::Kampai.Game.SocialClaimRewardItem.ClaimState>(reader);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return socialClaimRewardItem;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "X": res.x = SafeInt(reader.Value); break;
+				case "Y": res.y = SafeInt(reader.Value); break;
+				case "Z": res.z = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.Player.HelpTipTrackingItem ReadHelpTipTrackingItem(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.SocialEventOrderDefinition ReadSocialEventOrderDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.SocialEventOrderDefinition>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			global::Kampai.Game.Player.HelpTipTrackingItem result = default(global::Kampai.Game.Player.HelpTipTrackingItem);
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "TIPDIFINITIONID":
-						reader.Read();
-						result.tipDifinitionId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "SHOWSCOUNT":
-						reader.Read();
-						result.showsCount = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "LASTSHOWNTIME":
-						reader.Read();
-						result.lastShownTime = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return result;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "ORDERID": res.OrderID = SafeInt(reader.Value); break;
+				case "TRANSACTION": res.Transaction = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.QuestStep ReadQuestStep(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.Trigger.TriggerRewardLayout ReadTriggerRewardLayout(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.Trigger.TriggerRewardLayout>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.QuestStep questStep = new global::Kampai.Game.QuestStep();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "STATE":
-						reader.Read();
-						questStep.state = ReadEnum<global::Kampai.Game.QuestStepState>(reader);
-						break;
-					case "AMOUNTCOMPLETED":
-						reader.Read();
-						questStep.AmountCompleted = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "AMOUNTREADY":
-						reader.Read();
-						questStep.AmountReady = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "TRACKEDID":
-						reader.Read();
-						questStep.TrackedID = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return questStep;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "INDEX": res.index = SafeInt(reader.Value); break;
+				case "ITEMIDS": res.itemIds = PopulateListInt32(reader, res.itemIds); break;
+				case "LAYOUT": res.layout = ReadEnum<global::Kampai.Game.Trigger.TriggerRewardLayout.Layout>(reader); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.OrderBoardTicket ReadOrderBoardTicket(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.KampaiPendingTransaction ReadKampaiPendingTransaction(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.KampaiPendingTransaction>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.OrderBoardTicket orderBoardTicket = new global::Kampai.Game.OrderBoardTicket();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "TRANSACTIONINST":
-						reader.Read();
-						orderBoardTicket.TransactionInst = ReadTransactionInstance(reader, converters);
-						break;
-					case "STARTGAMETIME":
-						reader.Read();
-						orderBoardTicket.StartGameTime = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "BOARDINDEX":
-						reader.Read();
-						orderBoardTicket.BoardIndex = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "ORDERNAMETABLEINDEX":
-						reader.Read();
-						orderBoardTicket.OrderNameTableIndex = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "STARTTIME":
-						reader.Read();
-						orderBoardTicket.StartTime = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "CHARACTERDEFINITIONID":
-						reader.Read();
-						orderBoardTicket.CharacterDefinitionId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return orderBoardTicket;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "EXTERNALIDENTIFIER": res.ExternalIdentifier = ReadString(reader, converters); break;
+				case "TRANSACTION": res.Transaction = ((converters.transactionDefinitionConverter == null) ? global::Kampai.Util.FastJSONDeserializer.Deserialize<global::Kampai.Game.Transaction.TransactionDefinition>(reader, converters) : converters.transactionDefinitionConverter.ReadJson(reader, converters)); break;
+				case "TRANSACTIONINSTANCE": res.TransactionInstance = ReadTransactionInstance(reader, converters); break;
+				case "STOREITEMDEFINITIONID": res.StoreItemDefinitionId = SafeInt(reader.Value); break;
+				case "UTCTIMECREATED": res.UTCTimeCreated = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.UserIdentity ReadUserIdentity(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.UnlockedItem ReadUnlockedItem(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.UnlockedItem>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.UserIdentity userIdentity = new global::Kampai.Game.UserIdentity();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "id":
-						reader.Read();
-						userIdentity.ID = ReadString(reader, converters);
-						break;
-					case "externalId":
-						reader.Read();
-						userIdentity.ExternalID = ReadString(reader, converters);
-						break;
-					case "userId":
-						reader.Read();
-						userIdentity.UserID = ReadString(reader, converters);
-						break;
-					case "type":
-						reader.Read();
-						userIdentity.Type = ReadEnum<global::Kampai.Game.IdentityType>(reader);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return userIdentity;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "DEFID": res.defID = SafeInt(reader.Value); break;
+				case "QUANTITY": res.quantity = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.SocialOrderProgress ReadSocialOrderProgress(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.TrackedSale ReadTrackedSale(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.TrackedSale>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.SocialOrderProgress socialOrderProgress = new global::Kampai.Game.SocialOrderProgress();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "ORDERID":
-						reader.Read();
-						socialOrderProgress.OrderId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "COMPLETEDBYUSERID":
-						reader.Read();
-						socialOrderProgress.CompletedByUserId = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return socialOrderProgress;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "DEFID": res.defID = SafeInt(reader.Value); break;
+				case "NUMBERPURCHASED": res.numberPurchased = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MasterPlanComponentReward ReadMasterPlanComponentReward(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.SocialClaimRewardItem ReadSocialClaimRewardItem(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.SocialClaimRewardItem>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MasterPlanComponentReward masterPlanComponentReward = new global::Kampai.Game.MasterPlanComponentReward();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "DEFINITION":
-						reader.Read();
-						masterPlanComponentReward.Definition = ReadMasterPlanComponentRewardDefinition(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return masterPlanComponentReward;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "EVENTID": res.eventID = SafeInt(reader.Value); break;
+				case "CLAIMSTATE": res.claimState = ReadEnum<global::Kampai.Game.SocialClaimRewardItem.ClaimState>(reader); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.MasterPlanComponentTask ReadMasterPlanComponentTask(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.Player.HelpTipTrackingItem ReadHelpTipTrackingItem(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.Player.HelpTipTrackingItem>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.MasterPlanComponentTask masterPlanComponentTask = new global::Kampai.Game.MasterPlanComponentTask();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "ISCOMPLETE":
-						reader.Read();
-						masterPlanComponentTask.isComplete = global::System.Convert.ToBoolean(reader.Value);
-						break;
-					case "EARNEDQUANTITY":
-						reader.Read();
-						masterPlanComponentTask.earnedQuantity = global::System.Convert.ToUInt32(reader.Value);
-						break;
-					case "DEFINITION":
-						reader.Read();
-						masterPlanComponentTask.Definition = ReadMasterPlanComponentTaskDefinition(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return masterPlanComponentTask;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "TIPDIFINITIONID": res.tipDifinitionId = SafeInt(reader.Value); break;
+				case "SHOWSCOUNT": res.showsCount = SafeInt(reader.Value); break;
+				case "LASTSHOWNTIME": res.lastShownTime = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.GachaConfig ReadGachaConfig(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.QuestStep ReadQuestStep(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.QuestStep>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.GachaConfig gachaConfig = new global::Kampai.Game.GachaConfig();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "GATCHAANIMATIONDEFINITIONS":
-						reader.Read();
-						gachaConfig.GatchaAnimationDefinitions = PopulateList<global::Kampai.Game.GachaAnimationDefinition>(reader, converters, gachaConfig.GatchaAnimationDefinitions);
-						break;
-					case "DISTRIBUTIONTABLES":
-						reader.Read();
-						gachaConfig.DistributionTables = PopulateList<global::Kampai.Game.GachaWeightedDefinition>(reader, converters, gachaConfig.DistributionTables);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return gachaConfig;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "STATE": res.state = ReadEnum<global::Kampai.Game.QuestStepState>(reader); break;
+				case "AMOUNTCOMPLETED": res.AmountCompleted = SafeInt(reader.Value); break;
+				case "AMOUNTREADY": res.AmountReady = SafeInt(reader.Value); break;
+				case "TRACKEDID": res.TrackedID = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Game.TaskDefinition ReadTaskDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.OrderBoardTicket ReadOrderBoardTicket(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.OrderBoardTicket>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Game.TaskDefinition taskDefinition = new global::Kampai.Game.TaskDefinition();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "LEVELBANDS":
-						reader.Read();
-						taskDefinition.levelBands = PopulateList<global::Kampai.Game.TaskLevelBandDefinition>(reader, converters, taskDefinition.levelBands);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return taskDefinition;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "TRANSACTIONINST": res.TransactionInst = ReadTransactionInstance(reader, converters); break;
+				case "STARTGAMETIME": res.StartGameTime = SafeInt(reader.Value); break;
+				case "BOARDINDEX": res.BoardIndex = SafeInt(reader.Value); break;
+				case "ORDERNAMETABLEINDEX": res.OrderNameTableIndex = SafeInt(reader.Value); break;
+				case "STARTTIME": res.StartTime = SafeInt(reader.Value); break;
+				case "CHARACTERDEFINITIONID": res.CharacterDefinitionId = SafeInt(reader.Value); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Splash.BucketAssignment ReadBucketAssignment(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.UserIdentity ReadUserIdentity(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.UserIdentity>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.Null)
-			{
-				return null;
-			}
-			global::Kampai.Splash.BucketAssignment bucketAssignment = new global::Kampai.Splash.BucketAssignment();
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "BUCKETID":
-						reader.Read();
-						bucketAssignment.BucketId = global::System.Convert.ToInt32(reader.Value);
-						break;
-					case "TIME":
-						reader.Read();
-						bucketAssignment.Time = global::System.Convert.ToSingle(reader.Value);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return bucketAssignment;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "id": res.ID = ReadString(reader, converters); break;
+				case "externalId": res.ExternalID = ReadString(reader, converters); break;
+				case "userId": res.UserID = ReadString(reader, converters); break;
+				case "type": res.Type = ReadEnum<global::Kampai.Game.IdentityType>(reader); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
 		}
 
-		public static global::Kampai.Main.PreloadableAsset ReadPreloadableAsset(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+				public static global::Kampai.Game.SocialOrderProgress ReadSocialOrderProgress(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
 		{
-			if (reader.TokenType == global::Newtonsoft.Json.JsonToken.None)
+			return ReadObject<global::Kampai.Game.SocialOrderProgress>(reader, (res, prop) =>
 			{
-				reader.Read();
-			}
-			global::Kampai.Main.PreloadableAsset result = default(global::Kampai.Main.PreloadableAsset);
-			EnsureToken(global::Newtonsoft.Json.JsonToken.StartObject, reader);
-			while (reader.Read())
-			{
-				switch (reader.TokenType)
+				switch (prop)
 				{
-				case global::Newtonsoft.Json.JsonToken.PropertyName:
-					switch (((string)reader.Value).ToUpper())
-					{
-					case "NAME":
-						reader.Read();
-						result.name = ReadString(reader, converters);
-						break;
-					case "TYPE":
-						reader.Read();
-						result.type = ReadString(reader, converters);
-						break;
-					default:
-						reader.Skip();
-						break;
-					}
-					break;
-				case global::Newtonsoft.Json.JsonToken.EndObject:
-					return result;
-				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
-					break;
+				case "ORDERID": res.OrderId = SafeInt(reader.Value); break;
+				case "COMPLETEDBYUSERID": res.CompletedByUserId = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
 				}
-			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+				return res;
+			});
+		}
+
+				public static global::Kampai.Game.MasterPlanComponentReward ReadMasterPlanComponentReward(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		{
+			return ReadObject<global::Kampai.Game.MasterPlanComponentReward>(reader, (res, prop) =>
+			{
+				switch (prop)
+				{
+				case "DEFINITION": res.Definition = ReadMasterPlanComponentRewardDefinition(reader, converters); break;
+				default: reader.Skip(); break;
+				}
+				return res;
+			});
+		}
+
+				public static global::Kampai.Game.MasterPlanComponentTask ReadMasterPlanComponentTask(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		{
+			return ReadObject<global::Kampai.Game.MasterPlanComponentTask>(reader, (res, prop) =>
+			{
+				switch (prop)
+				{
+				case "ISCOMPLETE": res.isComplete = SafeBool(reader.Value); break;
+				case "EARNEDQUANTITY": res.earnedQuantity = SafeUInt(reader.Value); break;
+				case "DEFINITION": res.Definition = ReadMasterPlanComponentTaskDefinition(reader, converters); break;
+				default: reader.Skip(); break;
+				}
+				return res;
+			});
+		}
+
+				public static global::Kampai.Game.GachaConfig ReadGachaConfig(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		{
+			return ReadObject<global::Kampai.Game.GachaConfig>(reader, (res, prop) =>
+			{
+				switch (prop)
+				{
+				case "GATCHAANIMATIONDEFINITIONS": res.GatchaAnimationDefinitions = PopulateList<global::Kampai.Game.GachaAnimationDefinition>(reader, converters, res.GatchaAnimationDefinitions); break;
+				case "DISTRIBUTIONTABLES": res.DistributionTables = PopulateList<global::Kampai.Game.GachaWeightedDefinition>(reader, converters, res.DistributionTables); break;
+				default: reader.Skip(); break;
+				}
+				return res;
+			});
+		}
+
+				public static global::Kampai.Game.TaskDefinition ReadTaskDefinition(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		{
+			return ReadObject<global::Kampai.Game.TaskDefinition>(reader, (res, prop) =>
+			{
+				switch (prop)
+				{
+				case "LEVELBANDS": res.levelBands = PopulateList<global::Kampai.Game.TaskLevelBandDefinition>(reader, converters, res.levelBands); break;
+				default: reader.Skip(); break;
+				}
+				return res;
+			});
+		}
+
+				public static global::Kampai.Splash.BucketAssignment ReadBucketAssignment(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		{
+			return ReadObject<global::Kampai.Splash.BucketAssignment>(reader, (res, prop) =>
+			{
+				switch (prop)
+				{
+				case "BUCKETID": res.BucketId = SafeInt(reader.Value); break;
+				case "TIME": res.Time = SafeFloat(reader.Value); break;
+				default: reader.Skip(); break;
+				}
+				return res;
+			});
+		}
+
+				public static global::Kampai.Main.PreloadableAsset ReadPreloadableAsset(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
+		{
+			return ReadObject<global::Kampai.Main.PreloadableAsset>(reader, (res, prop) =>
+			{
+				switch (prop)
+				{
+				case "NAME": res.name = ReadString(reader, converters); break;
+				case "TYPE": res.type = ReadString(reader, converters); break;
+				default: reader.Skip(); break;
+				}
+				return res;
+			});
 		}
 
 		public static string ReadString(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters)
@@ -2877,7 +994,7 @@ namespace Kampai.Util
 
 		public static bool ReadBool(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters)
 		{
-			return global::System.Convert.ToBoolean(reader.Value);
+			return SafeBool(reader.Value);
 		}
 
 		public static global::System.Collections.Generic.Dictionary<string, global::System.Collections.Generic.Dictionary<string, string>> ReadDictionaryDictionaryString(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters)
@@ -2892,16 +1009,27 @@ namespace Kampai.Util
 
 		public static T ReadEnum<T>(global::Newtonsoft.Json.JsonReader reader)
 		{
-			switch (reader.TokenType)
+			if (reader == null || reader.Value == null) return default(T);
+			try
 			{
-			case global::Newtonsoft.Json.JsonToken.PropertyName:
-			case global::Newtonsoft.Json.JsonToken.String:
-				return (T)global::System.Enum.Parse(typeof(T), (string)reader.Value, true);
-			case global::Newtonsoft.Json.JsonToken.Integer:
-				return (T)global::System.Enum.ToObject(typeof(T), reader.Value);
-			default:
-				throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected can't read enum {0}. {1}", typeof(T), GetPositionInSource(reader)));
+				switch (reader.TokenType)
+				{
+				case global::Newtonsoft.Json.JsonToken.PropertyName:
+				case global::Newtonsoft.Json.JsonToken.String:
+				{
+					string text = reader.Value.ToString();
+					if (global::System.Enum.IsDefined(typeof(T), text))
+					{
+						return (T)global::System.Enum.Parse(typeof(T), text, true);
+					}
+					try { return (T)global::System.Enum.Parse(typeof(T), text, true); } catch { return default(T); }
+				}
+				case global::Newtonsoft.Json.JsonToken.Integer:
+					return (T)global::System.Enum.ToObject(typeof(T), reader.Value);
+				}
 			}
+			catch { }
+			return default(T);
 		}
 
 		public static global::System.Collections.Generic.Dictionary<string, string> ReadStringDictionary(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
@@ -2988,12 +1116,13 @@ namespace Kampai.Util
 				case global::Newtonsoft.Json.JsonToken.EndObject:
 					return dictionary;
 				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
+					reader.Skip();
+					break;
+case global::Newtonsoft.Json.JsonToken.Comment:
 					break;
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			return dictionary;
 		}
 
 		public static global::System.Collections.Generic.Dictionary<string, T> ReadDictionary<T>(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters, global::System.Func<global::Newtonsoft.Json.JsonReader, JsonConverters, T> valueReader)
@@ -3023,12 +1152,13 @@ namespace Kampai.Util
 				case global::Newtonsoft.Json.JsonToken.EndObject:
 					return dictionary;
 				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
+					reader.Skip();
+					break;
+case global::Newtonsoft.Json.JsonToken.Comment:
 					break;
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			return dictionary;
 		}
 
 		public static global::System.Collections.Generic.Dictionary<K, V> ReadDictionary<K, V>(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters, global::System.Func<global::Newtonsoft.Json.JsonReader, JsonConverters, K> keyReader, global::System.Func<global::Newtonsoft.Json.JsonReader, JsonConverters, V> valueReader)
@@ -3058,12 +1188,13 @@ namespace Kampai.Util
 				case global::Newtonsoft.Json.JsonToken.EndObject:
 					return dictionary;
 				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
+					reader.Skip();
+					break;
+case global::Newtonsoft.Json.JsonToken.Comment:
 					break;
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			return dictionary;
 		}
 
 		public static global::System.Collections.Generic.List<global::System.Collections.Generic.List<int>> ReadListOfIntLists(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters)
@@ -3086,7 +1217,7 @@ namespace Kampai.Util
 				global::System.Collections.Generic.List<int> item = PopulateListInt32(reader);
 				list.Add(item);
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected end when deserializing list. {0}", GetPositionInSource(reader)));
+			return list;
 		}
 
 		public static global::System.Collections.Generic.List<T> PopulateList<T>(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters, global::System.Func<global::Newtonsoft.Json.JsonReader, JsonConverters, T> elementReader, global::System.Collections.Generic.IEnumerable<T> existingValue = null)
@@ -3109,7 +1240,7 @@ namespace Kampai.Util
 				T item = elementReader(reader, converters);
 				list.Add(item);
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected end when deserializing list. {0}", GetPositionInSource(reader)));
+			return list;
 		}
 
 		public static global::System.Collections.Generic.List<T> PopulateList<T>(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters, global::Kampai.Util.FastJsonConverter<T> converter, global::System.Collections.Generic.IEnumerable<T> existingValue = null) where T : class, global::Kampai.Util.IFastJSONDeserializable
@@ -3132,7 +1263,7 @@ namespace Kampai.Util
 				T item = converter.ReadJson(reader, converters);
 				list.Add(item);
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected end when deserializing list. {0}", GetPositionInSource(reader)));
+			return list;
 		}
 
 		public static global::System.Collections.Generic.List<T> PopulateList<T>(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null, global::System.Collections.Generic.IEnumerable<T> existingValue = null) where T : global::Kampai.Util.IFastJSONDeserializable, new()
@@ -3160,7 +1291,7 @@ namespace Kampai.Util
 				item.Deserialize(reader, converters);
 				list.Add(item);
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected end when deserializing list. {0}", GetPositionInSource(reader)));
+			return list;
 		}
 
 		public static global::System.Collections.Generic.List<string> PopulateListString(global::Newtonsoft.Json.JsonReader reader, global::System.Collections.Generic.IEnumerable<string> existingValue = null)
@@ -3184,12 +1315,13 @@ namespace Kampai.Util
 					break;
 				}
 				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected element type on list when deserializiong string list: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
+					reader.Skip();
+					break;
+case global::Newtonsoft.Json.JsonToken.Comment:
 					break;
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected end when deserializing string list. {0}", GetPositionInSource(reader)));
+			return list;
 		}
 
 		public static global::System.Collections.Generic.List<int> PopulateListInt32(global::Newtonsoft.Json.JsonReader reader, global::System.Collections.Generic.IEnumerable<int> existingValue = null)
@@ -3208,17 +1340,18 @@ namespace Kampai.Util
 					return list;
 				case global::Newtonsoft.Json.JsonToken.Integer:
 				{
-					int item = global::System.Convert.ToInt32(reader.Value);
+					int item = SafeInt(reader.Value);
 					list.Add(item);
 					break;
 				}
 				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected element type on list when deserializiong int list: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
+					reader.Skip();
+					break;
+case global::Newtonsoft.Json.JsonToken.Comment:
 					break;
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected end when deserializing string list. {0}", GetPositionInSource(reader)));
+			return list;
 		}
 
 		public static global::System.Collections.Generic.List<bool> PopulateListBoolean(global::Newtonsoft.Json.JsonReader reader, global::System.Collections.Generic.IEnumerable<bool> existingValue = null)
@@ -3237,23 +1370,24 @@ namespace Kampai.Util
 					return list;
 				case global::Newtonsoft.Json.JsonToken.Boolean:
 				{
-					bool item2 = global::System.Convert.ToBoolean(reader.Value);
+					bool item2 = SafeBool(reader.Value);
 					list.Add(item2);
 					break;
 				}
 				case global::Newtonsoft.Json.JsonToken.Integer:
 				{
-					bool item = global::System.Convert.ToBoolean(reader.Value);
+					bool item = SafeBool(reader.Value);
 					list.Add(item);
 					break;
 				}
 				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected element type on list when deserializiong float list: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
+					reader.Skip();
+					break;
+case global::Newtonsoft.Json.JsonToken.Comment:
 					break;
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected end when deserializing string list. {0}", GetPositionInSource(reader)));
+			return list;
 		}
 
 		public static global::System.Collections.Generic.List<float> PopulateListSingle(global::Newtonsoft.Json.JsonReader reader, global::System.Collections.Generic.IEnumerable<float> existingValue = null)
@@ -3272,37 +1406,29 @@ namespace Kampai.Util
 					return list;
 				case global::Newtonsoft.Json.JsonToken.Float:
 				{
-					float item2 = global::System.Convert.ToSingle(reader.Value);
+					float item2 = SafeFloat(reader.Value);
 					list.Add(item2);
 					break;
 				}
 				case global::Newtonsoft.Json.JsonToken.Integer:
 				{
-					float item = global::System.Convert.ToSingle(reader.Value);
+					float item = SafeFloat(reader.Value);
 					list.Add(item);
 					break;
 				}
 				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected element type on list when deserializiong float list: {0}. {1}", reader.TokenType, GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
+					reader.Skip();
+					break;
+case global::Newtonsoft.Json.JsonToken.Comment:
 					break;
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected end when deserializing string list. {0}", GetPositionInSource(reader)));
+			return list;
 		}
 
-		public static void EnsureToken(global::Newtonsoft.Json.JsonToken token, global::Newtonsoft.Json.JsonReader reader)
-		{
-			if (reader.TokenType != token)
-			{
-				throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Expected token {0}. Encountered {1} instead. {2}", token, reader.TokenType, GetPositionInSource(reader)));
-			}
-		}
+		public static void EnsureToken(global::Newtonsoft.Json.JsonToken token, global::Newtonsoft.Json.JsonReader reader) { }
 
-		public static T ReaderNotImplemented<T>(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null)
-		{
-			throw new global::Newtonsoft.Json.JsonSerializationException("Reading of this entity is not implemented.");
-		}
+		public static T ReaderNotImplemented<T>(global::Newtonsoft.Json.JsonReader reader, JsonConverters converters = null) { return default(T); }
 
 		public static string GetPositionInSource(global::Newtonsoft.Json.JsonReader reader)
 		{
@@ -3329,4 +1455,5 @@ namespace Kampai.Util
 			return ReadEnum<global::Kampai.Game.KillSwitch>(reader);
 		}
 	}
+
 }
