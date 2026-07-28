@@ -84,6 +84,10 @@ namespace Kampai.UI.View
 					{
 						AddBuildStoreItem(buildMenuItems, item, global::Kampai.Game.StoreItemType.Featured);
 					}
+					if (item.SpecialEventID > 0 || (item.ReferencedDefID >= 4201 && item.ReferencedDefID <= 4216) || (item.ReferencedDefID >= 4101 && item.ReferencedDefID <= 4105))
+					{
+						AddBuildStoreItem(buildMenuItems, item, global::Kampai.Game.StoreItemType.SpecialEvent);
+					}
 					break;
 				}
 			}

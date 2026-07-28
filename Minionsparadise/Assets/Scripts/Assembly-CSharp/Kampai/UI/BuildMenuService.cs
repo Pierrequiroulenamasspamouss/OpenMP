@@ -152,6 +152,10 @@ namespace Kampai.UI
 			{
 				return false;
 			}
+			if (storeDef.SpecialEventID > 0 || storeDef.ReferencedDefID >= 4201 && storeDef.ReferencedDefID <= 4216)
+			{
+				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] ShouldRenderStoreDef: StoreDef ID={0}, RefDefID={1}, SpecialEventID={2}, Disabled={3}", storeDef.ID, storeDef.ReferencedDefID, storeDef.SpecialEventID, storeDef.Disabled);
+			}
 			return true;
 		}
 

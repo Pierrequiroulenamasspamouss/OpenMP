@@ -59,26 +59,11 @@ public class LoadDefinitionsCommand : global::strange.extensions.command.impl.Co
 			bool needsJsonParse = true;
 			string binaryDefinitionsPath = global::Kampai.Game.DefinitionService.GetBinaryDefinitionsPath();
 #if !UNITY_WEBPLAYER
-			if (global::System.IO.File.Exists(binaryDefinitionsPath) && IsBinaryCacheValid(jsonPath))
+			// Always clear cached binary definitions to guarantee fresh definitions.json is loaded
+			if (global::System.IO.File.Exists(binaryDefinitionsPath))
 			{
-				logger.Debug("LoadDefinitions: Starting binary deserialization (cache valid)");
-				routineRunner.StartAsyncConditionTask(delegate
-				{
-					return DeserializeDefinitionsFromBinaryFile(binaryDefinitionsPath);
-				}, delegate
-				{
-					logger.Info("LoadDefinitions: Binary cache loaded successfully");
-					OnDeserializationSuccess();
-				});
-				needsJsonParse = false;
-			}
-			else
-			{
-				if (global::System.IO.File.Exists(binaryDefinitionsPath))
-				{
-					logger.Info("LoadDefinitions: Binary cache invalidated (JSON changed), deleting stale cache");
-					global::Kampai.Game.DefinitionService.DeleteBinarySerialization();
-				}
+				logger.Info("LoadDefinitions: Invalidating cached binary definitions to reload fresh JSON");
+				global::Kampai.Game.DefinitionService.DeleteBinarySerialization();
 			}
 #else
 			if (false)
@@ -197,6 +182,13 @@ public class LoadDefinitionsCommand : global::strange.extensions.command.impl.Co
 	private void OnDeserializationSuccess()
 	{
 		global::Kampai.Util.StartupTimer.LogCheckpoint("LoadDefinitionsCommand.OnDeserializationSuccess (Definitions Loaded)");
+		global::Kampai.Game.SpecialEventItemDefinition def110000 = definitionService.Get<global::Kampai.Game.SpecialEventItemDefinition>(110000);
+		if (def110000 != null)
+		{
+			def110000.IsActive = true;
+		}
+		bool isActive110000 = (def110000 != null) ? def110000.IsActive : false;
+		global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] Definitions Loaded! Def 110000 exists={0}, IsActive FORCED={1}", def110000 != null, isActive110000);
 		this.telemetryService.Send_Telemetry_EVT_USER_GAME_LOAD_FUNNEL("80 - Loaded Definitions", playerService.SWRVEGroup, dlcService.GetDownloadQualityLevel());
 		logger.Debug("LoadDefinitions: Deserialized successfully");
 		global::Kampai.Common.TelemetryService telemetryService = this.telemetryService as global::Kampai.Common.TelemetryService;
@@ -249,10 +241,24 @@ public class LoadDefinitionsCommand : global::strange.extensions.command.impl.Co
 				logger.Warning("FORCED JSON LOADING: Automatically appending missing closing brace on Android.");
 				jsonText += "}";
 			}
-			return DeserializeDefinitionsFromJsonString(jsonText);
+			bool success = DeserializeDefinitionsFromJsonString(jsonText);
+			if (!success || definitionService.Get<global::Kampai.Game.SpecialEventItemDefinition>(110000) == null)
+			{
+				global::UnityEngine.TextAsset textAsset = global::UnityEngine.Resources.Load("definitions") as global::UnityEngine.TextAsset;
+				if (textAsset != null)
+				{
+					success = DeserializeDefinitionsFromJsonString(textAsset.text);
+				}
+			}
+			return success;
 		}
 		catch (global::System.Exception e)
 		{
+			global::UnityEngine.TextAsset textAsset = global::UnityEngine.Resources.Load("definitions") as global::UnityEngine.TextAsset;
+			if (textAsset != null)
+			{
+				return DeserializeDefinitionsFromJsonString(textAsset.text);
+			}
 			HandleDefinitionFileOpenError(e);
 			return false;
 		}

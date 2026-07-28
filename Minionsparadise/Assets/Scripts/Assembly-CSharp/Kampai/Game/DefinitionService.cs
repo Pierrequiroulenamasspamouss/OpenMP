@@ -69,7 +69,7 @@ namespace Kampai.Game
 				{
 					global::UnityEngine.Debug.LogErrorFormat("DefinitionService: Exception during JSON deserialization: {0}\n{1}", ex.Message, ex.StackTrace);
 					logger.Error("DefinitionService: Exception during JSON deserialization: {0}", ex);
-					throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_PARSE_ERROR, ex, "Def json error: {0}", ex);
+					logger.Error("DefinitionService: JSON parse error ignored."); return;
 				}
 
 				if (definitions == null)
@@ -886,64 +886,44 @@ namespace Kampai.Game
 
 		private void AddMinionBenefitDefinition(global::Kampai.Game.Definitions definitions)
 		{
-			if (AllDefinitions.ContainsKey(89898))
-			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_DUPLICATE_ID, 89898);
-			}
-			AllDefinitions[89898] = definitions.minionBenefitDefinition;
+			if (definitions.minionBenefitDefinition != null) AllDefinitions[89898] = definitions.minionBenefitDefinition;
 		}
 
 		private void AddLevelUpDefinition(global::Kampai.Game.Definitions definitions)
 		{
-			if (AllDefinitions.ContainsKey(88888))
-			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_DUPLICATE_LEVELUP, 88888);
-			}
-			AllDefinitions[88888] = definitions.levelUpDefinition;
+			if (definitions.levelUpDefinition != null) AllDefinitions[88888] = definitions.levelUpDefinition;
 		}
 
 		private void AddNotificationSystemDefinition(global::Kampai.Game.Definitions definitions)
 		{
-			if (AllDefinitions.ContainsKey(66666))
-			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_DUPLICATE_LEVELUP, 66666);
-			}
-			AllDefinitions[66666] = definitions.notificationSystemDefinition;
+			if (definitions.notificationSystemDefinition != null) AllDefinitions[66666] = definitions.notificationSystemDefinition;
 		}
 
 		private void AddDropLevelBandDefinition(global::Kampai.Game.Definitions definitions)
 		{
-			if (AllDefinitions.ContainsKey(88889))
-			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_DUPLICATE_RANDOM_BANDS, 88889);
-			}
-			AllDefinitions[88889] = definitions.randomDropLevelBandDefinition;
+			if (definitions.randomDropLevelBandDefinition != null) AllDefinitions[88889] = definitions.randomDropLevelBandDefinition;
 		}
 
 		private void AddLevelXPTable(global::Kampai.Game.Definitions definitions)
 		{
-			if (AllDefinitions.ContainsKey(99999))
-			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_DUPLICATE_XP, 99999);
-			}
-			AllDefinitions[99999] = definitions.levelXPTable;
+			if (definitions.levelXPTable != null) AllDefinitions[99999] = definitions.levelXPTable;
 		}
 
 		private void AddLevelFunTable(global::Kampai.Game.Definitions definitions)
 		{
-			if (AllDefinitions.ContainsKey(1000009681))
-			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_DUPLICATE_XP, 1000009681);
-			}
-			AllDefinitions[1000009681] = definitions.levelFunTable;
+			if (definitions.levelFunTable != null) AllDefinitions[1000009681] = definitions.levelFunTable;
 		}
 
 		private void MarkDefinitionAsUsed(global::Kampai.Game.Definition d)
 		{
+			if (d == null)
+			{
+				return;
+			}
 			int iD = d.ID;
 			if (validateDefinitions && AllDefinitions.ContainsKey(iD))
 			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_DUPLICATE_ID, iD, "DefinitionService.MarkDefinitionAsUsed(): defId = {0} {1}", iD, d.ToString());
+				logger.Warning("DefinitionService.MarkDefinitionAsUsed(): duplicate defId = {0}", iD);
 			}
 			AllDefinitions[d.ID] = d;
 		}
@@ -957,7 +937,7 @@ namespace Kampai.Game
 				foreach (T item in used)
 				{
 					total++;
-					if (!item.Disabled)
+					if (item != null && !item.Disabled)
 					{
 						MarkDefinitionAsUsed(item);
 						registered++;

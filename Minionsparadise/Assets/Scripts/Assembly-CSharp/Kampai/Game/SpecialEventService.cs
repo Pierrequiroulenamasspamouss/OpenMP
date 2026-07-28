@@ -12,10 +12,13 @@ namespace Kampai.Game
 		{
 			foreach (global::Kampai.Game.SpecialEventItemDefinition item in definitionService.GetAll<global::Kampai.Game.SpecialEventItemDefinition>())
 			{
-				global::Kampai.Game.SpecialEventItem firstInstanceByDefinitionId = playerService.GetFirstInstanceByDefinitionId<global::Kampai.Game.SpecialEventItem>(item.ID);
-				if (firstInstanceByDefinitionId != null && !firstInstanceByDefinitionId.HasEnded && item.IsActive)
+				if (item != null && item.IsActive)
 				{
-					return true;
+					global::Kampai.Game.SpecialEventItem firstInstanceByDefinitionId = playerService.GetFirstInstanceByDefinitionId<global::Kampai.Game.SpecialEventItem>(item.ID);
+					if (firstInstanceByDefinitionId != null && !firstInstanceByDefinitionId.HasEnded)
+					{
+						return true;
+					}
 				}
 			}
 			return false;

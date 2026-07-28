@@ -52,11 +52,7 @@ namespace Kampai.Common
 		private bool NeedFetchDefinitions(out string definitionsToFetchUrl)
 		{
 			string value = localPersistanceService.GetData("DefinitionsUrl");
-#if !UNITY_WEBPLAYER
 			if (!global::System.IO.File.Exists(FetchDefinitionsCommand.GetDefinitionsPath()))
-#else
-			if (false)
-#endif
 			{
 				value = null;
 			}

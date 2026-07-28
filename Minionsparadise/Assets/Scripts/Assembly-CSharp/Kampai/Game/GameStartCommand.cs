@@ -171,7 +171,7 @@ namespace Kampai.Game
 			gameObject3.transform.parent = contextView.transform;
 			base.injectionBinder.Bind<global::UnityEngine.GameObject>().ToValue(gameObject3).ToName(global::Kampai.Game.GameElement.LAND_EXPANSION_PARENT);
 			global::UnityEngine.GameObject gameObject4 = new global::UnityEngine.GameObject("Special_Event");
-			gameObject4.transform.parent = contextView.transform;
+			// Leave Special_Event at root level so it is not hidden when splash screen/contextView is deactivated
 			base.injectionBinder.Bind<global::UnityEngine.GameObject>().ToValue(gameObject4).ToName(global::Kampai.Game.GameElement.SPECIAL_EVENT_PARENT);
 			global::UnityEngine.GameObject gameObject5 = new global::UnityEngine.GameObject("VillainLair");
 			gameObject5.transform.parent = contextView.transform;

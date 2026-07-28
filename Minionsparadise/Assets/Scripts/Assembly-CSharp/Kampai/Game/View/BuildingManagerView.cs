@@ -64,6 +64,26 @@ namespace Kampai.Game.View
 			int iD = building.ID;
 			global::Kampai.Game.Location location = building.Location;
 			string prefab = building.GetPrefab(prefabIndex);
+			if (isSpecialEventActive && !string.IsNullOrEmpty(prefab))
+			{
+				if (prefab.Contains("Unique_JobBoard_Prefab"))
+				{
+					prefab = "WNTR_15_Unique_JobBoard_Prefab";
+				}
+				else if (prefab.Contains("Unique_Stage_Prefab"))
+				{
+					prefab = "WNTR_15_Unique_Stage_Prefab";
+				}
+				else if (prefab.Contains("Unique_TikiBar_Prefab"))
+				{
+					prefab = "WNTR_15_Unique_TikiBar_Prefab";
+				}
+				else if (prefab.Contains("Unique_TownSquareFountain_Prefab"))
+				{
+					prefab = "WNTR_15_Unique_TownSquareFountain_Prefab";
+				}
+				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] CreateBuilding for def {0}: Swapped prefab to '{1}'", building.Definition.ID, prefab);
+			}
 			global::UnityEngine.GameObject gameObject;
 			if (string.IsNullOrEmpty(prefab))
 			{
@@ -129,15 +149,22 @@ namespace Kampai.Game.View
 			{
 				return;
 			}
+			global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] BuildingManagerView.LoadSpecialEventPaintover for building Def={0} ({1}): Paintover='{2}'", building.Definition.ID, building.Definition.LocalizedKey, paintover);
 			global::UnityEngine.GameObject gameObject = global::Kampai.Util.KampaiResources.Load<global::UnityEngine.GameObject>(paintover);
-			if (!(gameObject == null))
+			if (gameObject == null)
 			{
-				global::UnityEngine.GameObject gameObject2 = global::UnityEngine.Object.Instantiate(gameObject);
-				if (!(gameObject2 == null))
-				{
-					gameObject2.transform.parent = parent.transform;
-					gameObject2.transform.localPosition = global::UnityEngine.Vector3.zero;
-				}
+				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] FAILED to load building paintover prefab '{0}' via KampaiResources!", paintover);
+				return;
+			}
+			global::UnityEngine.GameObject gameObject2 = global::UnityEngine.Object.Instantiate(gameObject);
+			if (gameObject2 != null)
+			{
+				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] SUCCESS! Instantiated building paintover '{0}' on parent '{1}'!", paintover, parent.name);
+				gameObject2.transform.SetParent(parent.transform, false);
+				gameObject2.transform.localPosition = global::UnityEngine.Vector3.zero;
+				gameObject2.transform.localRotation = global::UnityEngine.Quaternion.identity;
+				gameObject2.transform.localScale = global::UnityEngine.Vector3.one;
+				gameObject2.SetActive(true);
 			}
 		}
 
@@ -412,7 +439,15 @@ namespace Kampai.Game.View
 			{
 				index = connectableBuildingDefinition.GetDefaultPrefabIndex();
 			}
-			global::UnityEngine.GameObject original = global::Kampai.Util.KampaiResources.Load<global::UnityEngine.GameObject>(buildingDefinition.GetPrefab(index));
+			string prefabName = buildingDefinition.GetPrefab(index);
+			if (isSpecialEventActive && !string.IsNullOrEmpty(prefabName))
+			{
+				if (prefabName.Contains("Unique_JobBoard_Prefab")) prefabName = "WNTR_15_Unique_JobBoard_Prefab";
+				else if (prefabName.Contains("Unique_Stage_Prefab")) prefabName = "WNTR_15_Unique_Stage_Prefab";
+				else if (prefabName.Contains("Unique_TikiBar_Prefab")) prefabName = "WNTR_15_Unique_TikiBar_Prefab";
+				else if (prefabName.Contains("Unique_TownSquareFountain_Prefab")) prefabName = "WNTR_15_Unique_TownSquareFountain_Prefab";
+			}
+			global::UnityEngine.GameObject original = global::Kampai.Util.KampaiResources.Load<global::UnityEngine.GameObject>(prefabName);
 			global::UnityEngine.GameObject gameObject = global::UnityEngine.Object.Instantiate(original);
 			gameObject.name = "Dummy Building";
 			global::UnityEngine.Transform transform = gameObject.transform;

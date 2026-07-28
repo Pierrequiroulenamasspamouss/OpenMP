@@ -7,11 +7,21 @@ namespace Kampai.Util
 			global::Kampai.Util.AsyncRoutineResultImpl result = new global::Kampai.Util.AsyncRoutineResultImpl();
 			global::System.Threading.ThreadPool.QueueUserWorkItem(delegate
 			{
-				action();
-				result.IsDone = true;
-				if (onComplete != null)
+				try
 				{
-					invoker.Add(onComplete);
+					if (action != null) action();
+				}
+				catch (global::System.Exception ex)
+				{
+					global::UnityEngine.Debug.LogErrorFormat("[AsyncRoutineResultImpl] Exception in action task: {0}\n{1}", ex.Message, ex.StackTrace);
+				}
+				finally
+				{
+					result.IsDone = true;
+					if (onComplete != null && invoker != null)
+					{
+						invoker.Add(onComplete);
+					}
 				}
 			});
 			return result;
@@ -22,11 +32,21 @@ namespace Kampai.Util
 			global::Kampai.Util.AsyncRoutineResultImpl result = new global::Kampai.Util.AsyncRoutineResultImpl();
 			global::System.Threading.ThreadPool.QueueUserWorkItem(delegate
 			{
-				bool flag = task();
-				result.IsDone = true;
-				if (flag && onComplete != null)
+				try
 				{
-					invoker.Add(onComplete);
+					if (task != null) task();
+				}
+				catch (global::System.Exception ex)
+				{
+					global::UnityEngine.Debug.LogErrorFormat("[AsyncRoutineResultImpl] Exception in condition task: {0}\n{1}", ex.Message, ex.StackTrace);
+				}
+				finally
+				{
+					result.IsDone = true;
+					if (onComplete != null && invoker != null)
+					{
+						invoker.Add(onComplete);
+					}
 				}
 			});
 			return result;
