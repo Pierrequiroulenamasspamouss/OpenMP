@@ -52,13 +52,16 @@ namespace Kampai.UI.View
 			global::Kampai.Game.DisplayableDefinition displayableDefinition = view.definition as global::Kampai.Game.DisplayableDefinition;
 			global::Kampai.Game.StoreItemDefinition storeItemDefinition = view.storeItemDefinition;
 			int num = playerService.GetUnlockedQuantityOfID(iD);
-			bool flag = true; // Force unlocked
+			int unlockLevel = (storeItemDefinition.Type == global::Kampai.Game.StoreItemType.SalePack || storeItemDefinition.Type == global::Kampai.Game.StoreItemType.PremiumCurrency || storeItemDefinition.Type == global::Kampai.Game.StoreItemType.GrindCurrency) ? 0 : definitionService.GetLevelItemUnlocksAt(iD);
+			int playerLevel = (int)playerService.GetQuantity(global::Kampai.Game.StaticItem.LEVEL_ID);
+			bool isLevelLocked = unlockLevel > 0 && playerLevel < unlockLevel;
+
 			if (string.IsNullOrEmpty(displayableDefinition.Image))
 			{
-				logger.Log(global::Kampai.Util.KampaiLogLevel.Error, "Your Building Definition: {0} doesn' have a image defined", displayableDefinition.ID);
+				logger.Log(global::Kampai.Util.KampaiLogLevel.Error, "Your Building Definition: {0} doesn't have a image defined", displayableDefinition.ID);
 				displayableDefinition.Image = "btn_Circle01_mask";
 			}
-			if (((flag && num == 0) || IsMasterPlanItemForIncompletePlan(storeItemDefinition, iD, definitionService, masterPlanService)))
+			if (isLevelLocked || IsMasterPlanItemForIncompletePlan(storeItemDefinition, iD, definitionService, masterPlanService))
 			{
 				ItemLocked(view);
 			}
@@ -83,20 +86,11 @@ namespace Kampai.UI.View
 				}
 				CheckBadge(view);
 				result = CheckLocked(view);
+				if (num == 0)
+				{
+					num = -1;
+				}
 				result = (num != 0 && result) || (view.CurrentCapacity > 0 && (view.CurrentCapacity < num || num < 0) && !result);
-				if (storeItemDefinition.SpecialEventID > 0)
-				{
-					global::Kampai.Game.SpecialEventItemDefinition definition;
-					bool flag2 = definitionService.TryGet<global::Kampai.Game.SpecialEventItemDefinition>(storeItemDefinition.SpecialEventID, out definition);
-					if ((flag2 && !definition.IsActive) || !flag2)
-					{
-						num = playerService.GetCountByDefinitionId(iD);
-					}
-				}
-				if (!storeItemDefinition.IsOnSale(global::UnityEngine.Application.platform, timeService, localeService, logger))
-				{
-					num = playerService.GetCountByDefinitionId(iD);
-				}
 				int buildingCount = UpdateBuildingCount(view, iD, num, countMap);
 				int incrementalCost = GetIncrementalCost(view, buildingCount, definitionService, playerService);
 				CheckForTransactions(view, incrementalCost);

@@ -6,6 +6,7 @@ namespace Kampai.Game
 
 		protected virtual global::Kampai.Game.PlayerData GeneratePlayerData(string serialized, global::Kampai.Game.IDefinitionService definitionService, global::Kampai.Game.IPartyService partyService, global::Kampai.Util.IKampaiLogger logger)
 		{
+			global::UnityEngine.Debug.LogFormat("[DEBUG] DefaultPlayerSerializer.GeneratePlayerData: deserializing player json len={0}", serialized != null ? serialized.Length : 0);
 			global::Kampai.Game.PlayerData playerData = null;
 			try
 			{
@@ -17,7 +18,7 @@ namespace Kampai.Game
 				playerData = global::Kampai.Util.FastJSONDeserializer.Deserialize<global::Kampai.Game.PlayerData>(serialized, jsonConverters);
 				if (playerData == null)
 				{
-					throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.PS_NULL_PLAYER, "PlayerDataV1: json parse error: player is null after deserialization");
+					logger.Error("PlayerDataV1: player is null after deserialization, creating fallback."); playerData = new global::Kampai.Game.PlayerData(); playerData.inventory = new global::System.Collections.Generic.List<global::Kampai.Game.Instance>();
 				}
 			}
 			catch (global::Newtonsoft.Json.JsonSerializationException e)
@@ -34,7 +35,8 @@ namespace Kampai.Game
 		private void HandleJsonParseException(string json, global::System.Exception e, global::Kampai.Util.IKampaiLogger logger)
 		{
 			logger.Error("HandleJsonParseException(): player json: {0}", json ?? "null");
-			throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.PS_JSON_PARSE_ERR, e, "Json Parse Err: {0}", e);
+			global::UnityEngine.Debug.LogErrorFormat("[DEBUG] DefaultPlayerSerializer.HandleJsonParseException: {0}\n{1}", e.Message, e.StackTrace);
+			logger.Error("HandleJsonParseException(): player json parse error: {0}", e);
 		}
 
 		public virtual global::Kampai.Game.Player Deserialize(string json, global::Kampai.Game.IDefinitionService definitionService, ILocalPersistanceService localPersistanceService, global::Kampai.Game.IPartyService partyService, global::Kampai.Util.IKampaiLogger logger)
@@ -58,7 +60,7 @@ namespace Kampai.Game
 			player.completedQuestsTotal = playerData.completedQuestsTotal;
 			if (playerData.inventory == null)
 			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.PS_JSON_PARSE_ERR, 1, "Player inventory is null");
+				logger.Warning("Player inventory is null, initializing empty inventory."); playerData.inventory = new global::System.Collections.Generic.List<global::Kampai.Game.Instance>();
 			}
 			if (playerData.helpTipsTrackingData != null)
 			{

@@ -464,6 +464,8 @@ namespace Kampai.Game
 
 		public global::Kampai.Game.Player LoadPlayerData(string serialized)
 		{
+			if (string.IsNullOrEmpty(serialized)) return new global::Kampai.Game.Player(definitionService, logger);
+			global::UnityEngine.Debug.LogFormat("[DEBUG] PlayerService.LoadPlayerData: starting deserialization. Json len={0}", serialized != null ? serialized.Length : 0);
 			global::Kampai.Game.Player player = null;
 			lock (mutex)
 			{
@@ -474,7 +476,7 @@ namespace Kampai.Game
 					player = playerVersion.CreatePlayer(serialized, definitionService, localPersistanceService, partyService, logger);
 					if (player == null)
 					{
-						throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.PS_NULL_PLAYER, "PlayerService.LoadPlayerData(): null player");
+						logger.Error("PlayerService.LoadPlayerData(): null player");
 					}
 				}
 				catch (global::Newtonsoft.Json.JsonSerializationException e)
@@ -492,13 +494,26 @@ namespace Kampai.Game
 		private void HandleJsonParseException(string json, global::System.Exception e)
 		{
 			logger.Error("HandleJsonParseException(): player json: {0}", json ?? "null");
-			throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.PS_JSON_PARSE_ERR, 5, e, "Json Parse Err: {0}", e);
+			logger.Error("HandleJsonParseException(): player json: {0}, error: {1}", json ?? "null", e);
 		}
 
 		public void Deserialize(string serialized, bool isRetry = false)
 		{
 			player = LoadPlayerData(serialized);
-			LastSave = LoadPlayerData(serialized);
+			if (player == null)
+			{
+				logger.Warning("PlayerService: Player deserialization failed, attempting initial player recovery or default player.");
+				string initPlayer = definitionService != null ? definitionService.GetInitialPlayer() : null;
+				if (!string.IsNullOrEmpty(initPlayer) && !isRetry)
+				{
+					player = LoadPlayerData(initPlayer);
+				}
+				if (player == null)
+				{
+					player = new global::Kampai.Game.Player(definitionService, logger);
+				}
+			}
+			LastSave = player;
 		}
 
 		public byte[] SavePlayerData(global::Kampai.Game.Player playerData)
@@ -1737,8 +1752,13 @@ namespace Kampai.Game
 
 		public int GetInventoryCountByDefinitionID(int defId)
 		{
-			int num = 0;
+			int capacity = GetUnlockedQuantityOfID(defId);
+			int boardCount = 0;
+			GetBuildingOnBoardCountMap().TryGetValue(defId, out boardCount);
+			int maxAllowedInventory = global::System.Math.Max(0, capacity - boardCount);
+
 			global::System.Collections.Generic.ICollection<global::Kampai.Game.Instance> byDefinitionId = GetByDefinitionId<global::Kampai.Game.Instance>(defId);
+			global::System.Collections.Generic.List<global::Kampai.Game.Instance> inventoryItems = new global::System.Collections.Generic.List<global::Kampai.Game.Instance>();
 			if (byDefinitionId.Count != 0)
 			{
 				foreach (global::Kampai.Game.Instance item in byDefinitionId)
@@ -1746,11 +1766,22 @@ namespace Kampai.Game
 					global::Kampai.Game.Building building = item as global::Kampai.Game.Building;
 					if (building != null && building.State == global::Kampai.Game.BuildingState.Inventory)
 					{
-						num++;
+						inventoryItems.Add(building);
 					}
 				}
 			}
-			return num;
+
+			if (capacity >= 0 && inventoryItems.Count > maxAllowedInventory)
+			{
+				int excessCount = inventoryItems.Count - maxAllowedInventory;
+				for (int i = 0; i < excessCount; i++)
+				{
+					Remove(inventoryItems[i]);
+				}
+				return maxAllowedInventory;
+			}
+
+			return inventoryItems.Count;
 		}
 
 		public bool CheckIfBuildingIsCapped(int defID)

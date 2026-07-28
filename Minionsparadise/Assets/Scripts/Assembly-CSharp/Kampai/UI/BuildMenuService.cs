@@ -152,66 +152,7 @@ namespace Kampai.UI
 			{
 				return false;
 			}
-
-			bool flag = true;
-			int unlockedQuantityOfID = playerService.GetUnlockedQuantityOfID(storeDef.ReferencedDefID);
-			if (storeDef.OnlyShowIfUnlocked)
-			{
-				flag = unlockedQuantityOfID > 0;
-			}
-			global::System.Collections.Generic.ICollection<global::Kampai.Game.Building> byDefinitionId = playerService.GetByDefinitionId<global::Kampai.Game.Building>(storeDef.ReferencedDefID);
-			int count = byDefinitionId.Count;
-			if (storeDef.OnlyShowIfOwned)
-			{
-				flag = count > 0;
-			}
-			if (storeDef.OnlyShowIfInInventory)
-			{
-				flag = false;
-				foreach (global::Kampai.Game.Building item in byDefinitionId)
-				{
-					if (item.State == global::Kampai.Game.BuildingState.Inventory)
-					{
-						flag = true;
-					}
-				}
-			}
-
-			// If no transaction is defined, it shouldn't be for sale.
-			// Hide if not owned, unless it's one of the specific exception items requested by the user.
-			if (storeDef.TransactionID == 0 && count == 0)
-			{
-				global::Kampai.Game.Definition referencedDef = definitionService.Get(storeDef.ReferencedDefID);
-				bool isExceptionItem = referencedDef != null && (referencedDef.LocalizedKey == "DecorWinterStandard01" || referencedDef.LocalizedKey == "DecorWinterPremium15");
-				if (!isExceptionItem)
-				{
-					return false;
-				}
-			}
-
-			// Check date-based availability (Sales/Events)
-			bool isOnSale = storeDef.IsOnSale(global::UnityEngine.Application.platform, timeService, localeService, logger);
-			if (!isOnSale && count == 0)
-			{
-				// If not on sale and the player doesn't own any, hide it.
-				// (Exception items stay visible as requested)
-				bool isExceptionItem = storeDef.LocalizedKey == "DecorWinterStandard01" || storeDef.LocalizedKey == "DecorWinterPremium15";
-				if (!isExceptionItem)
-				{
-					return false;
-				}
-			}
-
-			if (storeDef.SpecialEventID > 0 && flag)
-			{
-				global::Kampai.Game.SpecialEventItemDefinition definition;
-				bool flag2 = definitionService.TryGet<global::Kampai.Game.SpecialEventItemDefinition>(storeDef.SpecialEventID, out definition);
-				if ((flag2 && !definition.IsActive) || !flag2)
-				{
-					flag = count > 0;
-				}
-			}
-			return flag;
+			return true;
 		}
 
 		public bool ShowingAChild(global::System.Collections.Generic.List<global::Kampai.UI.View.StoreButtonView> children, bool notifyShouldBeRendered = true)
@@ -287,10 +228,6 @@ namespace Kampai.UI
 					if (!flag)
 					{
 						item.ItemIcon.gameObject.SetActive(false);
-					}
-					if (num3 - num2 > 4 && !flag && item.storeItemDefinition.Type != global::Kampai.Game.StoreItemType.MasterPlanLeftOvers)
-					{
-						item.SetShouldBerendered(false);
 					}
 				}
 				if (updateBadge)

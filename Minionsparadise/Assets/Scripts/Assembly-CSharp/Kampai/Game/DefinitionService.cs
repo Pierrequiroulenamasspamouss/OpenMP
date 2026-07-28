@@ -88,7 +88,7 @@ namespace Kampai.Game
 			}
 			else
 			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_EMPTY_JSON, "DefinitionService.Deserialize(): empty json");
+				logger.Error("DefinitionService.Deserialize(): empty json"); return;
 			}
 		}
 
@@ -176,7 +176,7 @@ namespace Kampai.Game
 		{
 			if (definitions == null)
 			{
-				throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_NULL_ERROR, "LoadDefinitions(): definitions are null, caller: {0}", callerTag);
+				logger.Error("LoadDefinitions(): definitions are null, caller: {0}", callerTag); return;
 			}
 			this.validateDefinitions = validateDefinitions;
 			AllDefinitions = new global::System.Collections.Generic.Dictionary<int, global::Kampai.Game.Definition>(2500);
@@ -254,8 +254,10 @@ namespace Kampai.Game
 
 		private void MarkMoreDefinitions(global::Kampai.Game.Definitions definitions)
 		{
-			MarkDefinitionsAsUsed(definitions.gachaConfig.GatchaAnimationDefinitions);
-			MarkDefinitionsAsUsed(definitions.gachaConfig.DistributionTables);
+			if (definitions.gachaConfig != null) {
+				MarkDefinitionsAsUsed(definitions.gachaConfig.GatchaAnimationDefinitions);
+				MarkDefinitionsAsUsed(definitions.gachaConfig.DistributionTables);
+			}
 			MarkDefinitionsAsUsed(definitions.expansionConfigs);
 			MarkDefinitionsAsUsed(definitions.MinionAnimationDefinitions);
 			MarkDefinitionsAsUsed(definitions.quests);
@@ -516,7 +518,7 @@ namespace Kampai.Game
 		{
 			global::Kampai.Game.Transaction.TransactionDefinition transactionDefinition = Get<global::Kampai.Game.Transaction.TransactionDefinition>(transactionId);
 			global::System.Collections.Generic.IList<global::Kampai.Util.QuantityItem> outputs = transactionDefinition.Outputs;
-			if (outputs[0] != null)
+			if (outputs != null && outputs.Count > 0 && outputs[0] != null)
 			{
 				return outputs[0].ID;
 			}
@@ -528,7 +530,7 @@ namespace Kampai.Game
 		{
 			global::Kampai.Game.Transaction.TransactionDefinition transactionDefinition = Get<global::Kampai.Game.Transaction.TransactionDefinition>(transactionId);
 			global::System.Collections.Generic.IList<global::Kampai.Util.QuantityItem> outputs = transactionDefinition.Outputs;
-			if (outputs[0] != null)
+			if (outputs != null && outputs.Count > 0 && outputs[0] != null)
 			{
 				global::Kampai.Game.ItemDefinition itemDefinition = Get<global::Kampai.Game.ItemDefinition>(outputs[0].ID);
 				return itemDefinition.Image;
@@ -740,7 +742,7 @@ namespace Kampai.Game
 			}
 			if (!itemTransactionTable.ContainsKey(id))
 			{
-				logger.Fatal(global::Kampai.Util.FatalCode.PS_NO_TRANSACTION, id);
+				logger.Warning("getItemTransactionID: No transaction for id {0}", id);
 				return 0;
 			}
 			return itemTransactionTable[id];
@@ -848,7 +850,7 @@ namespace Kampai.Game
 				bool partyOnly = item.PartyOnly;
 				if ((!partyOnly && gachaDefinitionsByNumMinions.ContainsKey(minions)) || (partyOnly && partyDefinitionsByNumMinions.ContainsKey(minions)))
 				{
-					throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_DUPLICATE_GACHA, minions);
+					logger.Warning("DefinitionService: Duplicate gacha for minions {0}", minions); continue;
 				}
 				global::System.Collections.Generic.IList<global::Kampai.Game.Transaction.WeightedQuantityItem> entities = weightedDefinition.Entities;
 				foreach (global::Kampai.Game.Transaction.WeightedQuantityItem item2 in entities)
@@ -859,11 +861,11 @@ namespace Kampai.Game
 						global::Kampai.Game.GachaAnimationDefinition gachaAnimationDefinition = Get<global::Kampai.Game.GachaAnimationDefinition>(iD);
 						if (gachaAnimationDefinition == null)
 						{
-							throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_RELATION_DOES_NOT_EXIST, iD);
+							logger.Warning("DefinitionService: Gacha animation relation does not exist for ID {0}", iD); continue;
 						}
 						if (gachaAnimationDefinition.Minions > 0 && gachaAnimationDefinition.Minions != minions)
 						{
-							throw new global::Kampai.Util.FatalException(global::Kampai.Util.FatalCode.DS_NUM_MINION_GACHA_MISMATCH, item2.ID);
+							logger.Warning("DefinitionService: Minion count mismatch for gacha animation ID {0}", item2.ID); continue;
 						}
 						if (gachaAnimationDefinition.MinPerformance > targetPerformance)
 						{

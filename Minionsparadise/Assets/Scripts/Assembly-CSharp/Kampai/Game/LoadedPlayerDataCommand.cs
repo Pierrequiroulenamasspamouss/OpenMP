@@ -36,6 +36,8 @@ namespace Kampai.Game
 
 		public override void Execute()
 		{
+			global::UnityEngine.Debug.LogFormat("[DEBUG] LoadedPlayerDataCommand.Execute starting: playerJSON null={0}, len={1}", playerJSON == null, playerJSON != null ? playerJSON.Length : 0);
+			logger.Info("LoadedPlayerDataCommand.Execute: playerJSON len={0}", playerJSON != null ? playerJSON.Length : -1);
 			global::Kampai.Util.StartupTimer.LogCheckpoint("LoadedPlayerDataCommand.Execute");
 			string text = localPersistService.GetData("LoadMode");
 			if (text == "remote")
@@ -57,30 +59,35 @@ namespace Kampai.Game
 			this.telemetryService.Send_Telemetry_EVT_USER_GAME_LOAD_FUNNEL("90 - Loaded Player Data", playerService.SWRVEGroup, dlcService.GetDownloadQualityLevel());
 			if (playerJSON.Length != 0)
 			{
-				if (DeserializePlayerData(playerJSON))
+				if (!DeserializePlayerData(playerJSON))
 				{
-					global::Kampai.Common.TelemetryService telemetryService = this.telemetryService as global::Kampai.Common.TelemetryService;
-					if (telemetryService != null)
+					logger.Log(global::Kampai.Util.KampaiLogLevel.Error, "DeserializingPlayerData returned false, recovering with fallback player instance.");
+					if (playerService != null)
 					{
-						telemetryService.SetPlayerServiceReference(playerService);
-						telemetryService.SetPlayerDurationServiceReference(playerDurationService);
+						string initPlayer = (localPersistService != null) ? localPersistService.GetData("initialPlayer") : null;
+						playerService.Deserialize(initPlayer, true);
 					}
-					global::Kampai.Common.SwrveService swrveService = this.swrveService as global::Kampai.Common.SwrveService;
-					if (swrveService != null)
-					{
-						swrveService.SetPlayerServiceReference(playerService);
-					}
-					else
-					{
-						logger.Log(global::Kampai.Util.KampaiLogLevel.Error, "SwrveService was not setup properly");
-					}
-					this.swrveService.SendUserStatsUpdate();
-					completeSignal.Dispatch();
+				}
+				global::Kampai.Common.TelemetryService telemetryService = this.telemetryService as global::Kampai.Common.TelemetryService;
+				if (telemetryService != null)
+				{
+					telemetryService.SetPlayerServiceReference(playerService);
+					telemetryService.SetPlayerDurationServiceReference(playerDurationService);
+				}
+				global::Kampai.Common.SwrveService swrveService = this.swrveService as global::Kampai.Common.SwrveService;
+				if (swrveService != null)
+				{
+					swrveService.SetPlayerServiceReference(playerService);
 				}
 				else
 				{
-					logger.Log(global::Kampai.Util.KampaiLogLevel.Error, "DeserializingPlayerData returned false");
+					logger.Log(global::Kampai.Util.KampaiLogLevel.Error, "SwrveService was not setup properly");
 				}
+				if (this.swrveService != null)
+				{
+					this.swrveService.SendUserStatsUpdate();
+				}
+				completeSignal.Dispatch();
 			}
 			else
 			{
@@ -99,19 +106,14 @@ namespace Kampai.Game
 					playerService.IngestPlayerMeta(meta);
 				}
 				global::Kampai.Util.TimeProfiler.EndSection("read player");
-				return true;
-			}
-			catch (global::Kampai.Util.FatalException ex)
-			{
-				logger.Error("LoadedPlayerDataCommand().DeserializePlayerData: FatalException. Json: {0}", json);
-				logger.FatalNoThrow(ex.FatalCode, ex.ReferencedId, "Message: {0}, Reason: {1}", ex.Message, (ex.InnerException == null) ? ex.ToString() : ex.InnerException.ToString());
+				return playerService != null && playerService.IsPlayerInitialized();
 			}
 			catch (global::System.Exception ex2)
 			{
-				logger.Error("Unexpected player deser-n error. Json: {0}", json);
-				logger.FatalNoThrow(global::Kampai.Util.FatalCode.PS_JSON_PARSE_ERR, 6, "Reason: {0}", ex2);
+				global::UnityEngine.Debug.LogErrorFormat("[DEBUG] LoadedPlayerDataCommand.DeserializePlayerData EXCEPTION: {0}\n{1}", ex2.Message, ex2.StackTrace);
+				logger.Error("Unexpected player deser-n error. Json: {0}, Exception: {1}", json, ex2);
 			}
-			return false;
+			return playerService != null && playerService.IsPlayerInitialized();
 		}
 	}
 }

@@ -28,12 +28,13 @@ namespace Kampai.Game
 				case global::Newtonsoft.Json.JsonToken.EndObject:
 					return this;
 				default:
-					throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected token when deserializing object: {0}. {1}", reader.TokenType, global::Kampai.Util.ReaderUtil.GetPositionInSource(reader)));
-				case global::Newtonsoft.Json.JsonToken.Comment:
+					reader.Skip();
+					break;
+case global::Newtonsoft.Json.JsonToken.Comment:
 					break;
 				}
 			}
-			throw new global::Newtonsoft.Json.JsonSerializationException("Unexpected end when deserializing object.");
+			return this;
 		}
 
 		protected virtual bool DeserializeProperty(string propertyName, global::Newtonsoft.Json.JsonReader reader, JsonConverters converters)

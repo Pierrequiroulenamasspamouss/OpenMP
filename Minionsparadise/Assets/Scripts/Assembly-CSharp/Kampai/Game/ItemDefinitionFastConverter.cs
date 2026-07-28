@@ -48,7 +48,7 @@ namespace Kampai.Game
 			case ItemType.ItemTypeIdentifier.SPECIAL_EVENT:
 				return new global::Kampai.Game.SpecialEventItemDefinition();
 			default:
-				throw new global::Newtonsoft.Json.JsonSerializationException(string.Format("Unexpected ItemDefinition type: {0}", itemType));
+				return new global::Kampai.Game.ItemDefinition();
 			}
 		}
 	}
