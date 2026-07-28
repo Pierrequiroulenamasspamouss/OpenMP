@@ -69,6 +69,11 @@ namespace Kampai.Game
 					global::Kampai.Game.UnlockDefinition definition = null;
 					if (definitionService.TryGet<global::Kampai.Game.UnlockDefinition>(output.ID, out definition))
 					{
+						if (global::Kampai.UI.BuildMenuService.IsLimitedBuildingID(definition.ReferencedDefinitionID))
+						{
+							global::UnityEngine.Debug.LogFormat("[SHOP_DEBUG] ReconcileLevelUnlocks: Skipping auto-unlock for limited building RefDefID={0}", definition.ReferencedDefinitionID);
+							continue;
+						}
 						int unlockedQuantityOfID = playerService.GetUnlockedQuantityOfID(definition.ReferencedDefinitionID);
 						if (unlockedQuantityOfID < (int)output.Quantity)
 						{

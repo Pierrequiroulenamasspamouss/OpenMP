@@ -56,11 +56,6 @@ namespace Kampai.UI.View
 			int playerLevel = (int)playerService.GetQuantity(global::Kampai.Game.StaticItem.LEVEL_ID);
 			bool isLevelLocked = unlockLevel > 0 && playerLevel < unlockLevel && num <= 0;
 
-			if (iD >= 4201 && iD <= 4216 || iD >= 4101 && iD <= 4105)
-			{
-				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] DetermineUnlock for Def ID={0}: UnlockedQty={1}, unlockLevel={2}, playerLevel={3}, isLevelLocked={4}", iD, num, unlockLevel, playerLevel, isLevelLocked);
-			}
-
 			if (string.IsNullOrEmpty(displayableDefinition.Image))
 			{
 				logger.Log(global::Kampai.Util.KampaiLogLevel.Error, "Your Building Definition: {0} doesn't have a image defined", displayableDefinition.ID);

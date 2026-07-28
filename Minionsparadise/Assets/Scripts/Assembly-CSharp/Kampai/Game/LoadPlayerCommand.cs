@@ -197,25 +197,17 @@ namespace Kampai.Game
 				empty = response.Body;
 				if (string.IsNullOrEmpty(empty))
 				{
+					if (global::Kampai.Util.OfflineModeUtility.HasLocalSave())
+					{
+						empty = global::Kampai.Util.OfflineModeUtility.LoadLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath);
+					}
+				}
+				if (string.IsNullOrEmpty(empty))
+				{
 					logger.Fatal(global::Kampai.Util.FatalCode.PS_EMPTY_SERVER_JSON);
 					return;
 				}
-				if (global::Kampai.Util.OfflineModeUtility.HasLocalSave())
-				{
-					string localData = global::Kampai.Util.OfflineModeUtility.LoadLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath);
-					string latestData = global::Kampai.Util.OfflineModeUtility.GetLatestSave(empty, localData);
-					empty = latestData;
-				}
-				// DEBUG: log what HasEnded value is in the final JSON before deserialization
-				{
-					int idx = empty.IndexOf("\"HasEnded\"", global::System.StringComparison.OrdinalIgnoreCase);
-					string snippet = idx >= 0 ? empty.Substring(idx, global::System.Math.Min(30, empty.Length - idx)) : "(not found)";
-					global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] LoadPlayerCommand: JSON HasEnded snippet before dispatch: {0}", snippet);
-				}
-				if (!string.IsNullOrEmpty(empty))
-				{
-					global::Kampai.Util.OfflineModeUtility.SaveLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath, empty);
-				}
+				global::Kampai.Util.OfflineModeUtility.SaveLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath, empty);
 			}
 			loadedPlayerDataSignal.Dispatch(empty, playerMetaData);
 		}

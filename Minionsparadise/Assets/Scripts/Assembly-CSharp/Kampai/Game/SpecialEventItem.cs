@@ -18,7 +18,6 @@ namespace Kampai.Game
 					reader.Read();
 				}
 				HasEnded = global::System.Convert.ToBoolean(reader.Value);
-				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] SpecialEventItem.DeserializeProperty: TokenType={0}, Value={1}, Deserialized HasEnded={2}", reader.TokenType, reader.Value, HasEnded);
 				return true;
 			}
 			return base.DeserializeProperty(propertyName, reader, converters);

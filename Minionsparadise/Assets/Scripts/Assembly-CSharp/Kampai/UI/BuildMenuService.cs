@@ -146,17 +146,89 @@ namespace Kampai.UI
 			localState.NewUnlockedItemOnTabs.Clear();
 		}
 
+		public static bool IsLimitedBuildingID(int refId)
+		{
+			if ((refId >= 4101 && refId <= 4105) || (refId >= 4201 && refId <= 4216) || (refId >= 1000021206 && refId <= 1000021221))
+			{
+				return true;
+			}
+			if (refId == 3113 || refId == 1000009345 || refId == 1000010729 || refId == 1000010970 || refId == 1000011021 || refId == 1000011117 || refId == 1000011349 || refId == 1000011652 || refId == 1000011700 || refId == 1000011706 || refId == 1000012546 || refId == 1000012942 || refId == 1000012966 || refId == 1000012972 || refId == 1000012978 || refId == 1000012984)
+			{
+				return true;
+			}
+			return false;
+		}
+
 		public bool ShouldRenderStoreDef(global::Kampai.Game.StoreItemDefinition storeDef)
 		{
 			if (storeDef == null || storeDef.Disabled)
 			{
 				return false;
 			}
-			if (storeDef.SpecialEventID > 0 || storeDef.ReferencedDefID >= 4201 && storeDef.ReferencedDefID <= 4216)
+
+			bool flag = true;
+			int unlockedQuantityOfID = playerService.GetUnlockedQuantityOfID(storeDef.ReferencedDefID);
+			if (storeDef.OnlyShowIfUnlocked || IsLimitedBuildingID(storeDef.ReferencedDefID))
 			{
-				global::UnityEngine.Debug.LogErrorFormat("[WINTER_DEBUG] ShouldRenderStoreDef: StoreDef ID={0}, RefDefID={1}, SpecialEventID={2}, Disabled={3}", storeDef.ID, storeDef.ReferencedDefID, storeDef.SpecialEventID, storeDef.Disabled);
+				flag = unlockedQuantityOfID > 0;
 			}
-			return true;
+			if (IsLimitedBuildingID(storeDef.ReferencedDefID))
+			{
+				global::UnityEngine.Debug.LogFormat("[SHOP_DEBUG] ShouldRenderStoreDef: StoreDef ID={0}, RefDefID={1}, UnlockedQty={2}, ShouldRender={3}", storeDef.ID, storeDef.ReferencedDefID, unlockedQuantityOfID, flag);
+			}
+			global::System.Collections.Generic.ICollection<global::Kampai.Game.Building> byDefinitionId = playerService.GetByDefinitionId<global::Kampai.Game.Building>(storeDef.ReferencedDefID);
+			int count = byDefinitionId.Count;
+			if (storeDef.OnlyShowIfOwned)
+			{
+				flag = count > 0;
+			}
+			if (storeDef.OnlyShowIfInInventory)
+			{
+				flag = false;
+				foreach (global::Kampai.Game.Building item in byDefinitionId)
+				{
+					if (item.State == global::Kampai.Game.BuildingState.Inventory)
+					{
+						flag = true;
+					}
+				}
+			}
+
+			// If no transaction is defined, it shouldn't be for sale.
+			// Hide if not owned, unless it's one of the specific exception items requested by the user.
+			if (storeDef.TransactionID == 0 && count == 0)
+			{
+				global::Kampai.Game.Definition referencedDef = definitionService.Get(storeDef.ReferencedDefID);
+				bool isExceptionItem = referencedDef != null && (referencedDef.LocalizedKey == "DecorWinterStandard01" || referencedDef.LocalizedKey == "DecorWinterPremium15");
+				if (!isExceptionItem)
+				{
+					return false;
+				}
+			}
+
+			// Check date-based availability (Sales/Events)
+			bool isOnSale = storeDef.IsOnSale(global::UnityEngine.Application.platform, timeService, localeService, logger);
+			if (!isOnSale && count == 0)
+			{
+				// If not on sale and the player doesn't own any, hide it.
+				// (Exception items stay visible as requested)
+				bool isExceptionItem = storeDef.LocalizedKey == "DecorWinterStandard01" || storeDef.LocalizedKey == "DecorWinterPremium15";
+				if (!isExceptionItem)
+				{
+					return false;
+				}
+			}
+
+			if (storeDef.SpecialEventID > 0 && flag)
+			{
+				global::Kampai.Game.SpecialEventItemDefinition definition;
+				bool flag2 = definitionService.TryGet<global::Kampai.Game.SpecialEventItemDefinition>(storeDef.SpecialEventID, out definition);
+				if ((flag2 && !definition.IsActive) || !flag2)
+				{
+					flag = count > 0;
+				}
+			}
+			return flag;
 		}
 
 		public bool ShowingAChild(global::System.Collections.Generic.List<global::Kampai.UI.View.StoreButtonView> children, bool notifyShouldBeRendered = true)
@@ -168,7 +240,7 @@ namespace Kampai.UI
 			bool flag = false;
 			foreach (global::Kampai.UI.View.StoreButtonView child in children)
 			{
-				if (child.storeItemDefinition.OnlyShowIfInInventory || child.storeItemDefinition.OnlyShowIfOwned || child.storeItemDefinition.OnlyShowIfUnlocked || child.storeItemDefinition.SpecialEventID > 0)
+				if (child.storeItemDefinition.OnlyShowIfInInventory || child.storeItemDefinition.OnlyShowIfOwned || child.storeItemDefinition.OnlyShowIfUnlocked || child.storeItemDefinition.SpecialEventID > 0 || IsLimitedBuildingID(child.storeItemDefinition.ReferencedDefID))
 				{
 					bool flag2 = ShouldRenderStoreDef(child.storeItemDefinition);
 					flag = flag || flag2;
@@ -223,6 +295,11 @@ namespace Kampai.UI
 						num4++;
 						num++;
 					}
+					if (!ShouldRenderStoreDef(item.storeItemDefinition))
+					{
+						item.SetShouldBerendered(false);
+						continue;
+					}
 					item.SetShouldBerendered(true);
 					bool flag = item.IsUnlocked();
 					if (flag)
@@ -232,6 +309,10 @@ namespace Kampai.UI
 					if (!flag)
 					{
 						item.ItemIcon.gameObject.SetActive(false);
+					}
+					if (num3 - num2 > 4 && !flag && item.storeItemDefinition.Type != global::Kampai.Game.StoreItemType.MasterPlanLeftOvers)
+					{
+						item.SetShouldBerendered(false);
 					}
 				}
 				if (updateBadge)
