@@ -25,6 +25,9 @@ namespace Kampai.Game
 		[Inject]
 		public int instanceId { get; set; }
 
+		[Inject(optional = true)]
+		public global::Kampai.Game.IUserSessionService userSessionService { get; set; }
+
 		[Inject]
 		public global::Kampai.Util.IRoutineRunner routineRunner { get; set; }
 
@@ -50,10 +53,17 @@ namespace Kampai.Game
 			}
 			if (item.Definition.Type == global::Kampai.Game.SalePackType.Upsell && !started)
 			{
-				routineRunner.StartCoroutine(WaitAFrame(delegate
+				if (userSessionService != null && userSessionService.IsOffline)
 				{
-					openUpSellModalSignal.Dispatch(item.Definition, "Automatic", false);
-				}));
+					logger.Info("[OfflineMode] Suppressed automatic upsell popup for sale pack ID: {0}", item.Definition.ID);
+				}
+				else
+				{
+					routineRunner.StartCoroutine(WaitAFrame(delegate
+					{
+						openUpSellModalSignal.Dispatch(item.Definition, "Automatic", false);
+					}));
+				}
 			}
 		}
 

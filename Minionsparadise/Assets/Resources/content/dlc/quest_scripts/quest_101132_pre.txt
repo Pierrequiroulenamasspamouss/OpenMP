@@ -10,8 +10,8 @@ qs.showWayFinder(pinataID,true)
 
 -- Narrative dialogue introduces rushing and free premium
 
--- Hide the Settings Menu
-qs.showSettingsMenuButton(false)
+-- Keep the Settings Menu visible
+qs.showSettingsMenuButton(true)
 
 -- Prompt the player to rush.
 qs.setDialogType('Normal')

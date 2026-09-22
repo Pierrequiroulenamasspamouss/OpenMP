@@ -12,8 +12,8 @@ if qs.getFtueLevelCompleted() ~= 3 then
 	qs.throbRushButtons(true)
 	qs.panToBuildingAndOpen(pinataID)
 	qs.showWayFinder(pinataID,true)
-	-- Hide the Settings Menu
-	qs.showSettingsMenuButton(false)
+	-- Keep the Settings Menu visible
+	qs.showSettingsMenuButton(true)
 
 	while qs.getBuildingState(pinataID) ~= qsutil.BuildingState.Harvestable and qs.getPlayerItemQuantity(2) == 0 do
 		signal = qs.waitAnySignal('ShowBuildingDetailMenuSignal', 'BuildingChangeStateSignal')

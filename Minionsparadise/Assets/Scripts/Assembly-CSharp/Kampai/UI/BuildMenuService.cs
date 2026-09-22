@@ -44,6 +44,9 @@ namespace Kampai.UI
 		[Inject]
 		public global::Kampai.UI.View.IncreaseInventoryCountForBuildMenuSignal increaseInventoryCountSignal { get; set; }
 
+		[Inject(optional = true)]
+		public global::Kampai.Game.IUserSessionService userSessionService { get; set; }
+
 		[PostConstruct]
 		public void PostConstruct()
 		{
@@ -166,15 +169,20 @@ namespace Kampai.UI
 				return false;
 			}
 
+			// In offline mode: event buildings are always disabled
+			if (userSessionService != null && userSessionService.IsOffline)
+			{
+				if (IsLimitedBuildingID(storeDef.ReferencedDefID) || storeDef.SpecialEventID > 0)
+				{
+					return false;
+				}
+			}
+
 			bool flag = true;
 			int unlockedQuantityOfID = playerService.GetUnlockedQuantityOfID(storeDef.ReferencedDefID);
 			if (storeDef.OnlyShowIfUnlocked || IsLimitedBuildingID(storeDef.ReferencedDefID))
 			{
 				flag = unlockedQuantityOfID > 0;
-			}
-			if (IsLimitedBuildingID(storeDef.ReferencedDefID))
-			{
-				global::UnityEngine.Debug.LogFormat("[SHOP_DEBUG] ShouldRenderStoreDef: StoreDef ID={0}, RefDefID={1}, UnlockedQty={2}, ShouldRender={3}", storeDef.ID, storeDef.ReferencedDefID, unlockedQuantityOfID, flag);
 			}
 			global::System.Collections.Generic.ICollection<global::Kampai.Game.Building> byDefinitionId = playerService.GetByDefinitionId<global::Kampai.Game.Building>(storeDef.ReferencedDefID);
 			int count = byDefinitionId.Count;
@@ -195,28 +203,16 @@ namespace Kampai.UI
 			}
 
 			// If no transaction is defined, it shouldn't be for sale.
-			// Hide if not owned, unless it's one of the specific exception items requested by the user.
 			if (storeDef.TransactionID == 0 && count == 0)
 			{
-				global::Kampai.Game.Definition referencedDef = definitionService.Get(storeDef.ReferencedDefID);
-				bool isExceptionItem = referencedDef != null && (referencedDef.LocalizedKey == "DecorWinterStandard01" || referencedDef.LocalizedKey == "DecorWinterPremium15");
-				if (!isExceptionItem)
-				{
-					return false;
-				}
+				return false;
 			}
 
 			// Check date-based availability (Sales/Events)
 			bool isOnSale = storeDef.IsOnSale(global::UnityEngine.Application.platform, timeService, localeService, logger);
 			if (!isOnSale && count == 0)
 			{
-				// If not on sale and the player doesn't own any, hide it.
-				// (Exception items stay visible as requested)
-				bool isExceptionItem = storeDef.LocalizedKey == "DecorWinterStandard01" || storeDef.LocalizedKey == "DecorWinterPremium15";
-				if (!isExceptionItem)
-				{
-					return false;
-				}
+				return false;
 			}
 
 			if (storeDef.SpecialEventID > 0 && flag)

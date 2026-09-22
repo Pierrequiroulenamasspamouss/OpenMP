@@ -8,8 +8,15 @@ namespace Kampai.Game
 		[Inject]
 		public global::Kampai.Game.IDefinitionService definitionService { get; set; }
 
+		[Inject]
+		public global::Kampai.Game.IUserSessionService userSessionService { get; set; }
+
 		public bool IsSpecialEventActive()
 		{
+			if (userSessionService != null && userSessionService.IsOffline)
+			{
+				return false;
+			}
 			foreach (global::Kampai.Game.SpecialEventItemDefinition item in definitionService.GetAll<global::Kampai.Game.SpecialEventItemDefinition>())
 			{
 				if (item != null && item.IsActive)

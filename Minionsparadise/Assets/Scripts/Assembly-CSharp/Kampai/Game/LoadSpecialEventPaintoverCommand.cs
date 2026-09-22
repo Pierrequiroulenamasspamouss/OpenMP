@@ -12,6 +12,10 @@ namespace Kampai.Game
 
 		public override void Execute()
 		{
+			if (parent != null && parent.transform.childCount > 0)
+			{
+				return;
+			}
 			string paintover = specialEventItemDefinition.Paintover;
 			global::UnityEngine.GameObject gameObject = global::Kampai.Util.KampaiResources.Load<global::UnityEngine.GameObject>(paintover);
 			if (gameObject == null)
