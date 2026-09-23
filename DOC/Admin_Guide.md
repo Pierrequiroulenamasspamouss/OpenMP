@@ -1,52 +1,55 @@
 # Admin & Management Guide
 
-This document describes the administrative tools available for managing the Kampai Game Server.
+This document describes the administrative and management tools available for the Kampai Game Server and player databases.
 
 ---
 
-## 1. Interactive GUI (`server_gui.py`)
+## 1. Web-Based Dashboards (`routes/dashboard.py`)
 
-The server includes a graphical interface for real-time monitoring and management. It is built using Python's `tkinter` library.
+The server includes built-in web dashboards for administrative management and player self-service.
 
-### Features
-- **Server Controls**: Start/Stop the server threads.
-- **Port Monitoring**: Visualization of traffic on ports 44732 and 44733.
-- **Log Viewer**: Integrated terminal window showing HTTP requests and server-side events.
-- **Player Search**: Search and view basic info for connected players.
+### A. Admin Dashboard (`/admin`)
+- **URL**: `http://localhost:44733/admin`
+- **Authentication**: Secured with `ADMIN_PASSWORD` (configured in `SERVER/config.py` or `.env`).
+- **Features**:
+  - **Player Overview**: Real-time listing of all registered players, levels, XP, total playtime, Discord linkages, and last update timestamps.
+  - **Shop Schedule Manager**: Live inspection and dynamic modification of `ShopSchedule.json` (active sale packs, level requirements, purchase limits, and timestamps).
+  - **Social Events Controller**: View current active Timed Social Events (TSE) and force regeneration of event cycles.
 
-**To Launch**:
-```powershell
-python c:\Unity\LATEST\SERVER\server_gui.py
-```
-
----
-
-## 2. Command-Line Administrator (`admin_cli.py`)
-
-A powerful tool for modifying player data and server state directly from the terminal.
-
-### Common Commands
-- **Inventory Modification**:
-  - `add_item <uid> <def_id> <quantity>`: Grant items or currency to a player.
-- **Account Management**:
-  - `reset_player <uid>`: Reset a player's progress to the `empty_player.json` state.
-  - `link_discord <uid> <discord_id>`: Manually link an account.
-- **System**:
-  - `stats`: View total player count and basic server telemetry.
-
-**To Use**:
-```powershell
-python c:\Unity\LATEST\SERVER\admin_cli.py
-```
+### B. Player Dashboard (`/dashboard`)
+- **URL**: `http://localhost:44733/dashboard`
+- **Features**:
+  - Player inventory editing (modify quantities or add/delete items).
+  - Save backup and upload (allows importing/exporting game state JSON).
+  - Cross-account save migration (transfer progress between UIDs).
+  - Christmas minion & event toggles per account.
+  - Profile customization (name and avatar).
 
 ---
 
-## 3. Database Maintenance
+## 2. Server Configuration Switcher (`config-switcher.py`)
 
-The server uses a SQLite database to persist player progress and social events.
+Located in the workspace root (`c:\Unity\config-switcher.py`), this GUI utility manages environment targets and configuration swapping:
 
-- **File Location**: `c:\Unity\LATEST\SERVER\player_data\players.db`.
-- **Detailed Schema**: For a full breakdown of tables and columns (including the complex JSON blobs), see the **[Database Schema](Database_Schema.md)**.
-- **Migration**: On startup, the server automatically checks the `player_data/` directory for legacy `.json` files and migrates them into the SQLite database. Once migrated, the `.json` files are deleted.
-- **Manual Editing**: Any standard SQLite browser (e.g., [DB Browser for SQLite](https://sqlitebrowser.org/)) can be used to view or edit the `players` table manually.
-- **Backups**: Always back up the `players.db` file before performing manual edits or major server updates.
+- **Target Versions**: Select **Unity 5**, **Unity 6**, or **Both**.
+- **Environments**: Toggle between **Local Development** (localhost:44733) and **Public Server** (external host/reverse proxy).
+- **Paths Managed**:
+  - `SERVER/config.json`
+  - `UNITY5/Minionsparadise/Assets/Resources/config.json` & `config_server.json`
+  - `UNITY6/Minionsparadise/Assets/Resources/config.json` & `config_server.json`
+  - AppData client and server runtime config files.
+
+---
+
+## 3. Database Maintenance & Backups
+
+The server persists all player profiles, TSE teams, and chat logs into SQLite:
+
+- **Database Path**: `c:\Unity\SERVER\player_data\players.db`
+- **Rolling Automated Backups**:
+  - Managed by `SERVER/utils/db.py` background thread (`DBRollingBackupScheduler`).
+  - Saved to `SERVER/player_data/backups/players_backup_YYYYMMDD_HHMMSS.db`.
+  - Automatic rolling pruning retains the most recent 4 backups (configurable via `MAX_ROLLING_BACKUPS`).
+- **Legacy Migration**: On startup, flat JSON files in `SERVER/player_data/` are automatically migrated into the SQLite database.
+- **Save Comparison Tool**: Use `c:\Unity\tools\compare_saves.py` to inspect and diff player state files or DB exports.
+

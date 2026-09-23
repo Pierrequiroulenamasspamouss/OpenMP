@@ -31,17 +31,18 @@ The system follows the **StrangeIoC** architecture used in the project.
    - The mediator manages the lifecycle of the service (starts polling when the menu is opened, stops when closed).
 
 ## API Endpoints
-The system relies on the following endpoints on the Private Server (`GameConstants.Server.SERVER_URL`):
-- `GET /chat`: Returns a JSON object with a list of the last 100 messages.
+The system relies on the following endpoints on the Private Server (`GameConstants.Server.SERVER_URL`). Both `/chat` and `/api/globalchat` are aliases mapped to the same handler:
+- `GET /chat` or `GET /api/globalchat`: Returns a JSON object with a list of the last 100 messages.
   ```json
   {
     "messages": [
-      {"user": "Minion 123", "text": "Hello World!", "timestamp": 123456789}
+      {"user": "Minion 123", "text": "Hello World!", "timestamp": "2026-03-27 12:00:00"}
     ]
   }
   ```
-- `POST /chat`: Sends a new message.
-  - Form Fields: `user` (string), `text` (string).
+- `POST /chat` or `POST /api/globalchat`: Sends a new message.
+  - Supports `WWWForm` (fields: `user`/`userId`, `text`/`message`) as well as raw JSON payloads (`{"userId": "...", "message": "..."}`).
+
 
 ## UI Scaling Fix
 In addition to the chat system, the following files were modified to allow custom button scaling in the UI:
