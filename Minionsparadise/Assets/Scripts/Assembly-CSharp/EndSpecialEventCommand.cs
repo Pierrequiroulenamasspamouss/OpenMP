@@ -11,9 +11,19 @@ public class EndSpecialEventCommand : global::strange.extensions.command.impl.Co
 	[Inject]
 	public global::Kampai.Game.IDefinitionService definitionService { get; set; }
 
+	[Inject(global::Kampai.Game.GameElement.SPECIAL_EVENT_PARENT)]
+	public global::UnityEngine.GameObject parent { get; set; }
+
 	public override void Execute()
 	{
 		logger.Info("Ending special event {0}", specialEventItemDefinition.LocalizedKey);
+		if (parent != null)
+		{
+			for (int i = parent.transform.childCount - 1; i >= 0; i--)
+			{
+				global::UnityEngine.Object.Destroy(parent.transform.GetChild(i).gameObject);
+			}
+		}
 		CleanUpSpecialEventCharacter();
 	}
 

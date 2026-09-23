@@ -44,6 +44,9 @@ namespace Kampai.UI
 		[Inject]
 		public global::Kampai.UI.View.IncreaseInventoryCountForBuildMenuSignal increaseInventoryCountSignal { get; set; }
 
+		[Inject(optional = true)]
+		public global::Kampai.Game.IUserSessionService userSessionService { get; set; }
+
 		[PostConstruct]
 		public void PostConstruct()
 		{
@@ -146,6 +149,19 @@ namespace Kampai.UI
 			localState.NewUnlockedItemOnTabs.Clear();
 		}
 
+		public static bool IsLimitedBuildingID(int refId)
+		{
+			if ((refId >= 4101 && refId <= 4105) || (refId >= 4201 && refId <= 4216) || (refId >= 1000021206 && refId <= 1000021221))
+			{
+				return true;
+			}
+			if (refId == 3113 || refId == 1000009345 || refId == 1000010729 || refId == 1000010970 || refId == 1000011021 || refId == 1000011117 || refId == 1000011349 || refId == 1000011652 || refId == 1000011700 || refId == 1000011706 || refId == 1000012546 || refId == 1000012942 || refId == 1000012966 || refId == 1000012972 || refId == 1000012978 || refId == 1000012984)
+			{
+				return true;
+			}
+			return false;
+		}
+
 		public bool ShouldRenderStoreDef(global::Kampai.Game.StoreItemDefinition storeDef)
 		{
 			if (storeDef == null || storeDef.Disabled)
@@ -153,9 +169,18 @@ namespace Kampai.UI
 				return false;
 			}
 
+			// In offline mode: event buildings are always disabled
+			if (userSessionService != null && userSessionService.IsOffline)
+			{
+				if (IsLimitedBuildingID(storeDef.ReferencedDefID) || storeDef.SpecialEventID > 0 || storeDef.Type == global::Kampai.Game.StoreItemType.SpecialEvent)
+				{
+					return false;
+				}
+			}
+
 			bool flag = true;
 			int unlockedQuantityOfID = playerService.GetUnlockedQuantityOfID(storeDef.ReferencedDefID);
-			if (storeDef.OnlyShowIfUnlocked)
+			if (storeDef.OnlyShowIfUnlocked || IsLimitedBuildingID(storeDef.ReferencedDefID) || storeDef.SpecialEventID > 0 || storeDef.Type == global::Kampai.Game.StoreItemType.SpecialEvent)
 			{
 				flag = unlockedQuantityOfID > 0;
 			}
@@ -178,28 +203,16 @@ namespace Kampai.UI
 			}
 
 			// If no transaction is defined, it shouldn't be for sale.
-			// Hide if not owned, unless it's one of the specific exception items requested by the user.
 			if (storeDef.TransactionID == 0 && count == 0)
 			{
-				global::Kampai.Game.Definition referencedDef = definitionService.Get(storeDef.ReferencedDefID);
-				bool isExceptionItem = referencedDef != null && (referencedDef.LocalizedKey == "DecorWinterStandard01" || referencedDef.LocalizedKey == "DecorWinterPremium15");
-				if (!isExceptionItem)
-				{
-					return false;
-				}
+				return false;
 			}
 
 			// Check date-based availability (Sales/Events)
 			bool isOnSale = storeDef.IsOnSale(global::UnityEngine.Application.platform, timeService, localeService, logger);
 			if (!isOnSale && count == 0)
 			{
-				// If not on sale and the player doesn't own any, hide it.
-				// (Exception items stay visible as requested)
-				bool isExceptionItem = storeDef.LocalizedKey == "DecorWinterStandard01" || storeDef.LocalizedKey == "DecorWinterPremium15";
-				if (!isExceptionItem)
-				{
-					return false;
-				}
+				return false;
 			}
 
 			if (storeDef.SpecialEventID > 0 && flag)
@@ -223,7 +236,7 @@ namespace Kampai.UI
 			bool flag = false;
 			foreach (global::Kampai.UI.View.StoreButtonView child in children)
 			{
-				if (child.storeItemDefinition.OnlyShowIfInInventory || child.storeItemDefinition.OnlyShowIfOwned || child.storeItemDefinition.OnlyShowIfUnlocked || child.storeItemDefinition.SpecialEventID > 0)
+				if (child.storeItemDefinition.OnlyShowIfInInventory || child.storeItemDefinition.OnlyShowIfOwned || child.storeItemDefinition.OnlyShowIfUnlocked || child.storeItemDefinition.SpecialEventID > 0 || IsLimitedBuildingID(child.storeItemDefinition.ReferencedDefID) || child.storeItemDefinition.Type == global::Kampai.Game.StoreItemType.SpecialEvent)
 				{
 					bool flag2 = ShouldRenderStoreDef(child.storeItemDefinition);
 					flag = flag || flag2;
@@ -277,6 +290,11 @@ namespace Kampai.UI
 						item.SetNewUnlockState(true);
 						num4++;
 						num++;
+					}
+					if (!ShouldRenderStoreDef(item.storeItemDefinition))
+					{
+						item.SetShouldBerendered(false);
+						continue;
 					}
 					item.SetShouldBerendered(true);
 					bool flag = item.IsUnlocked();
@@ -416,6 +434,12 @@ namespace Kampai.UI
 
 		public void CompleteBuildMenuUpdate(BuildingType.BuildingTypeIdentifier buildingDefType, int buildingDefinitionID)
 		{
+			if (IsLimitedBuildingID(buildingDefinitionID))
+			{
+				AddUncheckedInventoryItem(global::Kampai.Game.StoreItemType.SpecialEvent, buildingDefinitionID);
+				increaseInventoryCountSignal.Dispatch();
+				return;
+			}
 			switch (buildingDefType)
 			{
 			case BuildingType.BuildingTypeIdentifier.RESOURCE:

@@ -407,6 +407,10 @@ namespace Kampai.Game.View
 		public void IdleMinion(global::Kampai.Game.View.MinionObject minionObject)
 		{
 			global::Kampai.Game.Minion byInstanceId = playerService.GetByInstanceId<global::Kampai.Game.Minion>(minionObject.ID);
+			if (byInstanceId == null)
+			{
+				return;
+			}
 			global::Kampai.Game.MinionState state = byInstanceId.State;
 			if (byInstanceId.HasPrestige)
 			{
@@ -414,7 +418,7 @@ namespace Kampai.Game.View
 				{
 					global::Kampai.Game.Prestige byInstanceId2 = playerService.GetByInstanceId<global::Kampai.Game.Prestige>(byInstanceId.PrestigeId);
 					global::System.Collections.Generic.IList<global::Kampai.Game.Instance> instancesByDefinition = playerService.GetInstancesByDefinition<global::Kampai.Game.TikiBarBuildingDefinition>();
-					if (byInstanceId2.state == global::Kampai.Game.PrestigeState.Questing && instancesByDefinition != null && instancesByDefinition.Count != 0)
+					if (byInstanceId2 != null && byInstanceId2.state == global::Kampai.Game.PrestigeState.Questing && instancesByDefinition != null && instancesByDefinition.Count != 0)
 					{
 						global::Kampai.Game.TikiBarBuilding tikiBarBuilding = instancesByDefinition[0] as global::Kampai.Game.TikiBarBuilding;
 						addMinionTikiBarSignal.Dispatch(tikiBarBuilding, byInstanceId, byInstanceId2, tikiBarBuilding.GetMinionSlotIndex(byInstanceId2.Definition.ID));

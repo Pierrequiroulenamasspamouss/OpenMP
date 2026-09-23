@@ -59,11 +59,79 @@ namespace Kampai.Game.View
 			this.isSpecialEventActive = isSpecialEventActive;
 		}
 
+		public void SetSpecialEventActive(bool active)
+		{
+			this.isSpecialEventActive = active;
+		}
+
+		private string GetSpecialEventPrefab(global::Kampai.Game.Building building, string currentPrefab)
+		{
+			if (building != null && building.Definition != null)
+			{
+				switch (building.Definition.ID)
+				{
+				case 3022:
+					return "WNTR_15_Unique_JobBoard_Prefab";
+				case 3041:
+					return "WNTR_15_Unique_TikiBar_Prefab";
+				case 3054:
+					return "WNTR_15_Unique_Stage_Prefab";
+				case 3055:
+					return "WNTR_15_Unique_TownSquareFountain_Prefab";
+				}
+			}
+			switch (currentPrefab)
+			{
+			case "Unique_JobBoard_Prefab":
+				return "WNTR_15_Unique_JobBoard_Prefab";
+			case "Unique_TikiBar_Prefab":
+				return "WNTR_15_Unique_TikiBar_Prefab";
+			case "Unique_TownSquareFountain_Prefab":
+				return "WNTR_15_Unique_TownSquareFountain_Prefab";
+			case "Unique_Stage_Prefab":
+				return "WNTR_15_Unique_Stage_Prefab";
+			case "MinionParty_Generic_Prefab":
+				return "WNTR_15_MinionParty_Generic_Prefab";
+			default:
+				return currentPrefab;
+			}
+		}
+
+		private string GetNormalEventPrefab(global::Kampai.Game.Building building, string currentPrefab)
+		{
+			switch (currentPrefab)
+			{
+			case "WNTR_15_Unique_JobBoard_Prefab":
+				return "Unique_JobBoard_Prefab";
+			case "WNTR_15_Unique_TikiBar_Prefab":
+				return "Unique_TikiBar_Prefab";
+			case "WNTR_15_Unique_TownSquareFountain_Prefab":
+				return "Unique_TownSquareFountain_Prefab";
+			case "WNTR_15_Unique_Stage_Prefab":
+				return "Unique_Stage_Prefab";
+			case "WNTR_15_MinionParty_Generic_Prefab":
+				return "MinionParty_Generic_Prefab";
+			default:
+				return currentPrefab;
+			}
+		}
+
 		internal global::UnityEngine.GameObject CreateBuilding(global::Kampai.Game.Building building, int prefabIndex = 0)
 		{
 			int iD = building.ID;
 			global::Kampai.Game.Location location = building.Location;
 			string prefab = building.GetPrefab(prefabIndex);
+			if (building.IsBuildingRepaired())
+			{
+				if (isSpecialEventActive)
+				{
+					prefab = GetSpecialEventPrefab(building, prefab);
+				}
+				else
+				{
+					prefab = GetNormalEventPrefab(building, prefab);
+				}
+			}
 			global::UnityEngine.GameObject gameObject;
 			if (string.IsNullOrEmpty(prefab))
 			{
@@ -837,6 +905,10 @@ namespace Kampai.Game.View
 				return;
 			}
 			string partyPrefab = building.GetPartyPrefab(partyType);
+			if (isSpecialEventActive && partyPrefab == "MinionParty_Generic_Prefab")
+			{
+				partyPrefab = "WNTR_15_MinionParty_Generic_Prefab";
+			}
 			global::UnityEngine.GameObject gameObject = global::Kampai.Util.KampaiResources.Load<global::UnityEngine.GameObject>(partyPrefab);
 			if (gameObject != null)
 			{

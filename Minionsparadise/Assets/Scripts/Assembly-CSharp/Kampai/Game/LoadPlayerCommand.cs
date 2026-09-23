@@ -206,19 +206,17 @@ namespace Kampai.Game
 				empty = response.Body;
 				if (string.IsNullOrEmpty(empty))
 				{
+					if (global::Kampai.Util.OfflineModeUtility.HasLocalSave())
+					{
+						empty = global::Kampai.Util.OfflineModeUtility.LoadLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath);
+					}
+				}
+				if (string.IsNullOrEmpty(empty))
+				{
 					logger.Fatal(global::Kampai.Util.FatalCode.PS_EMPTY_SERVER_JSON);
 					return;
 				}
-				if (global::Kampai.Util.OfflineModeUtility.HasLocalSave())
-				{
-					string localData = global::Kampai.Util.OfflineModeUtility.LoadLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath);
-					string latestData = global::Kampai.Util.OfflineModeUtility.GetLatestSave(empty, localData);
-					if (latestData != empty)
-					{
-						logger.Info("[OfflineMode] Local save is newer than server save. Using local save instead.");
-						empty = latestData;
-					}
-				}
+				global::Kampai.Util.OfflineModeUtility.SaveLocal(global::Kampai.Util.OfflineModeUtility.PlayerSavePath, empty);
 			}
 			loadedPlayerDataSignal.Dispatch(empty, playerMetaData);
 		}

@@ -74,6 +74,10 @@ namespace Kampai.Game
 					global::Kampai.Game.UnlockDefinition definition = null;
 					if (definitionService.TryGet<global::Kampai.Game.UnlockDefinition>(output.ID, out definition))
 					{
+						if (global::Kampai.UI.BuildMenuService.IsLimitedBuildingID(definition.ReferencedDefinitionID))
+						{
+							continue;
+						}
 						int unlockedQuantityOfID = playerService.GetUnlockedQuantityOfID(definition.ReferencedDefinitionID);
 						if (unlockedQuantityOfID < (int)output.Quantity)
 						{

@@ -33,10 +33,12 @@ public class InitializeSpecialEventCommand : global::strange.extensions.command.
 				{
 					if (firstInstanceByDefinitionId.HasEnded)
 					{
-						logger.Error("Event {0} slated to start, but has already ended!", item.ID);
-						break;
+						endSpecialEventSignal.Dispatch(item);
 					}
-					restoreSpecialEventSignal.Dispatch(item);
+					else
+					{
+						restoreSpecialEventSignal.Dispatch(item);
+					}
 				}
 				else
 				{

@@ -271,6 +271,12 @@ namespace Kampai.Game.View
 		public global::Kampai.Game.ISpecialEventService specialEventService { get; set; }
 
 		[Inject]
+		public global::Kampai.Game.RestoreSpecialEventSignal restoreSpecialEventSignal { get; set; }
+
+		[Inject]
+		public global::Kampai.Game.EndSpecialEventSignal endSpecialEventSignal { get; set; }
+
+		[Inject]
 		public global::Kampai.Game.MasterPlanCompleteSignal masterPlanCompleteSignal { get; set; }
 
 		[Inject]
@@ -316,6 +322,14 @@ namespace Kampai.Game.View
 		public override void OnRegister()
 		{
 			view.Init(logger, definitionService, masterPlanService, specialEventService.IsSpecialEventActive());
+			if (restoreSpecialEventSignal != null)
+			{
+				restoreSpecialEventSignal.AddListener(OnSpecialEventRestored);
+			}
+			if (endSpecialEventSignal != null)
+			{
+				endSpecialEventSignal.AddListener(OnSpecialEventEnded);
+			}
 			view.updateMinionSignal.AddListener(UpdateTaskedMinions);
 			view.addFootprintSignal.AddListener(AddFootprint);
 			ManageRegisterStackSize();
@@ -416,6 +430,42 @@ namespace Kampai.Game.View
 				rushRevealBuildingSignal.RemoveListener(RushRevealBuilding);
 			}
 			rotateBuildingSignal.RemoveListener(RotateBuilding);
+			if (restoreSpecialEventSignal != null)
+			{
+				restoreSpecialEventSignal.RemoveListener(OnSpecialEventRestored);
+			}
+			if (endSpecialEventSignal != null)
+			{
+				endSpecialEventSignal.RemoveListener(OnSpecialEventEnded);
+			}
+		}
+
+		private void OnSpecialEventRestored(global::Kampai.Game.SpecialEventItemDefinition def)
+		{
+			UpdateSpecialEventBuildings(true);
+		}
+
+		private void OnSpecialEventEnded(global::Kampai.Game.SpecialEventItemDefinition def)
+		{
+			UpdateSpecialEventBuildings(false);
+		}
+
+		private void UpdateSpecialEventBuildings(bool active)
+		{
+			view.SetSpecialEventActive(active);
+			if (playerService == null)
+			{
+				return;
+			}
+			int[] specialBuildingIds = new int[] { 3022, 3041, 3054, 3055 };
+			for (int i = 0; i < specialBuildingIds.Length; i++)
+			{
+				global::Kampai.Game.Building building = playerService.GetFirstInstanceByDefinitionId<global::Kampai.Game.Building>(specialBuildingIds[i]);
+				if (building != null)
+				{
+					RecreateBuilding(building);
+				}
+			}
 		}
 
 		private void ManageRemoveStackSize()

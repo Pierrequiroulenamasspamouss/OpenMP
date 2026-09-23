@@ -93,7 +93,15 @@ namespace Kampai.UI.View
 				case global::Kampai.Game.StoreItemType.SpecialEvent:
 				case global::Kampai.Game.StoreItemType.MasterPlanLeftOvers:
 				case global::Kampai.Game.StoreItemType.Connectable:
-					AddBuildStoreItem(buildMenuItems, item, item.Type);
+					if (global::Kampai.UI.BuildMenuService.IsLimitedBuildingID(item.ReferencedDefID) || item.SpecialEventID > 0 || item.Type == global::Kampai.Game.StoreItemType.SpecialEvent)
+					{
+						item.Type = global::Kampai.Game.StoreItemType.SpecialEvent;
+						AddBuildStoreItem(buildMenuItems, item, global::Kampai.Game.StoreItemType.SpecialEvent);
+					}
+					else
+					{
+						AddBuildStoreItem(buildMenuItems, item, item.Type);
+					}
 					if (item.IsFeatured)
 					{
 						AddBuildStoreItem(buildMenuItems, item, global::Kampai.Game.StoreItemType.Featured);

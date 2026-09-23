@@ -59,26 +59,11 @@ public class LoadDefinitionsCommand : global::strange.extensions.command.impl.Co
 			bool needsJsonParse = true;
 			string binaryDefinitionsPath = global::Kampai.Game.DefinitionService.GetBinaryDefinitionsPath();
 #if !UNITY_WEBPLAYER
-			if (global::System.IO.File.Exists(binaryDefinitionsPath) && IsBinaryCacheValid(jsonPath))
+			// Always clear cached binary definitions to guarantee fresh definitions.json is loaded
+			if (global::System.IO.File.Exists(binaryDefinitionsPath))
 			{
-				logger.Debug("LoadDefinitions: Starting binary deserialization (cache valid)");
-				routineRunner.StartAsyncConditionTask(delegate
-				{
-					return DeserializeDefinitionsFromBinaryFile(binaryDefinitionsPath);
-				}, delegate
-				{
-					logger.Info("LoadDefinitions: Binary cache loaded successfully");
-					OnDeserializationSuccess();
-				});
-				needsJsonParse = false;
-			}
-			else
-			{
-				if (global::System.IO.File.Exists(binaryDefinitionsPath))
-				{
-					logger.Info("LoadDefinitions: Binary cache invalidated (JSON changed), deleting stale cache");
-					global::Kampai.Game.DefinitionService.DeleteBinarySerialization();
-				}
+				logger.Info("LoadDefinitions: Invalidating cached binary definitions to reload fresh JSON");
+				global::Kampai.Game.DefinitionService.DeleteBinarySerialization();
 			}
 #else
 			if (false)

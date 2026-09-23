@@ -25,11 +25,19 @@ namespace Kampai.UI.View
 		[Inject]
 		public global::Kampai.UI.View.CloseAllOtherMenuSignal closeSignal { get; set; }
 
+		[Inject(optional = true)]
+		public global::Kampai.Game.IUserSessionService userSessionService { get; set; }
+
 		public override void Execute()
 		{
 			if (packDefinition == null)
 			{
 				logger.Error("Pack Definition is null returning");
+				return;
+			}
+			if (userSessionService != null && userSessionService.IsOffline && (source == "Automatic" || source == "Impression"))
+			{
+				logger.Info("[OfflineMode] Suppressed upsell modal for source: {0}", source);
 				return;
 			}
 			SendTelemetry();
