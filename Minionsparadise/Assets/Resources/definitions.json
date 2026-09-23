@@ -20269,7 +20269,7 @@
       "eventMinionController": "some_animation_controller",
       "eventMinionCostumeId": 141,
       "id": 110000,
-      "isActive": false,
+      "isActive": true,
       "localizedKey": "Winter Event 2015",
       "paintover": "WNTR_15_EnvLights_Prefab",
       "prestigeDefinitionID": 40018,
