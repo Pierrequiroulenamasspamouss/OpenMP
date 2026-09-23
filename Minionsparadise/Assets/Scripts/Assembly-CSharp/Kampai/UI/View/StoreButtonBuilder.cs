@@ -52,7 +52,7 @@ namespace Kampai.UI.View
 			global::Kampai.Game.DisplayableDefinition displayableDefinition = view.definition as global::Kampai.Game.DisplayableDefinition;
 			global::Kampai.Game.StoreItemDefinition storeItemDefinition = view.storeItemDefinition;
 			int num = playerService.GetUnlockedQuantityOfID(iD);
-			int unlockLevel = (storeItemDefinition.Type == global::Kampai.Game.StoreItemType.SalePack || storeItemDefinition.Type == global::Kampai.Game.StoreItemType.PremiumCurrency || storeItemDefinition.Type == global::Kampai.Game.StoreItemType.GrindCurrency) ? 0 : definitionService.GetLevelItemUnlocksAt(iD);
+			int unlockLevel = (storeItemDefinition.Type == global::Kampai.Game.StoreItemType.SalePack || storeItemDefinition.Type == global::Kampai.Game.StoreItemType.PremiumCurrency || storeItemDefinition.Type == global::Kampai.Game.StoreItemType.GrindCurrency || storeItemDefinition.Type == global::Kampai.Game.StoreItemType.SpecialEvent) ? 0 : definitionService.GetLevelItemUnlocksAt(iD);
 			int playerLevel = (int)playerService.GetQuantity(global::Kampai.Game.StaticItem.LEVEL_ID);
 			bool isLevelLocked = unlockLevel > 0 && playerLevel < unlockLevel && num <= 0;
 

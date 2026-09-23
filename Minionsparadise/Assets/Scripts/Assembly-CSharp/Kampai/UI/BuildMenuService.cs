@@ -172,7 +172,7 @@ namespace Kampai.UI
 			// In offline mode: event buildings are always disabled
 			if (userSessionService != null && userSessionService.IsOffline)
 			{
-				if (IsLimitedBuildingID(storeDef.ReferencedDefID) || storeDef.SpecialEventID > 0)
+				if (IsLimitedBuildingID(storeDef.ReferencedDefID) || storeDef.SpecialEventID > 0 || storeDef.Type == global::Kampai.Game.StoreItemType.SpecialEvent)
 				{
 					return false;
 				}
@@ -180,7 +180,7 @@ namespace Kampai.UI
 
 			bool flag = true;
 			int unlockedQuantityOfID = playerService.GetUnlockedQuantityOfID(storeDef.ReferencedDefID);
-			if (storeDef.OnlyShowIfUnlocked || IsLimitedBuildingID(storeDef.ReferencedDefID))
+			if (storeDef.OnlyShowIfUnlocked || IsLimitedBuildingID(storeDef.ReferencedDefID) || storeDef.SpecialEventID > 0 || storeDef.Type == global::Kampai.Game.StoreItemType.SpecialEvent)
 			{
 				flag = unlockedQuantityOfID > 0;
 			}
@@ -236,7 +236,7 @@ namespace Kampai.UI
 			bool flag = false;
 			foreach (global::Kampai.UI.View.StoreButtonView child in children)
 			{
-				if (child.storeItemDefinition.OnlyShowIfInInventory || child.storeItemDefinition.OnlyShowIfOwned || child.storeItemDefinition.OnlyShowIfUnlocked || child.storeItemDefinition.SpecialEventID > 0 || IsLimitedBuildingID(child.storeItemDefinition.ReferencedDefID))
+				if (child.storeItemDefinition.OnlyShowIfInInventory || child.storeItemDefinition.OnlyShowIfOwned || child.storeItemDefinition.OnlyShowIfUnlocked || child.storeItemDefinition.SpecialEventID > 0 || IsLimitedBuildingID(child.storeItemDefinition.ReferencedDefID) || child.storeItemDefinition.Type == global::Kampai.Game.StoreItemType.SpecialEvent)
 				{
 					bool flag2 = ShouldRenderStoreDef(child.storeItemDefinition);
 					flag = flag || flag2;
@@ -434,6 +434,12 @@ namespace Kampai.UI
 
 		public void CompleteBuildMenuUpdate(BuildingType.BuildingTypeIdentifier buildingDefType, int buildingDefinitionID)
 		{
+			if (IsLimitedBuildingID(buildingDefinitionID))
+			{
+				AddUncheckedInventoryItem(global::Kampai.Game.StoreItemType.SpecialEvent, buildingDefinitionID);
+				increaseInventoryCountSignal.Dispatch();
+				return;
+			}
 			switch (buildingDefType)
 			{
 			case BuildingType.BuildingTypeIdentifier.RESOURCE:
