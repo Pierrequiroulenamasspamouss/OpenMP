@@ -1,7 +1,10 @@
 fileFormatVersion: 2
 guid: 2f4d796332c7c06428718699cdee9a99
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 4687312713198469844
+    second: Prop_PaperAirplane_D_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -34,8 +37,8 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
-    aniso: 1
+    filterMode: 2
+    aniso: 16
     mipBias: 0
     wrapU: 0
     wrapV: 0
@@ -186,7 +189,29 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Prop_PaperAirplane_D_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d20e55041eac0140800000000000000
+      internalID: 4687312713198469844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []

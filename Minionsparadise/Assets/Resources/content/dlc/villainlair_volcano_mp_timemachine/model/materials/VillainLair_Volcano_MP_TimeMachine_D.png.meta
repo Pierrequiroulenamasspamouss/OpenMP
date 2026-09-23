@@ -1,7 +1,10 @@
 fileFormatVersion: 2
 guid: 97f7b30637f55be4ebf52976c2ec9d01
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 2125176193582877588
+    second: VillainLair_Volcano_MP_TimeMachine_D_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -34,8 +37,8 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
-    aniso: 1
+    filterMode: 2
+    aniso: 16
     mipBias: 0
     wrapU: 0
     wrapV: 0
@@ -186,7 +189,29 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: VillainLair_Volcano_MP_TimeMachine_D_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49bcf970d742e7d10800000000000000
+      internalID: 2125176193582877588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []

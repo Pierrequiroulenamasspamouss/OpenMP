@@ -1,7 +1,10 @@
 fileFormatVersion: 2
 guid: 62d133e00473bf747a28d0ad7537e37a
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -220077608537921374
+    second: icn_nav_miniGame_Universal_mask_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -34,8 +37,8 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
-    aniso: 1
+    filterMode: 2
+    aniso: 16
     mipBias: 0
     wrapU: 1
     wrapV: 1
@@ -186,7 +189,29 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: icn_nav_miniGame_Universal_mask_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a86410c49022fcf0800000000000000
+      internalID: -220077608537921374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []

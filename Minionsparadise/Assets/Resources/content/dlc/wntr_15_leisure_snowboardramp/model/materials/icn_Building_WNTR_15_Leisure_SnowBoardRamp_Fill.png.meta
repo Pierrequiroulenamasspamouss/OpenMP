@@ -1,7 +1,10 @@
 fileFormatVersion: 2
 guid: 3cc1a22c910454549bb08a2e5fe7ace5
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -671459867378859653
+    second: icn_Building_WNTR_15_Leisure_SnowBoardRamp_Fill_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -34,8 +37,8 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
-    aniso: 1
+    filterMode: 2
+    aniso: 16
     mipBias: 0
     wrapU: 1
     wrapV: 1
@@ -186,7 +189,29 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: icn_Building_WNTR_15_Leisure_SnowBoardRamp_Fill_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b71c3f3eece7ea6f0800000000000000
+      internalID: -671459867378859653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []

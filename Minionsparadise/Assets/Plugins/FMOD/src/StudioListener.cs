@@ -127,7 +127,6 @@ namespace FMODUnity
             AddListener(this);
 
             lastFramePosition = transform.position;
-            UpdateFMODStudioSystemListener();
         }
 
         private void OnDisable()
@@ -176,20 +175,6 @@ namespace FMODUnity
                 {
                     RuntimeManager.SetListenerLocation(ListenerNumber, gameObject, attenuationObject);
                 }
-            }
-            UpdateFMODStudioSystemListener();
-        }
-
-        private void UpdateFMODStudioSystemListener()
-        {
-            if (global::FMOD_StudioSystem.instance != null && global::FMOD_StudioSystem.instance.System.isValid())
-            {
-                global::UnityEngine.Rigidbody rb = null;
-#if UNITY_PHYSICS_EXIST
-                rb = rigidBody;
-#endif
-                global::FMOD.ATTRIBUTES_3D attributes = global::FMOD.Studio.UnityUtil.to3DAttributes(gameObject, rb);
-                global::FMOD_StudioSystem.instance.System.setListenerAttributes(0, attributes);
             }
         }
     }
